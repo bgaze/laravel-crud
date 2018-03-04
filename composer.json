@@ -1,0 +1,26 @@
+{
+    "name": "bgaze/laravel-crud",
+    "description": "A CRUD/BREAD generator for Laravel 5.5+",
+    "require": {
+        "laravel/framework": ">=5.5.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bgaze",
+            "email": "benjamin@bgaze.fr"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bgaze\\Crud\\ServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Bgaze\\Crud\\": "src"
+        }
+    }
+}
