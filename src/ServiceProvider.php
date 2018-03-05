@@ -44,6 +44,7 @@ class ServiceProvider extends BaseServiceProvider {
      * @return void
      */
     public function register() {
+        $this->mergeConfigFrom(__DIR__ . '/config/crud_dic.php', 'crud_dic');
         $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
     }
 

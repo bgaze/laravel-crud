@@ -3,11 +3,11 @@
 namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class SignatureCommand extends Command {
 
-    protected $method;
-    protected $arguments;
     protected $result;
 
     /**
@@ -17,13 +17,10 @@ class SignatureCommand extends Command {
      * @param string $method
      * @param array $arguments
      */
-    public function __construct($signature, $method, array $arguments) {
-        $this->signature = $signature;
-
+    public function __construct() {
+        $this->signature = "{field} {column} {arg1?} {arg2?} {--d|default=} {--n|nullable} {--a|autoIncrement} {--u|unsigned} {--i|index} {--iu|unique} {--c|comment=}";
+        $this->result = false;
         parent::__construct();
-
-        $this->method = $method;
-        $this->arguments = $arguments;
     }
 
     /**
@@ -32,14 +29,23 @@ class SignatureCommand extends Command {
      * @return mixed
      */
     public function handle() {
-        $this->result = call_user_func_array([$this, $this->method], $this->arguments);
+        $this->result = (object) [
+                    'arguments' => $this->arguments(),
+                    'options' => $this->options()
+        ];
+
+        var_dump($this->result);
+    }
+
+    public function runWithStringInput($str, OutputInterface $output) {
+        return $this->run(new StringInput($str), $output);
     }
 
     /**
      * 
      * @return type
      */
-    function getResult() {
+    public function getResult() {
         return $this->result;
     }
 
