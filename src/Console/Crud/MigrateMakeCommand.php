@@ -57,14 +57,21 @@ class MigrateMakeCommand extends Base {
     }
 
     protected function getColumns() {
-        $reg = '/^(' . $this->columns->keys()->implode('|') . ')(\s.*)?$/';
-
         $this->warn('Table columns');
         $this->line('To see available column types, enter "list".');
         $this->line('To see detailed syntax for a column, omit arguments and options.');
 
+        $reg = '/^(' . $this->columns->keys()->implode('|') . ')(\s.*)?$/';
+
+        $columns = $this->columns->keys()
+                ->map(function($v) {
+                    return "$v ";
+                })
+                ->merge(['list', 'no'])
+                ->toArray();
+
         while (true) {
-            $question = $this->anticipate('Add a column ?', $this->columns->keys()->toArray(), 'no');
+            $question = trim($this->anticipate('Add a column ?', $columns, 'no'));
 
             if ($question === 'no') {
                 break;
@@ -82,13 +89,14 @@ class MigrateMakeCommand extends Base {
                     throw new \Exception("Invalid input '$question'.");
                 }
 
-                $this->migration[] = $this->getColumn($m[1], isset($m[2]) ? trim($m[2]) : '');
-                var_dump($this->migration);
+                $this->getColumn($m[1], isset($m[2]) ? trim($m[2]) : '');
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 continue;
             }
         }
+        
+        var_dump($this->migration);
     }
 
     protected function getColumn($field, $question) {
@@ -104,7 +112,14 @@ class MigrateMakeCommand extends Base {
             return;
         }
 
-        $this->migration[] = $column->input($question);
+        $input = $column->input($question);
+        $name = $input->getArgument('column');
+
+        if (isset($this->migration[$name])) {
+            throw new \Exception("'$name' field already exists in this migration.");
+        }
+
+        $this->migration[$name] = $column->compile($input);
     }
 
 }

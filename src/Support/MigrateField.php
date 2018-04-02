@@ -46,7 +46,7 @@ class MigrateField {
      * @param string $value
      * @return string
      * @throws \Exception
-     * @return array
+     * @return StringInput
      */
     public function input($value) {
         $input = SignedInput::input($this->signature, $value);
@@ -59,10 +59,10 @@ class MigrateField {
             }
         }
 
-        return $this->compile($input);
+        return $input;
     }
 
-    protected function compile(StringInput $input) {
+    public function compile(StringInput $input) {
         $template = $this->template;
 
         foreach ($input->getArguments() as $k => $v) {
