@@ -66,7 +66,7 @@ class MigrateField {
         $template = $this->template;
 
         foreach ($input->getArguments() as $k => $v) {
-            $template = str_replace("%$k", $v, $template);
+            $template = str_replace("%$k", $v === null ? 'null' : $v, $template);
         }
 
         foreach ($input->getOptions() as $k => $v) {
@@ -96,7 +96,7 @@ class MigrateField {
         return [
             'name' => $this->name,
             'arguments' => $arguments,
-            'options' => $options
+            'options' => trim(str_replace('] [', ' ', $options), '[]')
         ];
     }
 

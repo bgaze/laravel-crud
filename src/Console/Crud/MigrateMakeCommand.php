@@ -3,11 +3,14 @@
 namespace Bgaze\Crud\Console\Crud;
 
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand as Base;
+use Illuminate\Support\Str;
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Support\Composer;
 use Bgaze\Crud\Support\MigrateField;
 
 class MigrateMakeCommand extends Base {
+
+    use \Bgaze\Crud\Support\ConsoleHelpersTrait;
 
     /**
      * The console command signature.
@@ -15,8 +18,6 @@ class MigrateMakeCommand extends Base {
      * @var string
      */
     protected $signature = 'bgaze:crud:migration {name : The name of the migration.}
-        {--create= : The table to be created.}
-        {--table= : The table to migrate.}
         {--path= : The location where the migration file should be created.}';
 
     /**
@@ -52,35 +53,47 @@ class MigrateMakeCommand extends Base {
     }
 
     public function handle() {
-        //parent::handle();
-        $this->getColumns();
+        // Get migration file and table name.
+        $name = Str::snake(trim($this->input->getArgument('name')));
+        if (!preg_match('/^create_(\w+)_table$/', $name, $m)) {
+            $this->error("Migration name must match '/^create_(\w+)_table$/' regex.");
+        }
+        $table = $m[1];
+
+        // Show intro text.
+        $this->intro();
+
+        // Get columns list.
+        $this->setColumns();
+        var_dump($this->migration);
+        die();
+
+        // Write migration file.
+        $this->writeMigration($name, $table, true);
+
+        // Dump autoload for the entire framework to make sure that the migrations are registered by the class loaders.
+        $this->composer->dumpAutoloads();
     }
 
-    protected function getColumns() {
-        $this->warn('Table columns');
-        $this->line('To see available column types, enter "list".');
-        $this->line('To see detailed syntax for a column, omit arguments and options.');
-
+    protected function setColumns() {
         $reg = '/^(' . $this->columns->keys()->implode('|') . ')(\s.*)?$/';
 
-        $columns = $this->columns->keys()
-                ->map(function($v) {
+        $columns = $this->columns->keys()->map(function($v) {
                     return "$v ";
-                })
-                ->merge(['list', 'no'])
-                ->toArray();
+                })->merge(['list', 'no'])->toArray();
 
         while (true) {
             $question = trim($this->anticipate('Add a column ?', $columns, 'no'));
 
             if ($question === 'no') {
+                if (empty($this->migration) && !$this->confirm("No field added to migration. Abort ?")) {
+                    continue;
+                }
                 break;
             }
 
             if ($question === 'list') {
-                $this->table(['Column name', 'Arguments', 'Options'], $this->columns->map(function ($v) {
-                            return $v->help(true);
-                        }));
+                $this->columnsHelp();
                 continue;
             }
 
@@ -89,17 +102,15 @@ class MigrateMakeCommand extends Base {
                     throw new \Exception("Invalid input '$question'.");
                 }
 
-                $this->getColumn($m[1], isset($m[2]) ? trim($m[2]) : '');
+                $this->setColumn($m[1], isset($m[2]) ? trim($m[2]) : '');
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 continue;
             }
         }
-        
-        var_dump($this->migration);
     }
 
-    protected function getColumn($field, $question) {
+    protected function setColumn($field, $question) {
         if (!$this->columns->has($field)) {
             throw new \Exception("Undefined field '$field'.");
         }
@@ -120,6 +131,20 @@ class MigrateMakeCommand extends Base {
         }
 
         $this->migration[$name] = $column->compile($input);
+
+        $this->line('Added : ' . $this->migration[$name]);
+    }
+
+    protected function intro() {
+        $this->h1("Table columns");
+        $this->line("An auto-incremented <fg=green>id</> field will be automatically inserted into table.\n");
+        $this->line("For available column types, enter <fg=green>list</>.\nFor a column detailed syntax, <fg=green>omit arguments and options.</>");
+    }
+
+    protected function columnsHelp() {
+        $this->table(['Column name', 'Arguments', 'Options'], $this->columns->map(function ($v) {
+                    return $v->help(true);
+                }));
     }
 
 }

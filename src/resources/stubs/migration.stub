@@ -15,7 +15,7 @@ class CreateDummyClassTable extends Migration
     {
         Schema::create('dummy_class', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            //dummy_fields
         });
     }
 
