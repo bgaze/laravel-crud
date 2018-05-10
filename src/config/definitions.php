@@ -271,51 +271,51 @@ return [
         'timestamps' => [
             'nullableTimestamps' => [
                 'signature' => 'nullableTimestamps',
-                'template' => '$table->timestampsTz()',
+                'template' => '$table->timestampsTz();',
                 'description' => 'Add a nullableTimestamps field to table.',
             ],
             'timestamps' => [
                 'signature' => 'timestamps',
-                'template' => '$table->timestamps()',
+                'template' => '$table->timestamps();',
                 'description' => 'Add a timestamps field to table.',
             ],
             'timestampsTz' => [
                 'signature' => 'timestampsTz',
-                'template' => '$table->timestampsTz()',
+                'template' => '$table->timestampsTz();',
                 'description' => 'Add a timestampsTz field to table.',
             ],
         ],
         'softDeletes' => [
             'softDeletes' => [
                 'signature' => 'softDeletes',
-                'template' => '$table->softDeletes()',
+                'template' => '$table->softDeletes();',
                 'description' => 'Add a softDeletes field to table.',
             ],
             'softDeletesTz' => [
                 'signature' => 'softDeletesTz',
-                'template' => '$table->softDeletesTz()',
+                'template' => '$table->softDeletesTz();',
                 'description' => 'Add a softDeletesTz field to table.',
             ],
         ],
         'indexes' => [
             'primary' => [
                 'signature' => '{columns*}',
-                'template' => '$table->primary(\'%columns\')',
+                'template' => '$table->primary(\'%columns\');',
                 'description' => 'Add a primary field to table.',
             ],
             'unique' => [
                 'signature' => '{columns*}',
-                'template' => '$table->unique(\'%columns\')',
+                'template' => '$table->unique(\'%columns\');',
                 'description' => 'Add a unique field to table.',
             ],
             'index' => [
                 'signature' => '{columns*}',
-                'template' => '$table->index(\'%columns\')',
+                'template' => '$table->index(\'%columns\');',
                 'description' => 'Add a index field to table.',
             ],
             'spatialIndex' => [
                 'signature' => '{columns*}',
-                'template' => '$table->spatialIndex(\'%columns\')',
+                'template' => '$table->spatialIndex(\'%columns\');',
                 'description' => 'Add a spatialIndex field to table.',
             ],
         ],

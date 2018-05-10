@@ -258,9 +258,8 @@ class CrudCommand extends Command {
         }
 
         // Validation user input.
-        $data = $input->getOptions() + $input->getArguments();
         if (!empty($column->validation)) {
-            $validator = Validator::make($data, $column->validation);
+            $validator = Validator::make($input->getOptions() + $input->getArguments(), $column->validation);
 
             if ($validator->fails()) {
                 throw new \Exception(implode("\n", $validator->errors()->all()));
@@ -268,8 +267,11 @@ class CrudCommand extends Command {
         }
 
         // Add field to migration.
-        $this->migration->fields[$name] = $data;
-        $this->migration->fields[$name]['type'] = $type;
+        $this->migration->fields[$name] = (object) [
+                    'type' => $type,
+                    'arguments' => $input->getArguments(),
+                    'options' => $input->getOptions()
+        ];
     }
 
     ############################################################################
@@ -280,7 +282,42 @@ class CrudCommand extends Command {
      * Generate migration file
      */
     protected function makeMigration() {
-        
+        $fields = [];
+
+        if ($this->migration->timestamps) {
+            $fields[] = config("crud-definitions.migrate.timestamps.{$this->migration->timestamps}.template");
+        }
+
+        if ($this->migration->softDeletes) {
+            $fields[] = config("crud-definitions.migrate.softDeletes.{$this->migration->softDeletes}.template");
+        }
+
+        foreach ($this->migration->fields as $field) {
+            $fields[] = $this->compileMigrationFields($field);
+        }
+
+        $this->call('bgaze:crud:migration', [
+            'name' => "create_{$this->names->table}_table",
+            '--fields' => $fields
+        ]);
+    }
+
+    protected function compileMigrationFields($field) {
+        $column = $this->definitions->get($field->type);
+
+        $template = $column->template;
+
+        foreach ($field->arguments as $k => $v) {
+            $template = str_replace("%$k", $v === null ? 'null' : $v, $template);
+        }
+
+        foreach ($field->options as $k => $v) {
+            if ($v) {
+                $template .= str_replace('%value', $v, config("crud-definitions.migrate.modifiers.$k"));
+            }
+        }
+
+        return $template . ';';
     }
 
     /**
