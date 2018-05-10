@@ -59,4 +59,24 @@ trait CrudHelpersTrait {
                 });
     }
 
+    protected function compileValueForPhp($value) {
+        if ($value === true || $value === 'true') {
+            return 'true';
+        }
+
+        if ($value === false || $value === 'false') {
+            return 'false';
+        }
+
+        if ($value === null || $value === 'null') {
+            return 'null';
+        }
+
+        if (!is_numeric($value)) {
+            return "'" . addslashes($value) . "'";
+        }
+
+        return $value;
+    }
+
 }

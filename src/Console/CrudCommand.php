@@ -302,18 +302,24 @@ class CrudCommand extends Command {
         ]);
     }
 
+    /**
+     * Compile migration field to PHP sentence.
+     * 
+     * @param \stdClass $field
+     * @return string
+     */
     protected function compileMigrationFields($field) {
         $column = $this->definitions->get($field->type);
 
         $template = $column->template;
 
         foreach ($field->arguments as $k => $v) {
-            $template = str_replace("%$k", $v === null ? 'null' : $v, $template);
+            $template = str_replace("%$k", $this->compileValueForPhp($v), $template);
         }
 
         foreach ($field->options as $k => $v) {
             if ($v) {
-                $template .= str_replace('%value', $v, config("crud-definitions.migrate.modifiers.$k"));
+                $template .= str_replace('%value', $this->compileValueForPhp($v), config("crud-definitions.migrate.modifiers.$k"));
             }
         }
 
