@@ -284,6 +284,8 @@ return [
                 'template' => '$table->timestampsTz()',
                 'description' => 'Add a timestampsTz field to table.',
             ],
+        ],
+        'softDeletes' => [
             'softDeletes' => [
                 'signature' => 'softDeletes',
                 'template' => '$table->softDeletes()',
@@ -298,22 +300,22 @@ return [
         'indexes' => [
             'primary' => [
                 'signature' => '{columns*}',
-                'template' => '$table->primary(\'%column\'s)',
+                'template' => '$table->primary(\'%columns\')',
                 'description' => 'Add a primary field to table.',
             ],
             'unique' => [
                 'signature' => '{columns*}',
-                'template' => '$table->unique(\'%column\'s)',
+                'template' => '$table->unique(\'%columns\')',
                 'description' => 'Add a unique field to table.',
             ],
             'index' => [
                 'signature' => '{columns*}',
-                'template' => '$table->index(\'%column\'s)',
+                'template' => '$table->index(\'%columns\')',
                 'description' => 'Add a index field to table.',
             ],
             'spatialIndex' => [
                 'signature' => '{columns*}',
-                'template' => '$table->spatialIndex(\'%column\'s)',
+                'template' => '$table->spatialIndex(\'%columns\')',
                 'description' => 'Add a spatialIndex field to table.',
             ],
         ],

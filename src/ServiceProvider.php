@@ -13,15 +13,7 @@ class ServiceProvider extends BaseServiceProvider {
      */
     public function boot() {
         // Publish configuration.
-        $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'config');
-
-        // Load & publish views.
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'crud');
-        $this->publishes([__DIR__ . '/resources/views' => resource_path('views/crud')], 'views');
-
-        // Load and publish stubs.
-        $this->loadViewsFrom(__DIR__ . '/resources/stubs', 'stubs');
-        $this->publishes([__DIR__ . '/resources/stubs' => resource_path('stubs/crud')], 'stubs');
+        $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'bgaze-crud-config');
 
         // Register commands
         if ($this->app->runningInConsole()) {
@@ -44,7 +36,7 @@ class ServiceProvider extends BaseServiceProvider {
      * @return void
      */
     public function register() {
-        $this->mergeConfigFrom(__DIR__ . '/config/crud_dic.php', 'crud_dic');
+        $this->mergeConfigFrom(__DIR__ . '/config/definitions.php', 'crud-definitions');
         $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
     }
 

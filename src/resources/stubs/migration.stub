@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDummyClassTable extends Migration
+class DummyClass extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateDummyClassTable extends Migration
      */
     public function up()
     {
-        Schema::create('dummy_class', function (Blueprint $table) {
+        Schema::create('DummyTable', function (Blueprint $table) {
             $table->increments('id');
-            //dummy_fields
+            #DUMMY_CONTENT
         });
     }
 
@@ -26,6 +26,6 @@ class CreateDummyClassTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dummy_namespaces');
+        Schema::dropIfExists('DummyTable');
     }
 }
