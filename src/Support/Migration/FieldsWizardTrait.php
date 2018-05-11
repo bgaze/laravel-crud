@@ -48,9 +48,6 @@ trait FieldsWizardTrait {
      * Field wizard
      */
     protected function fieldsWizard() {
-        // Get fields definitions.
-        $this->prepareFieldsDefinition();
-
         // Regex to check if requested field exists.
         $reg = '/^(' . $this->fields_definitions->keys()->implode('|') . ')(\s.*)?$/';
 
@@ -86,7 +83,7 @@ trait FieldsWizardTrait {
 
             // Process user input.
             try {
-                $this->field($m[1], isset($m[2]) ? trim($m[2]) : '');
+                $this->addFieldToMigration($m[1], isset($m[2]) ? trim($m[2]) : '');
             }
             // Catch any error to prevent unwanted exit.
             catch (\Exception $e) {
@@ -103,7 +100,7 @@ trait FieldsWizardTrait {
      * @return void
      * @throws \Exception
      */
-    protected function field($type, $userInput) {
+    protected function addFieldToMigration($type, $userInput) {
         // Retrieve field definition.
         $column = $this->fields_definitions->get($type);
 

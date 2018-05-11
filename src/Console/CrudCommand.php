@@ -10,6 +10,7 @@ class CrudCommand extends Command {
     use \Bgaze\Crud\Support\ConsoleHelpersTrait;
     use \Bgaze\Crud\Support\CrudHelpersTrait;
     use \Bgaze\Crud\Support\Migration\FieldsWizardTrait;
+    use \Bgaze\Crud\Support\Migration\IndexesWizardTrait;
 
     /**
      * The name and signature of the console command.
@@ -67,7 +68,10 @@ class CrudCommand extends Command {
      * @return mixed
      */
     public function handle() {
-        $this->intro();
+        // Intro.
+        $this->h1("Welcome to CRUD generator");
+        $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
+        $this->nl();
 
         // Acquire required data.
         $this->h2("Step 1/3 : Names definition");
@@ -78,10 +82,20 @@ class CrudCommand extends Command {
 
         // Summarize CRUD.
         $this->h2("Step 3/3 : CRUD generation");
-        $this->summarize();
+        $this->line("Following features will be generated based on your inputs.");
+        $this->nl();
+        $this->ul([
+            'Migration class',
+            'Model class',
+            'Request class with field type based validation',
+            'Controller class with CRUD actions',
+            'CRUD Views',
+            'Routes',
+            'Model Factory'
+        ]);
 
-        // Ask for confimrmation and generate CRUD.
-        if ($this->confirm("Generate CRUD?", true)) {
+        // Ask for confirmation then generate CRUD.
+        if ($this->confirm("Continue?", true)) {
             $this->makeMigration();
             $this->makeModel();
             $this->makeRequest();
@@ -144,8 +158,13 @@ class CrudCommand extends Command {
      * Get migration content
      */
     protected function getMigrationDefinition() {
+        // Prepare required definitions.
+        $this->prepareIndexesDefinition();
+        $this->prepareFieldsDefinition();
+
+        // Intro text.
         $this->line("We are now going to build your model data.");
-        $this->line("Please note that an <fg=blue>auto-incremented id</> field will be automatically added.");
+        $this->line("Please note that an <fg=cyan>auto-incremented id</> field will be automatically added.");
 
         // Timestamps.
         $this->h3('Timestamps');
@@ -165,9 +184,17 @@ class CrudCommand extends Command {
         $this->h3('Custom fields');
         $this->line("We are now going to define model's fields.");
         $this->nl();
-        $this->line("For available column types, enter <fg=blue>list</>.");
-        $this->line("For a column detailed syntax, <fg=blue>omit arguments and options.</>");
+        $this->line("For available column types, enter <fg=cyan>list</>.");
+        $this->line("For a column detailed syntax, <fg=cyan>omit arguments and options.</>");
         $this->fieldsWizard();
+
+        // Indexes wizard.
+        $this->h3('Indexes');
+        $this->line("Finaly, we can add indexes to the table if necessary.");
+        $this->nl();
+        $this->line("Syntax is <fg=cyan>indexType column1 [column2 column3 ...]</>");
+        $this->line("Available types are : <fg=cyan>" . $this->indexes_definitions->keys()->implode('</>, <fg=cyan>') . "</>.");
+        $this->indexesWizard();
     }
 
     ############################################################################
@@ -178,23 +205,27 @@ class CrudCommand extends Command {
      * Generate migration file
      */
     protected function makeMigration() {
-        $fields = [];
+        $content = [];
 
         if ($this->migration->timestamps) {
-            $fields[] = config("crud-definitions.migrate.timestamps.{$this->migration->timestamps}.template");
+            $content[] = config("crud-definitions.migrate.timestamps.{$this->migration->timestamps}.template");
         }
 
         if ($this->migration->softDeletes) {
-            $fields[] = config("crud-definitions.migrate.softDeletes.{$this->migration->softDeletes}.template");
+            $content[] = config("crud-definitions.migrate.softDeletes.{$this->migration->softDeletes}.template");
         }
 
         foreach ($this->migration->fields as $field) {
-            $fields[] = $this->compileMigrationField($field);
+            $content[] = $this->compileMigrationField($field);
+        }
+
+        foreach ($this->migration->indexes as $index) {
+            $content[] = $this->compileMigrationIndex($index);
         }
 
         $this->call('bgaze:crud:migration', [
             'name' => "create_{$this->names->table}_table",
-            '--fields' => $fields
+            '--content' => $content
         ]);
     }
 
@@ -237,39 +268,6 @@ class CrudCommand extends Command {
      * Generate Model factory
      */
     protected function makeFactory() {
-        
-    }
-
-    ############################################################################
-    # MISC                                                                     #
-    ############################################################################
-
-    /**
-     * Show an intro message.
-     */
-    protected function intro() {
-        $this->h1("Welcome to CRUD generator");
-        $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
-        /*
-          $this->line("After asking you for required data, following features will be generated :");
-          $this->nl();
-          $this->ul([
-          'Migration class',
-          'Model class',
-          'Request class with field type based validation',
-          'Controller class with CRUD actions',
-          'CRUD Views',
-          'Routes',
-          'Model Factory'
-          ]);
-         */
-        $this->nl();
-    }
-
-    /**
-     * Show a summary before generation.
-     */
-    protected function summarize() {
         
     }
 

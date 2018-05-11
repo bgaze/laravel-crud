@@ -12,14 +12,14 @@ class MigrationCreator extends Base {
      * @param  string  $name
      * @param  string  $path
      * @param  string  $table
-     * @param  array   $fields
+     * @param  array   $content
      * @return string
      * @throws \Exception
      */
-    public function create($name, $path, $table = null, $create = true, array $fields = []) {
+    public function create($name, $path, $table = null, $create = true, array $content = []) {
         $this->ensureMigrationDoesntAlreadyExist($name);
 
-        $stub = $this->populateStub($name, $this->getStub($table, $create), $table, $fields);
+        $stub = $this->populateStub($name, $this->getStub($table, $create), $table, $content);
 
         $path = $this->getPath($name, $path);
 
@@ -47,17 +47,17 @@ class MigrationCreator extends Base {
      * @param  string  $name
      * @param  string  $stub
      * @param  string  $table
-     * @param  array   $fields
+     * @param  array   $content
      * @return string
      */
-    protected function populateStub($name, $stub, $table, array $fields = []) {
+    protected function populateStub($name, $stub, $table, array $content = []) {
         $stub = str_replace('DummyClass', $this->getClassName($name), $stub);
         $stub = str_replace('DummyTable', $table, $stub);
 
-        if (empty($fields)) {
+        if (empty($content)) {
             $stub = str_replace("            #DUMMY_CONTENT\n", '', $stub);
         } else {
-            $stub = str_replace('#DUMMY_CONTENT', implode("\n            ", $fields), $stub);
+            $stub = str_replace('#DUMMY_CONTENT', implode("\n            ", $content), $stub);
         }
 
         return $stub;

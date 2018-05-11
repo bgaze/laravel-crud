@@ -15,7 +15,7 @@ class MigrateMakeCommand extends Base {
      * @var string
      */
     protected $signature = 'bgaze:crud:migration {name : The name of the migration.}
-        {--fields=* : The PHP lines of your migration body (one string by row).}
+        {--content=* : The PHP lines of your migration body (one line by row).}
         {--path= : The location where the migration file should be created.}';
 
     /**
@@ -62,7 +62,7 @@ class MigrateMakeCommand extends Base {
      * @return string
      */
     protected function writeMigration($name, $table, $create) {
-        $file = pathinfo($this->creator->create($name, $this->getMigrationPath(), $table, $create, $this->input->getOption('fields')), PATHINFO_FILENAME);
+        $file = pathinfo($this->creator->create($name, $this->getMigrationPath(), $table, $create, $this->input->getOption('content')), PATHINFO_FILENAME);
 
         $this->line("<info>Created Migration:</info> {$file}");
     }

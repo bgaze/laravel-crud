@@ -43,12 +43,12 @@ trait ConsoleHelpersTrait {
      * Display a list.
      * 
      * @param array $items
-     * @param integer $indent
      * @param string $color
+     * @param integer $indent
      */
-    public function ul(array $items, $color = 'green', $indent = 1) {
+    public function ul(array $items, $color = 'cyan', $indent = 2) {
         foreach ($items as $i) {
-            $this->line(str_repeat(' ', $indent * 4) . "<fg=$color>* $i</>");
+            $this->line(str_repeat(' ', $indent) . "<fg=$color>* $i</>");
         }
     }
 

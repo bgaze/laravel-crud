@@ -298,26 +298,10 @@ return [
             ],
         ],
         'indexes' => [
-            'primary' => [
-                'signature' => '{columns*}',
-                'template' => '$table->primary(%columns);',
-                'description' => 'Add a primary field to table.',
-            ],
-            'unique' => [
-                'signature' => '{columns*}',
-                'template' => '$table->unique(%columns);',
-                'description' => 'Add a unique field to table.',
-            ],
-            'index' => [
-                'signature' => '{columns*}',
-                'template' => '$table->index(%columns);',
-                'description' => 'Add a index field to table.',
-            ],
-            'spatialIndex' => [
-                'signature' => '{columns*}',
-                'template' => '$table->spatialIndex(%columns);',
-                'description' => 'Add a spatialIndex field to table.',
-            ],
+            'primary' => '$table->primary(%columns);',
+            'unique' => '$table->unique(%columns);',
+            'index' => '$table->index(%columns);',
+            'spatialIndex' => '$table->spatialIndex(%columns);',
         ],
         'modifiers' => [
             'default' => '->default(%value)',
