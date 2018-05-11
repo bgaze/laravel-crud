@@ -5,7 +5,7 @@ namespace Bgaze\Crud\Console\Crud;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand as Base;
 use Illuminate\Support\Str;
 use Illuminate\Support\Composer;
-use Bgaze\Crud\Support\MigrationCreator;
+use Bgaze\Crud\Support\Migration\MigrationCreator;
 
 class MigrateMakeCommand extends Base {
 

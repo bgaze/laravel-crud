@@ -1,3 +1,7 @@
 <?php
 
-return [];
+return [
+    'migration' => [
+        'stub' => __DIR__ . '/../Support/Migration/create.stub'
+    ]
+];

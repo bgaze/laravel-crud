@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Support;
+namespace Bgaze\Crud\Support\Migration;
 
 use Illuminate\Database\Migrations\MigrationCreator as Base;
 
@@ -38,7 +38,7 @@ class MigrationCreator extends Base {
      * @return string
      */
     protected function getStub($table, $create) {
-        return $this->files->get($this->stubPath() . "/migration.stub");
+        return $this->files->get(config('crud.migration.stub'));
     }
 
     /**
@@ -61,15 +61,6 @@ class MigrationCreator extends Base {
         }
 
         return $stub;
-    }
-
-    /**
-     * Get the path to the stubs.
-     *
-     * @return string
-     */
-    public function stubPath() {
-        return __DIR__ . '/../resources/stubs';
     }
 
 }
