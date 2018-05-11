@@ -126,7 +126,7 @@ class CrudCommand extends Command {
 
         // Get name's plurar form.
         $this->line("Please confirm plurar form of the Model name.");
-        $this->line("It should also be <fg=blue>camel cased and singular</>, for instance <fg=green>MyNewModels</>.");
+        $this->line("It should also be <fg=blue>camel cased</>, for instance <fg=green>MyNewModels</>.");
         while (!$this->names->plurar) {
             $tmp = $this->ask("Plural form", Str::plural($this->names->singular));
 
