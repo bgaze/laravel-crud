@@ -174,7 +174,8 @@ class CrudCommand extends Command {
 
         // Fields wizard.
         $this->h3('Custom fields');
-        $this->line("We are now going to define model's fields.\n");
+        $this->line("We are now going to define model's fields.");
+        $this->nl();
         $this->line("For available column types, enter <fg=blue>list</>.");
         $this->line("For a column detailed syntax, <fg=blue>omit arguments and options.</>");
         $this->fieldsWizard();
@@ -379,7 +380,8 @@ class CrudCommand extends Command {
         $this->h1("Welcome to CRUD generator");
         $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
         /*
-          $this->line("After asking you for required data, following features will be generated :\n");
+          $this->line("After asking you for required data, following features will be generated :");
+          $this->nl();
           $this->ul([
           'Migration class',
           'Model class',

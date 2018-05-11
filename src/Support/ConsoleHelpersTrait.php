@@ -10,7 +10,11 @@ trait ConsoleHelpersTrait {
      * @param string $text
      */
     public function h1($text) {
-        $this->line("\n<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>\n<fg=white;bg=blue>" . str_pad(strtoupper(" $text"), 80) . "</>\n<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>\n");
+        $this->nl();
+        $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
+        $this->line("<fg=white;bg=blue>" . str_pad(strtoupper(" $text"), 80) . "</>");
+        $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
+        $this->nl();
     }
 
     /**
@@ -19,7 +23,9 @@ trait ConsoleHelpersTrait {
      * @param string $text
      */
     public function h2($text) {
-        $this->line("\n<fg=white;bg=blue>" . strtoupper($text) . "</>\n");
+        $this->nl();
+        $this->line("<fg=white;bg=blue>" . strtoupper($text) . "</>");
+        $this->nl();
     }
 
     /**
@@ -28,7 +34,9 @@ trait ConsoleHelpersTrait {
      * @param string $text
      */
     public function h3($text) {
-        $this->line("\n<fg=blue>" . strtoupper($text) . "</>\n");
+        $this->nl();
+        $this->line("<fg=blue>" . strtoupper($text) . "</>");
+        $this->nl();
     }
 
     /**
