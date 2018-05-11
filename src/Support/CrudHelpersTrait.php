@@ -2,6 +2,9 @@
 
 namespace Bgaze\Crud\Support;
 
+/**
+ * TODO
+ */
 trait CrudHelpersTrait {
 
     /**
@@ -35,30 +38,11 @@ trait CrudHelpersTrait {
     }
 
     /**
-     * Prepare fields définition.
+     * Prepare value for PHP generation depending on it's type
      * 
-     * @return \Illuminate\Support\Collection
+     * @param mixed $value
+     * @return mixed
      */
-    protected function fieldsDefinition() {
-        return collect(config('crud-definitions.migrate.fields'))->map(function($definition, $name) {
-                    $tmp = (object) $definition;
-
-                    $tmp->validation = isset($tmp->validation) ? array_merge(config('crud-definitions.migrate.validation'), $tmp->validation) : config('crud-definitions.migrate.validation');
-
-                    $help = SignedInput::help($tmp->signature);
-                    $tmp->help = $name . ' ' . $help;
-
-                    list($options, $arguments) = explode(' [--] ', $help);
-                    $tmp->help_row = [
-                        'name' => $name,
-                        'arguments' => $arguments,
-                        'options' => trim(str_replace('] [', ' ', $options), '[]')
-                    ];
-
-                    return $tmp;
-                });
-    }
-
     protected function compileValueForPhp($value) {
         if ($value === true || $value === 'true') {
             return 'true';
