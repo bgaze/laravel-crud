@@ -24,7 +24,6 @@ class ServiceProvider extends BaseServiceProvider {
                 Console\Crud\RequestMakeCommand::class,
                 Console\Crud\ViewsMakeCommand::class,
                 Console\Crud\RelationMakeCommand::class,
-                Console\Crud\ThemeMakeCommand::class,
                 Console\CrudCommand::class,
             ]);
         }
