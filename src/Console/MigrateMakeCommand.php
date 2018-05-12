@@ -9,6 +9,8 @@ use Bgaze\Crud\Support\Migration\MigrationCreator;
 
 class MigrateMakeCommand extends Base {
 
+    use \Bgaze\Crud\Support\CrudHelpersTrait;
+
     /**
      * The console command signature.
      *
@@ -63,10 +65,7 @@ class MigrateMakeCommand extends Base {
      */
     protected function writeMigration($name, $table, $create) {
         $file = $this->creator->create($name, $this->getMigrationPath(), $table, $create, $this->input->getOption('content'));
-
-        $this->call('bgaze:cs-fixer:fix', ['path' => [str_replace(base_path() . '/', '', $file)], '--quiet' => true]);
-
-        $this->line("<info>Created Migration:</info> " . pathinfo($file, PATHINFO_FILENAME));
+        $this->finalizeFileGeneration($file, 'Migration created : %s');
     }
 
 }

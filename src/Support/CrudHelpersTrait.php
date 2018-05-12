@@ -63,4 +63,24 @@ trait CrudHelpersTrait {
         return $value;
     }
 
+    public function stripBasePath($path) {
+        return str_replace(base_path() . '/', '', $path);
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $path
+     */
+    public function finalizeFileGeneration($path, $message = 'File created : %s') {
+        $path = $this->stripBasePath($path);
+
+        $this->call('bgaze:cs-fixer:fix', [
+            'path' => [$path],
+            '--quiet' => true
+        ]);
+
+        $this->info(sprintf($message, "<fg=white>$path</>"));
+    }
+
 }
