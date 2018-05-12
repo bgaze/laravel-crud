@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'migration' => [
-        'stub' => __DIR__ . '/../Support/Migration/create.stub'
+    'stubs' => [
+        'migration' => __DIR__ . '/../resources/stubs/migration.stub',
+        'modele' => __DIR__ . '/../resources/stubs/model.stub',
     ]
 ];

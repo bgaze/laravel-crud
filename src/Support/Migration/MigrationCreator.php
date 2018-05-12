@@ -6,6 +6,8 @@ use Illuminate\Database\Migrations\MigrationCreator as Base;
 
 class MigrationCreator extends Base {
 
+    use \Bgaze\Crud\Support\CrudHelpersTrait;
+
     /**
      * Create a new migration at the given path.
      *
@@ -38,7 +40,7 @@ class MigrationCreator extends Base {
      * @return string
      */
     protected function getStub($table, $create) {
-        return $this->files->get(config('crud.migration.stub'));
+        return $this->files->get(config('crud.stubs.migration'));
     }
 
     /**
@@ -53,13 +55,7 @@ class MigrationCreator extends Base {
     protected function populateStub($name, $stub, $table, array $content = []) {
         $stub = str_replace('DummyClass', $this->getClassName($name), $stub);
         $stub = str_replace('DummyTable', $table, $stub);
-
-        if (empty($content)) {
-            $stub = str_replace("            #DUMMY_CONTENT\n", '', $stub);
-        } else {
-            $stub = str_replace('#DUMMY_CONTENT', implode("\n            ", $content), $stub);
-        }
-
+        $stub = str_replace('#CONTENT', implode("\n", $content), $stub);
         return $stub;
     }
 

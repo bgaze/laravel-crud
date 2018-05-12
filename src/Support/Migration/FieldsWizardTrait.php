@@ -61,7 +61,7 @@ trait FieldsWizardTrait {
 
             // Mange wizard exit.
             if ($question === 'no') {
-                if (empty($this->migration->fields) && !$this->confirm("You haven't added any field. Continue?")) {
+                if (empty($this->migration->fields) && !$this->confirm("You haven't added any field. Continue?", true)) {
                     continue;
                 }
                 break;

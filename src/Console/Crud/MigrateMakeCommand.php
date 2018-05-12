@@ -62,9 +62,11 @@ class MigrateMakeCommand extends Base {
      * @return string
      */
     protected function writeMigration($name, $table, $create) {
-        $file = pathinfo($this->creator->create($name, $this->getMigrationPath(), $table, $create, $this->input->getOption('content')), PATHINFO_FILENAME);
+        $file = $this->creator->create($name, $this->getMigrationPath(), $table, $create, $this->input->getOption('content'));
 
-        $this->line("<info>Created Migration:</info> {$file}");
+        $this->call('bgaze:cs-fixer:fix', ['path' => [str_replace(base_path() . '/', '', $file)], '--quiet' => true]);
+
+        $this->line("<info>Created Migration:</info> " . pathinfo($file, PATHINFO_FILENAME));
     }
 
 }
