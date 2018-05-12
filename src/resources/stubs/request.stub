@@ -11,9 +11,18 @@ class DummyClass extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize() 
     {
-        return false;
+        return true;
+    }
+
+    /**
+     * Get the validation messages.
+     *
+     * @return array
+     */
+    public function messages() {
+        return [];
     }
 
     /**
@@ -21,10 +30,10 @@ class DummyClass extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules() 
     {
         return [
-            //
+            #RULES
         ];
     }
 }

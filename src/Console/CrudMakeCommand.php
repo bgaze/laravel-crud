@@ -182,8 +182,13 @@ class CrudMakeCommand extends Command {
         }
 
         // Model.
-        $tmp = Str::replaceFirst($this->laravel->getNamespace(), '', $this->names->singular);
-        $tmp = $this->laravel['path'] . '/' . str_replace('\\', '/', $tmp) . '.php';
+        $tmp = app_path($this->names->singular . '.php');
+        if ($this->files->exists($tmp)) {
+            $errors->push($tmp);
+        }
+
+        // Request.
+        $tmp = app_path('Http/Requests/' . $this->names->singular . 'FormRequest.php');
         if ($this->files->exists($tmp)) {
             $errors->push($tmp);
         }
@@ -295,7 +300,9 @@ class CrudMakeCommand extends Command {
      * Generate request file
      */
     protected function makeRequest() {
-        
+        $this->call('bgaze:crud:request', [
+            'name' => "{$this->names->singular}FormRequest",
+        ]);
     }
 
     /**
