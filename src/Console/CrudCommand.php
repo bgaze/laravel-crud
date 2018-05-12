@@ -233,7 +233,18 @@ class CrudCommand extends Command {
      * Generate model file
      */
     protected function makeModel() {
-        
+        $fields = collect($this->migration->fields);
+
+        $this->call('bgaze:crud:model', [
+            'name' => $this->names->singular,
+            'table' => $this->names->table,
+            '--timestamps' => $this->migration->timestamps,
+            '--soft-delete' => $this->migration->softDeletes,
+            '--fillables' => $fields->keys()->all(),
+            '--dates' => $fields->filter(function($field) {
+                        return in_array($field->type, ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz']);
+                    })->keys()->all()
+        ]);
     }
 
     /**

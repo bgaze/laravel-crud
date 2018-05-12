@@ -61,7 +61,7 @@ class ModelMakeCommand extends GeneratorCommand {
 
         $this->call('bgaze:cs-fixer:fix', ['path' => [$path], '--quiet' => true]);
 
-        $this->info($this->type . ' created successfully.');
+        $this->info("Model created : $path");
     }
 
     /**
