@@ -11,11 +11,17 @@ class ModelMakeCommand extends GeneratorCommand {
     use \Bgaze\Crud\Support\CrudHelpersTrait;
 
     /**
-     * The console command name.
+     * The console command signature.
      *
      * @var string
      */
-    protected $name = 'bgaze:crud:model';
+    protected $signature = 'bgaze:crud:model 
+        {name : The name of the class.}
+        {table : The table containing Model\'s data.}
+        {--t|timestamps : Add timestamps directives}
+        {--s|soft-delete : Add soft delete directives}
+        {--f|fillables=* : The list of Model\'s fillable fields}
+        {--d|dates=* : The list of Model\'s date fields}';
 
     /**
      * The console command description.
@@ -67,32 +73,6 @@ class ModelMakeCommand extends GeneratorCommand {
                         ->replaceDates($stub)
                         ->replaceClass($stub, $name)
         ;
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments() {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the class'],
-            ['table', InputArgument::REQUIRED, 'The table containing Model data.'],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions() {
-        return [
-            ['timestamps', 't', InputOption::VALUE_NONE, 'Add timestamps directives'],
-            ['soft-delete', 's', InputOption::VALUE_NONE, 'Add soft delete directives'],
-            ['fillables', 'f', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The list of Model\'s fillable fields', []],
-            ['dates', 'd', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The list of Model\'s date fields', []],
-        ];
     }
 
     /**
