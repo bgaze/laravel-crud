@@ -18,13 +18,13 @@ class ServiceProvider extends BaseServiceProvider {
         // Register commands
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Console\Crud\ControllerMakeCommand::class,
-                Console\Crud\MigrateMakeCommand::class,
-                Console\Crud\ModelMakeCommand::class,
-                Console\Crud\RequestMakeCommand::class,
-                Console\Crud\ViewsMakeCommand::class,
-                Console\Crud\RelationMakeCommand::class,
-                Console\CrudCommand::class,
+                Console\ControllerMakeCommand::class,
+                Console\MigrateMakeCommand::class,
+                Console\ModelMakeCommand::class,
+                Console\RequestMakeCommand::class,
+                Console\ViewsMakeCommand::class,
+                Console\RelationMakeCommand::class,
+                Console\CrudMakeCommand::class,
             ]);
         }
     }

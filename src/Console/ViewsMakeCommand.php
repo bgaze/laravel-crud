@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Console\Crud;
+namespace Bgaze\Crud\Console;
 
 use Illuminate\Foundation\Console\ResourceMakeCommand as Base;
 

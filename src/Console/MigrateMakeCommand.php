@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Console\Crud;
+namespace Bgaze\Crud\Console;
 
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand as Base;
 use Illuminate\Support\Str;

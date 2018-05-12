@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Console\Crud;
+namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;

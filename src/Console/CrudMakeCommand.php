@@ -5,7 +5,7 @@ namespace Bgaze\Crud\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
-class CrudCommand extends Command {
+class CrudMakeCommand extends Command {
 
     use \Bgaze\Crud\Support\ConsoleHelpersTrait;
     use \Bgaze\Crud\Support\CrudHelpersTrait;
