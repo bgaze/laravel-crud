@@ -4,6 +4,7 @@ namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Illuminate\Filesystem\Filesystem;
 
 class CrudMakeCommand extends Command {
 
@@ -27,6 +28,13 @@ class CrudMakeCommand extends Command {
     protected $description = 'Create a new CRUD';
 
     /**
+     * The filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected $files;
+
+    /**
      * Storage for migration names
      * 
      * @var \stdClass 
@@ -43,8 +51,11 @@ class CrudMakeCommand extends Command {
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct(Filesystem $files) {
         parent::__construct();
+
+        // Initialize filesystem.
+        $this->files = $files;
 
         // Initialize names.
         $this->names = (object) [
@@ -73,10 +84,14 @@ class CrudMakeCommand extends Command {
         $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
         $this->nl();
 
-        // Acquire required data.
+        // Acquire names definition.
         $this->h2("Step 1/3 : Names definition");
         $this->getNamesDefinition();
 
+        // Check that no CRUD file already exists.
+        $this->checkForExistingFiles();
+
+        // Acquire fields definition.
         $this->h2("Step 2/3 : Model definition");
         $this->getMigrationDefinition();
 
@@ -151,6 +166,35 @@ class CrudMakeCommand extends Command {
             }
 
             $this->names->table = $tmp;
+        }
+    }
+
+    /**
+     * TODO
+     */
+    protected function checkForExistingFiles() {
+        $errors = collect([]);
+
+        // Migration.
+        $tmp = $this->files->glob(base_path("database/migrations/*_create_{$this->names->table}_table.php"));
+        if (count($tmp)) {
+            $errors = $errors->concat($tmp);
+        }
+
+        // Model.
+        $tmp = Str::replaceFirst($this->laravel->getNamespace(), '', $this->names->singular);
+        $tmp = $this->laravel['path'] . '/' . str_replace('\\', '/', $tmp) . '.php';
+        if ($this->files->exists($tmp)) {
+            $errors->push($tmp);
+        }
+
+        // If some files already exists, throw exception.
+        if ($errors->isNotEmpty()) {
+            $tmp = "Following file(s) already exists :\n";
+            $tmp .= $errors->map(function($p) {
+                        return ' - ' . $this->stripBasePath($p);
+                    })->implode("\n");
+            throw new \Exception($tmp);
         }
     }
 
