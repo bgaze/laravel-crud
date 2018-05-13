@@ -57,7 +57,7 @@ class ControllerMakeCommand extends GeneratorCommand {
         $this->finalizeFileGeneration($path, 'Controller created : %s');
 
         $this->files->append(base_path('routes/web.php'), $this->buildRoutes($name));
-        $this->finalizeFileGeneration(base_path('routes/web.php'), 'Routes added to %s');
+        $this->info("Routes added to <fg=white>routes/web.php</>");
     }
 
     /**

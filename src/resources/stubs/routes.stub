@@ -1,6 +1,9 @@
 
 /*
  * DummyClass
+ *
+ * Here is the compact version if you prefer : 
+ * Route::resource('DummyViewsNamespace', 'DummyClass');
  */
 Route::prefix('DummyViewsNamespace')->group(function () {
     Route::get('/', 'DummyClass@index')->name('DummyViewsNamespace.index');
