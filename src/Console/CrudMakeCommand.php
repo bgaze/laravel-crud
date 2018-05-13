@@ -192,9 +192,15 @@ class CrudMakeCommand extends Command {
             $errors->push($tmp);
         }
 
+        // Controller.
+        $tmp = app_path('Http/Controllers/' . $this->names->singular . 'Controller.php');
+        if ($this->files->exists($tmp)) {
+            $errors->push($tmp);
+        }
+
         // If some files already exists, throw exception.
         if ($errors->isNotEmpty()) {
-            $tmp = "Following file(s) already exists :\n";
+            $tmp = "Following file(s) already exist :\n";
             $tmp .= $errors->map(function($p) {
                         return ' - ' . $this->stripBasePath($p);
                     })->implode("\n");
