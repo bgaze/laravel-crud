@@ -55,6 +55,9 @@ class ControllerMakeCommand extends GeneratorCommand {
         $this->makeDirectory($path);
         $this->files->put($path, $this->buildClass($name));
         $this->finalizeFileGeneration($path, 'Controller created : %s');
+
+        $this->files->append(base_path('routes/web.php'), $this->buildRoutes($name));
+        $this->finalizeFileGeneration(base_path('routes/web.php'), 'Routes added to %s');
     }
 
     /**
@@ -66,11 +69,34 @@ class ControllerMakeCommand extends GeneratorCommand {
      * @return string
      */
     protected function buildClass($name) {
+        $replace = $this->getReplacementValues($name);
+        return str_replace(array_keys($replace), array_values($replace), parent::buildClass($name));
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $name
+     * @return type
+     */
+    public function buildRoutes($name) {
+        $replace = $this->getReplacementValues($name);
+        $stub = $this->replaceClass($this->files->get($this->getRoutesStub()), $name);
+        return str_replace(array_keys($replace), array_values($replace), $stub);
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $name
+     * @return type
+     */
+    protected function getReplacementValues($name) {
         $controllerNamespace = $this->getNamespace($name);
         $modelSingular = $this->getModelInput();
         $modelPlural = $this->getPluralInput();
 
-        $replace = [
+        return [
             'DummyFullModelClass' => $this->parseModel($modelSingular),
             'DummyModelClass' => $modelSingular,
             'DummyRequestClass' => $this->getRequestInput(),
@@ -79,8 +105,6 @@ class ControllerMakeCommand extends GeneratorCommand {
             'DummyViewsNamespace' => Str::kebab($modelPlural),
             "use {$controllerNamespace}\Controller;\n" => '',
         ];
-
-        return str_replace(array_keys($replace), array_values($replace), parent::buildClass($name));
     }
 
     /**
@@ -160,6 +184,15 @@ class ControllerMakeCommand extends GeneratorCommand {
      */
     protected function getStub() {
         return config('crud.stubs.controller');
+    }
+
+    /**
+     * Get the stub file for the routes.
+     *
+     * @return string
+     */
+    protected function getRoutesStub() {
+        return config('crud.stubs.routes');
     }
 
     /**

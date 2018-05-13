@@ -116,7 +116,6 @@ class CrudMakeCommand extends Command {
             $this->makeRequest();
             $this->makeController();
             $this->makeViews();
-            $this->makeRoutes();
             $this->makeFactory();
         }
     }
@@ -318,13 +317,6 @@ class CrudMakeCommand extends Command {
      * Generate views
      */
     protected function makeViews() {
-        
-    }
-
-    /**
-     * Generate routes
-     */
-    protected function makeRoutes() {
         
     }
 

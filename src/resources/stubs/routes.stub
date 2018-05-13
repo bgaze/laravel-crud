@@ -1,0 +1,13 @@
+
+/*
+ * DummyClass
+ */
+Route::prefix('DummyViewsNamespace')->group(function () {
+    Route::get('/', 'DummyClass@index')->name('DummyViewsNamespace.index');
+    Route::get('/create', 'DummyClass@create')->name('DummyViewsNamespace.create');
+    Route::post('/', 'DummyClass@store')->name('DummyViewsNamespace.store');
+    Route::get('/{DummyModelVariable}', 'DummyClass@show')->where(['DummyModelVariable' => '\d+'])->name('DummyViewsNamespace.show');
+    Route::get('/{DummyModelVariable}/edit', 'DummyClass@edit')->where(['DummyModelVariable' => '\d+'])->name('DummyViewsNamespace.edit');
+    Route::put('/{DummyModelVariable}', 'DummyClass@update')->where(['DummyModelVariable' => '\d+'])->name('DummyViewsNamespace.update');
+    Route::delete('/{DummyModelVariable}', 'DummyClass@destroy')->where(['DummyModelVariable' => '\d+'])->name('DummyViewsNamespace.destroy');
+});
