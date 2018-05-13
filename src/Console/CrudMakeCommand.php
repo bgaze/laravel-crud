@@ -309,7 +309,9 @@ class CrudMakeCommand extends Command {
      * Generate controller
      */
     protected function makeController() {
-        
+        $this->call('bgaze:crud:controller', [
+            'name' => "{$this->names->singular}Controller",
+        ]);
     }
 
     /**
