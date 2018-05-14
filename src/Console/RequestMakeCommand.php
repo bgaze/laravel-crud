@@ -13,7 +13,7 @@ class RequestMakeCommand extends Base {
      *
      * @var string
      */
-    protected $signature = 'bgaze:crud:request 
+    protected $signature = 'crud:request 
         {name : The name of the class.}
         {--r|rules=* : The lines to insert into request rules array.}';
 

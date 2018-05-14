@@ -16,7 +16,7 @@ class MigrateMakeCommand extends Base {
      *
      * @var string
      */
-    protected $signature = 'bgaze:crud:migration {name : The name of the migration.}
+    protected $signature = 'crud:migration {name : The name of the migration.}
         {--content=* : The PHP lines of your migration body (one line by row).}
         {--path= : The location where the migration file should be created.}';
 

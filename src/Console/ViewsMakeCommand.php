@@ -11,7 +11,7 @@ class ViewsMakeCommand extends Base {
      *
      * @var string
      */
-    protected $name = 'bgaze:crud:views';
+    protected $name = 'crud:views';
 
     /**
      * The console command description.

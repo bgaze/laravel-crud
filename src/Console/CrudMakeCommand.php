@@ -18,7 +18,7 @@ class CrudMakeCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'bgaze:crud:make';
+    protected $signature = 'crud:make';
 
     /**
      * The console command description.
@@ -277,7 +277,7 @@ class CrudMakeCommand extends Command {
             $content[] = $this->compileMigrationIndex($index);
         }
 
-        $this->call('bgaze:crud:migration', [
+        $this->call('crud:migration', [
             'name' => "create_{$this->names->table}_table",
             '--content' => $content
         ]);
@@ -289,7 +289,7 @@ class CrudMakeCommand extends Command {
     protected function makeModel() {
         $fields = collect($this->migration->fields);
 
-        $this->call('bgaze:crud:model', [
+        $this->call('crud:model', [
             'name' => $this->names->singular,
             'table' => $this->names->table,
             '--timestamps' => $this->migration->timestamps,
@@ -305,7 +305,7 @@ class CrudMakeCommand extends Command {
      * Generate request file
      */
     protected function makeRequest() {
-        $this->call('bgaze:crud:request', [
+        $this->call('crud:request', [
             'name' => "{$this->names->singular}FormRequest",
         ]);
     }
@@ -314,7 +314,7 @@ class CrudMakeCommand extends Command {
      * Generate controller
      */
     protected function makeController() {
-        $this->call('bgaze:crud:controller', [
+        $this->call('crud:controller', [
             'name' => "{$this->names->singular}Controller",
         ]);
     }

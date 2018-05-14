@@ -15,7 +15,7 @@ class ControllerMakeCommand extends GeneratorCommand {
      *
      * @var string
      */
-    protected $signature = 'bgaze:crud:controller 
+    protected $signature = 'crud:controller 
         {name : The name of the class.}
         {--m|model= : The name of the Model class.}
         {--p|plural= : The plural version of the Model class name.}

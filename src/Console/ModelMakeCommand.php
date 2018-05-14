@@ -15,7 +15,7 @@ class ModelMakeCommand extends GeneratorCommand {
      *
      * @var string
      */
-    protected $signature = 'bgaze:crud:model 
+    protected $signature = 'crud:model 
         {name : The name of the class.}
         {table : The table containing Model\'s data.}
         {--t|timestamps : Add timestamps directives}
