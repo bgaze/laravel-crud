@@ -30,7 +30,7 @@ trait CrudHelpersTrait {
      */
     protected function isValidSnakeCase($str) {
         if (!preg_match('/^[a-z][a-z0-9]*(_[a-z0-9]+)*$/', $str)) {
-            $this->error("This is not a valid kebab cased string.");
+            $this->error("This is not a valid snake cased string.");
             return false;
         }
 
