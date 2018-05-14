@@ -103,9 +103,8 @@ class CrudMakeCommand extends Command {
             'Migration class',
             'Model class',
             'Request class with field type based validation',
-            'Controller class with CRUD actions',
             'CRUD Views',
-            'Routes',
+            'Controller class with CRUD actions and routes',
             'Model Factory'
         ]);
 
@@ -114,8 +113,8 @@ class CrudMakeCommand extends Command {
             $this->makeMigration();
             $this->makeModel();
             $this->makeRequest();
-            $this->makeController();
             $this->makeViews();
+            $this->makeController();
             $this->makeFactory();
         }
     }
@@ -311,19 +310,19 @@ class CrudMakeCommand extends Command {
     }
 
     /**
+     * Generate views
+     */
+    protected function makeViews() {
+        
+    }
+
+    /**
      * Generate controller
      */
     protected function makeController() {
         $this->call('crud:controller', [
             'name' => "{$this->names->singular}Controller",
         ]);
-    }
-
-    /**
-     * Generate views
-     */
-    protected function makeViews() {
-        
     }
 
     /**
