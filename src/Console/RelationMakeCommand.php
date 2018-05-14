@@ -11,7 +11,7 @@ class RelationMakeCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'z:relation';
+    protected $signature = 'crud:relation';
 
     /**
      * The console command description.
