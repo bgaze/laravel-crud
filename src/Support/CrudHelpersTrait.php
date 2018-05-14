@@ -75,10 +75,7 @@ trait CrudHelpersTrait {
     public function finalizeFileGeneration($path, $message = 'File created : %s') {
         $path = $this->stripBasePath($path);
 
-        $this->call('php-cs-fixer:fix', [
-            'path' => [$path],
-            '--quiet' => true
-        ]);
+        php_cs_fixer($path, ['--quiet' => true]);
 
         $this->info(sprintf($message, "<fg=white>$path</>"));
     }
