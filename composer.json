@@ -3,6 +3,7 @@
     "description": "A CRUD/BREAD generator for Laravel 5.5+",
     "require": {
         "laravel/framework": ">=5.5.0",
+        "laravelcollective/html": ">=5.5.4",
         "bgaze/laravel-php-cs-fixer": "~1"
     },
     "license": "MIT",
@@ -15,7 +16,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Bgaze\\Crud\\ServiceProvider"
+                "Bgaze\\Crud\\ServiceProvider",
+                "Bgaze\\Crud\\Themes\\DefaultTheme\\ServiceProvider"
             ]
         }
     },

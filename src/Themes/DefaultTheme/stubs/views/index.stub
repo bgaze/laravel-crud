@@ -1,0 +1,22 @@
+@extends('DummyExtendedLayout')
+
+@section('title', 'DummyModelClassPlural')
+
+@section('content')
+    @if(session('success'))
+        <p>{{ session('success') }}</p>
+    @endif
+
+    <h1>DummyModelClassPlural</h1>
+
+    <p><a href="{{ route('DummyRoutesNamespace.create') }}">Create a new DummyClass</a></p>
+
+    <table>
+        <thead>
+            #THEAD
+        </thead>
+        <tbody>
+            #TBODY
+        </tbody>
+    </table>
+@endsection

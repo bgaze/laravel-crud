@@ -1,0 +1,13 @@
+@extends('DummyExtendedLayout')
+
+@section('title', 'DummyModelClassPlural - Create')
+
+@section('content')
+    <p><a href="{{ route('DummyRoutesNamespace.index') }}">Back to DummyModelClassPlural</a></p>
+
+    <h1>Create a new DummyClass</h1>
+
+    {!! Form::open($DummyModelVariable, ['route' => 'DummyRoutesNamespace.store']) !!}
+        #FIELDS
+    {!! Form::close() !!}
+@endsection
