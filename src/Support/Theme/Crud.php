@@ -54,21 +54,26 @@ abstract class Crud {
      */
     protected $definitions;
 
+    ############################################################################
+    # INITIALZATION
+
     /**
      * TODO
      *
      * @param  \Illuminate\Filesystem\Filesystem  $files
      * @return void
      */
-    public function __construct(Filesystem $files) {
-        $this->files = $files;
-
+    public function __construct(Filesystem $files, $model, $plural = null) {
+        // Theme root dir.
         $class = new \ReflectionClass($this);
         $this->root = dirname($class->getFileName());
-    }
 
-    ############################################################################
-    # CORE
+        // Filesystem.
+        $this->files = $files;
+
+        // Get Model name and namespace.
+        $this->parseModelName($model, $plural);
+    }
 
     /**
      * TODO
@@ -77,7 +82,7 @@ abstract class Crud {
      * @param type $plural
      * @throws Exception
      */
-    public function init($model, $plural = null) {
+    protected function parseModelName($model, $plural) {
         $model = trim($model, '\\/ ');
         $model = str_replace('/', '\\', $model);
 
@@ -94,73 +99,13 @@ abstract class Crud {
             $this->namespace = null;
         }
 
-        $this->model = $model;
-
-        if (empty($plural)) {
+        if (!$plural) {
             $this->plural = Str::plural($this->model);
-        } else if (!preg_match('/^([A-Z][a-z]+)+$/', $model)) {
+        } else if (!preg_match('/^([A-Z][a-z]+)+$/', $plural)) {
             throw new Exception("Plurar name is invalid.");
         } else {
             $this->plural = $plural;
         }
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @param type $var
-     * @return $this
-     */
-    protected function replaceInStub(&$stub, $var) {
-        $stub = str_replace($var, $this->{"get$var"}(), $stub);
-        return $this;
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $name
-     * @return type
-     */
-    protected function getStub($name) {
-        return $this->files->get($this->root . '/' . str_replace('.', '/', $name) . '.stubs');
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @param type $path
-     * @param callable $replace
-     */
-    protected function generateFile($stub, $path, callable $replace) {
-        $stub = $replace($this->getStub($stub));
-
-        $fullpath = app_path($path);
-
-        if (!$this->files->isDirectory(dirname($fullpath))) {
-            $this->files->makeDirectory(dirname($fullpath), 0777, true, true);
-        }
-
-        $this->files->put($fullpath, $stub);
-
-        return $path;
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @param type $path
-     * @param callable $replace
-     */
-    protected function generatePhpFile($stub, $path, callable $replace) {
-        $path = $this->generateFile($stub, $path, $replace);
-
-        php_cs_fixer(base_path($path), ['--quiet' => true]);
-
-        return $path;
     }
 
     /**
@@ -201,6 +146,83 @@ abstract class Crud {
     }
 
     ############################################################################
+    # FILES GENERATION
+
+    /**
+     * TODO
+     * 
+     * @param type $name
+     * @return type
+     */
+    protected function getStub($name) {
+        return $this->files->get($this->root . '/stubs/' . str_replace('.', '/', $name) . '.stub');
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $stub
+     * @param type $var
+     * @return $this
+     */
+    public function replaceInStub(&$stub, $name, $value = false) {
+        if ($value === false) {
+            $value = $this->{'get' . $name}();
+        }
+
+        $stub = str_replace($name, $value, $stub);
+
+        return $this;
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $stub
+     * @param type $path
+     * @param callable $replace
+     */
+    public function generateFile($stub, $path, callable $replace) {
+        // Get stub content.
+        $stub = $this->getStub($stub);
+
+        // Do custom replacements.
+        $stub = $replace($this, $stub);
+
+        // Strip base path.
+        $path = self::stripBasePath($path);
+
+        // Create output dir if necessary.
+        if (!$this->files->isDirectory(dirname(base_path($path)))) {
+            $this->files->makeDirectory(dirname(base_path($path)), 0777, true, true);
+        }
+
+        // Create file.
+        $this->files->put(base_path($path), $stub);
+
+        // Return file path.
+        return $path;
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $stub
+     * @param type $path
+     * @param callable $replace
+     */
+    public function generatePhpFile($stub, $path, callable $replace) {
+        // Generate file.
+        $path = $this->generateFile($stub, $path, $replace);
+
+        // Fix it with PhpCsFixer.
+        php_cs_fixer($path, ['--quiet' => true]);
+
+        // Return file path.
+        return $path;
+    }
+
+    ############################################################################
     # HELPERS
 
     /**
@@ -227,6 +249,16 @@ abstract class Crud {
         }
 
         return $value;
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $path
+     * @return type
+     */
+    static public function stripBasePath($path) {
+        return str_replace(base_path() . '/', '', $path);
     }
 
     ############################################################################
@@ -310,7 +342,7 @@ abstract class Crud {
      * @return string
      */
     public function getNamespaceStudly() {
-        return $this->getViewsNamespace();
+        return $this->namespace;
     }
 
     /**
@@ -345,6 +377,31 @@ abstract class Crud {
                         ->map(function($value) {
                             Str::kebab($value);
                         })->implode('/');
+    }
+
+    ############################################################################
+    # MIGRATION
+
+    public function getMigrationClass() {
+        $class = 'Create' . $this->getPluralStudly() . 'Table';
+
+        if (class_exists($class)) {
+            throw new \Exception("A {$class} class already exists.");
+        }
+
+        return $class;
+    }
+
+    public function getMigrationPath() {
+        $file = Str::snake($this->getMigrationClass());
+
+        if (count($this->files->glob(database_path("migrations/*_{$file}.php")))) {
+            throw new \Exception("A {$file}.php migration file already exists.");
+        }
+
+        $prefix = date('Y_m_d_His');
+
+        return database_path("migrations/{$prefix}_{$file}.php");
     }
 
 }

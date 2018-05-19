@@ -1,6 +1,8 @@
 <?php
 
 return [
-    'theme' => 'default',
-    'layout' => 'crud-default::layout'
+    /*
+     * The default theme to use when not specified in CRUD commands.
+     */
+    'theme' => 'CrudDefault'
 ];

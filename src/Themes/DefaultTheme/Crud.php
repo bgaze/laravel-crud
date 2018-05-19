@@ -9,7 +9,7 @@ use Bgaze\Crud\Support\Theme\Crud as Base;
  *
  * @author bgaze
  */
-class Theme extends Base {
+class Crud extends Base {
 
     /**
      * TODO

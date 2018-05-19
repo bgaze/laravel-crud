@@ -16,8 +16,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Bgaze\\Crud\\ServiceProvider",
-                "Bgaze\\Crud\\Themes\\DefaultTheme\\ServiceProvider"
+                "Bgaze\\Crud\\ServiceProvider"
             ]
         }
     },

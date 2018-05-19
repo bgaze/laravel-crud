@@ -2,23 +2,20 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Database\Console\Migrations\MigrateMakeCommand as Base;
-use Illuminate\Support\Str;
+use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use Bgaze\Crud\Support\Migration\MigrationCreator;
 
-class MigrateMakeCommand extends Base {
-
-    use \Bgaze\Crud\Support\CrudHelpersTrait;
+class MigrateMakeCommand extends Command {
 
     /**
      * The console command signature.
      *
      * @var string
      */
-    protected $signature = 'crud:migration {name : The name of the migration.}
-        {--content=* : The PHP lines of your migration body (one line by row).}
-        {--path= : The location where the migration file should be created.}';
+    protected $signature = 'crud:migration {model : The name of the Model.}
+        {--p|plural= : The plural version of the Model\'s name.}
+        {--c|content=* : The PHP lines of your migration body (one line by row).}
+        {--t|theme= : The theme to use to generate CRUD.}';
 
     /**
      * The console command description.
@@ -28,14 +25,21 @@ class MigrateMakeCommand extends Base {
     protected $description = 'Create a new CRUD migration file';
 
     /**
+     * The Composer instance.
+     *
+     * @var \Illuminate\Support\Composer
+     */
+    protected $composer;
+
+    /**
      * Create a new migration install command instance.
      *
-     * @param  \Bgaze\Crud\Support\MigrationCreator  $creator
      * @param  \Illuminate\Support\Composer  $composer
      * @return void
      */
-    public function __construct(MigrationCreator $creator, Composer $composer) {
-        parent::__construct($creator, $composer);
+    public function __construct(Composer $composer) {
+        parent::__construct();
+        $this->composer = $composer;
     }
 
     /**
@@ -44,28 +48,29 @@ class MigrateMakeCommand extends Base {
      * @return void
      */
     public function handle() {
+        // Initialize CRUD theme.
+        $theme = $this->option('theme') ?: config('crud-config.theme');
+        $theme = $this->laravel->make($theme, [
+            'model' => $this->argument('model'),
+            'plural' => $this->option('plural')
+        ]);
 
-        $name = Str::snake(trim($this->input->getArgument('name')));
-        if (!preg_match('/^create_(\w+)_table$/', $name, $m)) {
-            throw new \Exception("Migration name must match /^create_(\w+)_table$/");
-        }
+        // Write migration file.
+        $path = $theme->generatePhpFile('migration', $theme->getMigrationPath(), function($theme, $stub) {
+            $theme
+                    ->replaceInStub($stub, 'PluralSnake')
+                    ->replaceInStub($stub, 'MigrationClass')
+                    ->replaceInStub($stub, '#CONTENT', implode("\n", $this->option('content')))
+            ;
 
-        $this->writeMigration($name, $m[1], true);
+            return $stub;
+        });
 
+        // Update autoload.
         $this->composer->dumpAutoloads();
-    }
 
-    /**
-     * Write the migration file to disk.
-     *
-     * @param  string  $name
-     * @param  string  $table
-     * @param  bool    $create
-     * @return string
-     */
-    protected function writeMigration($name, $table, $create) {
-        $file = $this->creator->create($name, $this->getMigrationPath(), $table, $create, $this->input->getOption('content'));
-        $this->finalizeFileGeneration($file, 'Migration created : %s');
+        // Show success message.
+        $this->info("Migration created : <fg=white>$path</>");
     }
 
 }
