@@ -55,8 +55,8 @@ class ControllerMakeCommand extends Command {
                     ->replace($stub, 'RequestNamespace')
                     ->replace($stub, 'RequestClass')
                     ->replace($stub, 'ModelClass')
-                    ->replace($stub, 'ModeleStudly')
-                    ->replace($stub, 'ModeleCamel')
+                    ->replace($stub, 'ModelStudly')
+                    ->replace($stub, 'ModelCamel')
                     ->replace($stub, 'PluralCamel')
                     ->replace($stub, 'PluralWithParentsKebabDot')
             ;
@@ -78,7 +78,7 @@ class ControllerMakeCommand extends Command {
 
         $theme
                 ->replace($stub, 'ModelWithParents')
-                ->replace($stub, 'ModeleCamel')
+                ->replace($stub, 'ModelCamel')
                 ->replace($stub, 'PluralWithParentsKebabDot')
                 ->replace($stub, 'PluralWithParentsKebabSlash')
         ;

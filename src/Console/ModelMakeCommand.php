@@ -43,7 +43,7 @@ class ModelMakeCommand extends Command {
         $path = $theme->generatePhpFile('model', $theme->getModelPath(), function($theme, $stub) {
             $theme
                     ->replace($stub, 'ModelNamespace')
-                    ->replace($stub, 'ModeleStudly')
+                    ->replace($stub, 'ModelStudly')
                     ->replace($stub, 'TableName')
                     ->replace($stub, '#TIMESTAMPS', $this->option('timestamps') ? 'public $timestamps = true;' : '')
                     ->replace($stub, '#SOFTDELETE', $this->option('soft-delete') ? 'use Illuminate\Database\Eloquent\SoftDeletes;' : '')

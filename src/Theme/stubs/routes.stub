@@ -9,8 +9,8 @@ Route::prefix('PluralWithParentsKebabSlash')->group(function () {
     Route::get('/', 'ModelWithParents@index')->name('PluralWithParentsKebabDot.index');
     Route::get('/create', 'ModelWithParents@create')->name('PluralWithParentsKebabDot.create');
     Route::post('/', 'ModelWithParents@store')->name('PluralWithParentsKebabDot.store');
-    Route::get('/{ModeleCamel}', 'ModelWithParents@show')->where(['ModeleCamel' => '\d+'])->name('PluralWithParentsKebabDot.show');
-    Route::get('/{ModeleCamel}/edit', 'ModelWithParents@edit')->where(['ModeleCamel' => '\d+'])->name('PluralWithParentsKebabDot.edit');
-    Route::put('/{ModeleCamel}', 'ModelWithParents@update')->where(['ModeleCamel' => '\d+'])->name('PluralWithParentsKebabDot.update');
-    Route::delete('/{ModeleCamel}', 'ModelWithParents@destroy')->where(['ModeleCamel' => '\d+'])->name('PluralWithParentsKebabDot.destroy');
+    Route::get('/{ModelCamel}', 'ModelWithParents@show')->where(['ModelCamel' => '\d+'])->name('PluralWithParentsKebabDot.show');
+    Route::get('/{ModelCamel}/edit', 'ModelWithParents@edit')->where(['ModelCamel' => '\d+'])->name('PluralWithParentsKebabDot.edit');
+    Route::put('/{ModelCamel}', 'ModelWithParents@update')->where(['ModelCamel' => '\d+'])->name('PluralWithParentsKebabDot.update');
+    Route::delete('/{ModelCamel}', 'ModelWithParents@destroy')->where(['ModelCamel' => '\d+'])->name('PluralWithParentsKebabDot.destroy');
 });

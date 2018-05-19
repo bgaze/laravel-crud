@@ -76,7 +76,7 @@ class ViewsMakeCommand extends Command {
                     ->replace($stub, 'ViewsLayout', $layout)
                     ->replace($stub, 'PluralWithParentsKebabDot')
                     ->replace($stub, 'PluralWithParents')
-                    ->replace($stub, 'ModeleCamel')
+                    ->replace($stub, 'ModelCamel')
                     ->replace($stub, 'PluralCamel')
                     ->replace($stub, 'ModelWithParents')
                     ->replace($stub, '#THEAD', $this->option('index-thead') ?: '')
@@ -104,7 +104,7 @@ class ViewsMakeCommand extends Command {
                     ->replace($stub, 'PluralWithParentsKebabDot')
                     ->replace($stub, 'PluralWithParents')
                     ->replace($stub, 'ModelWithParents')
-                    ->replace($stub, 'ModeleCamel')
+                    ->replace($stub, 'ModelCamel')
                     ->replace($stub, '#CONTENT', $this->option('show-content') ?: '')
             ;
 
@@ -129,7 +129,7 @@ class ViewsMakeCommand extends Command {
                     ->replace($stub, 'PluralWithParentsKebabDot')
                     ->replace($stub, 'PluralWithParents')
                     ->replace($stub, 'ModelWithParents')
-                    ->replace($stub, 'ModeleCamel')
+                    ->replace($stub, 'ModelCamel')
                     ->replace($stub, '#FIELDS', $this->option('create-fields') ?: '')
             ;
 
@@ -154,7 +154,7 @@ class ViewsMakeCommand extends Command {
                     ->replace($stub, 'PluralWithParentsKebabDot')
                     ->replace($stub, 'PluralWithParents')
                     ->replace($stub, 'ModelWithParents')
-                    ->replace($stub, 'ModeleCamel')
+                    ->replace($stub, 'ModelCamel')
                     ->replace($stub, '#FIELDS', $this->option('create-fields') ?: '')
             ;
 

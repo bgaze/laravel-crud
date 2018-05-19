@@ -7,7 +7,7 @@
 
     <h1>Create a new ModelWithParents</h1>
 
-    {!! Form::open($ModeleCamel, ['route' => 'PluralWithParentsKebabDot.store']) !!}
+    {!! Form::open($ModelCamel, ['route' => 'PluralWithParentsKebabDot.store']) !!}
         #FIELDS
     {!! Form::close() !!}
 @endsection

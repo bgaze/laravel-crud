@@ -4,7 +4,7 @@ namespace ModelNamespace;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ModeleStudly extends Model
+class ModelStudly extends Model
 {
     #SOFTDELETE
     

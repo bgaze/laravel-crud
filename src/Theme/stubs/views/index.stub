@@ -16,7 +16,7 @@
             #THEAD
         </thead>
         <tbody>
-            @foreach($PluralCamel as $ModeleCamel)
+            @foreach($PluralCamel as $ModelCamel)
                 #TBODY
             @endforeach
         </tbody>

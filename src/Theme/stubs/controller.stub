@@ -14,7 +14,7 @@ class ControllerClass extends Controller
      */
     public function index()
     {
-        $PluralCamel = ModeleStudly::all();
+        $PluralCamel = ModelStudly::all();
         
         return view('PluralWithParentsKebabDot.index', [
             'PluralCamel' => $PluralCamel
@@ -29,7 +29,7 @@ class ControllerClass extends Controller
     public function create()
     {
         return view('PluralWithParentsKebabDot.create', [
-            'ModeleCamel' => new ModeleStudly()
+            'ModelCamel' => new ModelStudly()
         ]);
     }
 
@@ -41,34 +41,34 @@ class ControllerClass extends Controller
      */
     public function store(FormRequest $request)
     {
-        ModeleStudly::create($request->all());
+        ModelStudly::create($request->all());
 
-        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModeleStudly was successfully created.");
+        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModelStudly was successfully created.");
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \ModelClass  $ModeleCamel
+     * @param  \ModelClass  $ModelCamel
      * @return \Illuminate\Http\Response
      */
-    public function show(ModeleStudly $ModeleCamel)
+    public function show(ModelStudly $ModelCamel)
     {
         return view('PluralWithParentsKebabDot.show', [
-            'ModeleCamel' => $ModeleCamel
+            'ModelCamel' => $ModelCamel
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \ModelClass  $ModeleCamel
+     * @param  \ModelClass  $ModelCamel
      * @return \Illuminate\Http\Response
      */
-    public function edit(ModeleStudly $ModeleCamel)
+    public function edit(ModelStudly $ModelCamel)
     {
         return view('PluralWithParentsKebabDot.edit', [
-            'ModeleCamel' => $ModeleCamel
+            'ModelCamel' => $ModelCamel
         ]);
     }
 
@@ -76,27 +76,27 @@ class ControllerClass extends Controller
      * Update the specified resource in storage.
      *
      * @param  \RequestNamespace\RequestClass  $request
-     * @param  \ModelClass  $ModeleCamel
+     * @param  \ModelClass  $ModelCamel
      * @return \Illuminate\Http\Response
      */
-    public function update(FormRequest $request, ModeleStudly $ModeleCamel)
+    public function update(FormRequest $request, ModelStudly $ModelCamel)
     {
-        $ModeleCamel->fill($request->all());
+        $ModelCamel->fill($request->all());
         
-        $ModeleCamel->save();
+        $ModelCamel->save();
 
-        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModeleStudly was successfully updated.");
+        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModelStudly was successfully updated.");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \ModelClass  $ModeleCamel
+     * @param  \ModelClass  $ModelCamel
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ModeleStudly $ModeleCamel)
+    public function destroy(ModelStudly $ModelCamel)
     {
-        $ModeleCamel->delete();
-        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModeleStudly was successfully deleted.");
+        $ModelCamel->delete();
+        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModelStudly was successfully deleted.");
     }
 }

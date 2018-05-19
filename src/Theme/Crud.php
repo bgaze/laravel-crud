@@ -259,7 +259,7 @@ class Crud {
             $name .= $this->namespace . '\\';
         }
 
-        $name .= $this->getModeleStudly();
+        $name .= $this->getModelStudly();
 
         if ($separator !== '\\') {
             return str_replace('\\', $separator, $name);
@@ -322,7 +322,7 @@ class Crud {
      * 
      * @return string
      */
-    public function getModeleStudly() {
+    public function getModelStudly() {
         return $this->model;
     }
 
@@ -331,7 +331,7 @@ class Crud {
      * 
      * @return string
      */
-    public function getModeleKebab() {
+    public function getModelKebab() {
         return Str::kebab($this->model);
     }
 
@@ -340,7 +340,7 @@ class Crud {
      * 
      * @return string
      */
-    public function getModeleSnake() {
+    public function getModelSnake() {
         return Str::snake($this->model);
     }
 
@@ -349,7 +349,7 @@ class Crud {
      * 
      * @return string
      */
-    public function getModeleCamel() {
+    public function getModelCamel() {
         return Str::camel($this->model);
     }
 
@@ -441,7 +441,7 @@ class Crud {
     }
 
     public function getModelClass() {
-        return $this->getModelNamespace() . '\\' . $this->getModeleStudly();
+        return $this->getModelNamespace() . '\\' . $this->getModelStudly();
     }
 
     public function getModelPath() {
@@ -459,7 +459,7 @@ class Crud {
     # REQUEST
 
     public function getRequestClass() {
-        return $this->getModeleStudly() . 'FormRequest';
+        return $this->getModelStudly() . 'FormRequest';
     }
 
     public function getRequestNamespace() {
@@ -479,7 +479,7 @@ class Crud {
             $path .= $this->namespace . '\\';
         }
 
-        $path .= $this->getModeleStudly() . 'FormRequest.php';
+        $path .= $this->getModelStudly() . 'FormRequest.php';
 
         $path = app_path(str_replace('\\', '/', $path));
 
@@ -495,7 +495,7 @@ class Crud {
     # CONTROLLER
 
     public function getControllerClass() {
-        return $this->getModeleStudly() . 'Controller';
+        return $this->getModelStudly() . 'Controller';
     }
 
     public function getControllerNamespace() {
@@ -515,7 +515,7 @@ class Crud {
             $path .= $this->namespace . '\\';
         }
 
-        $path .= $this->getModeleStudly() . 'Controller.php';
+        $path .= $this->getModelStudly() . 'Controller.php';
 
         $path = app_path(str_replace('\\', '/', $path));
 
