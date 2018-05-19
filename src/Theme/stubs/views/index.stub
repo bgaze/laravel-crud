@@ -1,22 +1,24 @@
-@extends('DummyExtendedLayout')
+@extends('ViewsLayout')
 
-@section('title', 'DummyModelClassPlural')
+@section('title', 'PluralWithParents')
 
 @section('content')
     @if(session('success'))
         <p>{{ session('success') }}</p>
     @endif
 
-    <h1>DummyModelClassPlural</h1>
+    <h1>PluralWithParents</h1>
 
-    <p><a href="{{ route('DummyRoutesNamespace.create') }}">Create a new DummyClass</a></p>
+    <p><a href="{{ route('PluralWithParentsKebabDot.create') }}">Create a new ModelWithParents</a></p>
 
     <table>
         <thead>
             #THEAD
         </thead>
         <tbody>
-            #TBODY
+            @foreach($PluralCamel as $ModeleCamel)
+                #TBODY
+            @endforeach
         </tbody>
     </table>
 @endsection

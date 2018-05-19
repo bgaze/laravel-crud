@@ -57,6 +57,24 @@ class Crud {
      */
     protected $namespace;
 
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    static public function name() {
+        return 'CrudDefault';
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    static public function views() {
+        return Str::kebab(self::name());
+    }
+
     ############################################################################
     # INIT
 
@@ -511,6 +529,17 @@ class Crud {
 
     public function getRoutesPath() {
         return base_path('routes/web.php');
+    }
+
+    ############################################################################
+    # VIEWS
+
+    public function getViewsLayout() {
+        return self::views() . '::layout';
+    }
+
+    public function getViewsPath() {
+        return resource_path('views/' . $this->getPluralWithParentsKebabSlash());
     }
 
 }

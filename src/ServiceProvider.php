@@ -2,10 +2,10 @@
 
 namespace Bgaze\Crud;
 
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Illuminate\Support\ServiceProvider as Base;
 use Bgaze\Crud\Theme\Crud;
 
-class ServiceProvider extends BaseServiceProvider {
+class ServiceProvider extends Base {
 
     /**
      * Bootstrap the application services.
@@ -17,8 +17,8 @@ class ServiceProvider extends BaseServiceProvider {
         $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud');
 
         // Register & publish default theme views.
-        $this->loadViewsFrom(__DIR__ . '/Theme/views', 'crud-default');
-        $this->publishes([__DIR__ . '/Theme/views' => resource_path('views/vendor/crud-default')]);
+        $this->loadViewsFrom(__DIR__ . '/Theme/views', Crud::views());
+        $this->publishes([__DIR__ . '/Theme/views' => resource_path('views/vendor/' . Crud::views())]);
 
         // Register commands.
         if ($this->app->runningInConsole()) {
@@ -45,7 +45,7 @@ class ServiceProvider extends BaseServiceProvider {
         $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
 
         // Register default theme class.
-        $this->app->bind('CrudDefault', function ($app, $parameters) {
+        $this->app->bind(Crud::name(), function ($app, $parameters) {
             return new Crud($app->make('Illuminate\Filesystem\Filesystem'), $parameters['model'], $parameters['plural'] ?: null);
         });
     }

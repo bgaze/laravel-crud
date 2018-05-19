@@ -1,11 +1,11 @@
-@extends('DummyExtendedLayout')
+@extends('ViewsLayout')
 
-@section('title', 'DummyModelClassPlural #' . $DummyModelVariable->id)
+@section('title', 'ModelWithParents #' . $ModeleCamel->id)
 
 @section('content')
-    <p><a href="{{ route('DummyRoutesNamespace.index') }}">Back to DummyModelClassPlural</a></p>
+    <p><a href="{{ route('PluralWithParentsKebabDot.index') }}">Back to PluralWithParents</a></p>
 
-    <h1>DummyClass #{{ $DummyModelVariable->id }}</h1>
+    <h1>ModelWithParents #{{ $ModeleCamel->id }}</h1>
 
     #CONTENT
 @endsection

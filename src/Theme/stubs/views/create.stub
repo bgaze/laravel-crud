@@ -1,13 +1,13 @@
-@extends('DummyExtendedLayout')
+@extends('ViewsLayout')
 
-@section('title', 'DummyModelClassPlural - Create')
+@section('title', 'ModelWithParents - Create')
 
 @section('content')
-    <p><a href="{{ route('DummyRoutesNamespace.index') }}">Back to DummyModelClassPlural</a></p>
+    <p><a href="{{ route('PluralWithParentsKebabDot.index') }}">Back to PluralWithParents</a></p>
 
-    <h1>Create a new DummyClass</h1>
+    <h1>Create a new ModelWithParents</h1>
 
-    {!! Form::open($DummyModelVariable, ['route' => 'DummyRoutesNamespace.store']) !!}
+    {!! Form::open($ModeleCamel, ['route' => 'PluralWithParentsKebabDot.store']) !!}
         #FIELDS
     {!! Form::close() !!}
 @endsection
