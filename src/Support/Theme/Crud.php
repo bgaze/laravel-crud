@@ -225,6 +225,38 @@ abstract class Crud {
         return $path;
     }
 
+    public function getModelWithParents($separator = '\\') {
+        $name = '';
+
+        if (!empty($this->namespace)) {
+            $name .= $this->namespace . '\\';
+        }
+
+        $name .= $this->getModeleStudly();
+
+        if ($separator !== '\\') {
+            return str_replace('\\', $separator, $name);
+        }
+
+        return $name;
+    }
+
+    public function getPluralWithParents($separator = '\\') {
+        $name = '';
+
+        if (!empty($this->namespace)) {
+            $name .= $this->namespace . '\\';
+        }
+
+        $name .= $this->getPluralStudly();
+
+        if ($separator !== '\\') {
+            return str_replace('\\', $separator, $name);
+        }
+
+        return $name;
+    }
+
     ############################################################################
     # VARIABLES
 
@@ -346,8 +378,12 @@ abstract class Crud {
     ############################################################################
     # MIGRATION
 
+    public function getTableName() {
+        return Str::snake($this->getPluralWithParents(''));
+    }
+
     public function getMigrationClass() {
-        $class = 'Create' . $this->getPluralStudly() . 'Table';
+        $class = 'Create' . $this->getPluralWithParents('') . 'Table';
 
         if (class_exists($class)) {
             throw new \Exception("A '{$class}' class already exists.");

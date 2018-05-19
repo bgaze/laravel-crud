@@ -58,7 +58,7 @@ class MigrateMakeCommand extends Command {
         // Write migration file.
         $path = $theme->generatePhpFile('migration', $theme->getMigrationPath(), function($theme, $stub) {
             $theme
-                    ->replace($stub, 'PluralSnake')
+                    ->replace($stub, 'TableName')
                     ->replace($stub, 'MigrationClass')
                     ->replace($stub, '#CONTENT', implode("\n", $this->option('content')))
             ;
