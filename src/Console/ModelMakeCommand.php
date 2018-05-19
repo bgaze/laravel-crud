@@ -2,22 +2,21 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
+use Illuminate\Console\Command;
+use Bgaze\Crud\Support\CrudHelpersTrait;
 
-class ModelMakeCommand extends GeneratorCommand {
+class ModelMakeCommand extends Command {
 
-    use \Bgaze\Crud\Support\CrudHelpersTrait;
+    use CrudHelpersTrait;
 
     /**
      * The console command signature.
      *
      * @var string
      */
-    protected $signature = 'crud:model 
-        {name : The name of the class.}
-        {table : The table containing Model\'s data.}
+    protected $signature = 'crud:model {model : The name of the Model.}
+        {--p|plural= : The plural version of the Model\'s name.}
+        {--theme= : The theme to use to generate CRUD.}
         {--t|timestamps : Add timestamps directives}
         {--s|soft-delete : Add soft delete directives}
         {--f|fillables=* : The list of Model\'s fillable fields}
@@ -31,184 +30,73 @@ class ModelMakeCommand extends GeneratorCommand {
     protected $description = 'Create a new CRUD Eloquent model class';
 
     /**
-     * The type of class being generated.
-     *
-     * @var string
-     */
-    protected $type = 'Model';
-
-    /**
      * Execute the console command.
      *
      * @return bool|null
      */
     public function handle() {
-        $name = $this->qualifyClass($this->getNameInput());
-        $path = $this->getPath($name);
+        // Initialize CRUD theme.
+        $theme = $this->laravel->make($this->option('theme') ?: config('crud-config.theme'), [
+            'model' => $this->argument('model'),
+            'plural' => $this->option('plural')
+        ]);
 
-        if ($this->alreadyExists($this->getNameInput())) {
-            $this->error($this->type . ' already exists!');
-            return false;
-        }
+        // Write model file.
+        $path = $theme->generatePhpFile('model', $theme->getModelPath(), function($theme, $stub) {
+            $theme
+                    ->replace($stub, 'ModelNamespace')
+                    ->replace($stub, 'ModeleStudly')
+                    ->replace($stub, 'PluralSnake')
+                    ->replace($stub, '#TIMESTAMPS', $this->option('timestamps') ? 'public $timestamps = true;' : '')
+                    ->replace($stub, '#SOFTDELETE', $this->option('soft-delete') ? 'use Illuminate\Database\Eloquent\SoftDeletes;' : '')
+                    ->replace($stub, '#FILLABLES', $this->getFillables())
+                    ->replace($stub, '#DATES', $this->getDates())
+            ;
 
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-        $this->finalizeFileGeneration($path, 'Model created : %s');
-    }
-
-    /**
-     * Build the class with the given name.
-     *
-     * @param  string  $name
-     * @return string
-     */
-    protected function buildClass($name) {
-        $stub = $this->files->get($this->getStub());
-
-        return $this->replaceNamespace($stub, $name)
-                        ->replaceTable($stub)
-                        ->replaceTimestamps($stub)
-                        ->replaceSoftDelete($stub)
-                        ->replaceFillables($stub)
-                        ->replaceDates($stub)
-                        ->replaceClass($stub, $name)
-        ;
-    }
-
-    /**
-     * Get the stub file for the generator.
-     *
-     * @return string
-     */
-    protected function getStub() {
-        return config('crud.stubs.modele');
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    public function getTableInput() {
-        return trim($this->argument('table'));
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @return $this
-     */
-    protected function replaceTable(&$stub) {
-        $stub = str_replace('DummyTableName', $this->getTableInput(), $stub);
-
-        return $this;
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    public function getTimestampsInput() {
-        return $this->option('timestamps');
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @return $this
-     */
-    protected function replaceTimestamps(&$stub) {
-        $tmp = $this->getTimestampsInput() ? 'public $timestamps = true;' : '';
-
-        $stub = str_replace('#TIMESTAMPS', $tmp, $stub);
-
-        return $this;
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    public function getSoftDeleteInput() {
-        return $this->option('soft-delete');
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @return $this
-     */
-    protected function replaceSoftDelete(&$stub) {
-        $tmp = $this->getSoftDeleteInput() ? 'use Illuminate\Database\Eloquent\SoftDeletes;' : '';
-
-        $stub = str_replace('#SOFTDELETE', $tmp, $stub);
-
-        return $this;
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    public function getFillablesInput() {
-        return collect($this->option('fillables'))->map(function($v) {
-                    return trim($v);
-                })->filter();
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @return $this
-     */
-    protected function replaceFillables(&$stub) {
-        $tmp = $this->getFillablesInput()->map(function($v) {
-                    return $this->compileValueForPhp($v);
-                })->implode(', ');
-
-        $stub = str_replace('#FILLABLES', "protected \$fillable = [$tmp];", $stub);
-
-        return $this;
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    public function getDatesInput() {
-        return collect($this->option('dates'))->map(function($v) {
-                    return trim($v);
-                })->filter();
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @return $this
-     */
-    protected function replaceDates(&$stub) {
-        $tmp = $this->getDatesInput();
-
-        if ($this->getSoftDeleteInput() && !$tmp->contains('deleted_at')) {
-            $tmp->prepend('deleted_at');
-        }
-
-        $tmp = $tmp->map(function($v) {
-            return $this->compileValueForPhp($v);
+            return $stub;
         });
 
-        $stub = str_replace('#DATES', $tmp->isEmpty() ? '' : "protected \$dates = [" . $tmp->implode(', ') . "];", $stub);
+        // Show success message.
+        $this->info("Model created : <fg=white>$path</>");
+    }
 
-        return $this;
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    public function getFillables() {
+        $fillables = collect($this->option('fillables'))
+                ->map(function($v) {
+                    $v = trim($v);
+                    return empty($v) ? null : $this->compileValueForPhp($v);
+                })
+                ->filter()
+                ->implode(', ');
+
+        return "protected \$fillable = [{$fillables}];";
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    public function getDates() {
+        $dates = collect($this->option('dates'));
+
+        if ($this->option('soft-delete') && !$dates->contains('deleted_at')) {
+            $dates->prepend('deleted_at');
+        }
+
+        $dates = $dates->map(function($v) {
+                    $v = trim($v);
+                    return empty($v) ? null : $this->compileValueForPhp($v);
+                })
+                ->filter()
+                ->implode(', ');
+
+        return "protected \$dates = [{$dates}];";
     }
 
 }

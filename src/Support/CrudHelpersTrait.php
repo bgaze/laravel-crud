@@ -63,21 +63,14 @@ trait CrudHelpersTrait {
         return $value;
     }
 
-    public function stripBasePath($path) {
-        return str_replace(base_path() . '/', '', $path);
-    }
-
     /**
      * TODO
      * 
      * @param type $path
+     * @return type
      */
-    public function finalizeFileGeneration($path, $message = 'File created : %s') {
-        $path = $this->stripBasePath($path);
-
-        php_cs_fixer($path, ['--quiet' => true]);
-
-        $this->info(sprintf($message, "<fg=white>$path</>"));
+    public function stripBasePath($path) {
+        return str_replace(base_path() . '/', '', $path);
     }
 
 }

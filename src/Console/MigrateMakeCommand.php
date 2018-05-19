@@ -15,7 +15,7 @@ class MigrateMakeCommand extends Command {
     protected $signature = 'crud:migration {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
         {--c|content=* : The PHP lines of your migration body (one line by row).}
-        {--t|theme= : The theme to use to generate CRUD.}';
+        {--theme= : The theme to use to generate CRUD.}';
 
     /**
      * The console command description.
@@ -49,8 +49,7 @@ class MigrateMakeCommand extends Command {
      */
     public function handle() {
         // Initialize CRUD theme.
-        $theme = $this->option('theme') ?: config('crud-config.theme');
-        $theme = $this->laravel->make($theme, [
+        $theme = $this->laravel->make($this->option('theme') ?: config('crud-config.theme'), [
             'model' => $this->argument('model'),
             'plural' => $this->option('plural')
         ]);
@@ -58,9 +57,9 @@ class MigrateMakeCommand extends Command {
         // Write migration file.
         $path = $theme->generatePhpFile('migration', $theme->getMigrationPath(), function($theme, $stub) {
             $theme
-                    ->replaceInStub($stub, 'PluralSnake')
-                    ->replaceInStub($stub, 'MigrationClass')
-                    ->replaceInStub($stub, '#CONTENT', implode("\n", $this->option('content')))
+                    ->replace($stub, 'PluralSnake')
+                    ->replace($stub, 'MigrationClass')
+                    ->replace($stub, '#CONTENT', implode("\n", $this->option('content')))
             ;
 
             return $stub;

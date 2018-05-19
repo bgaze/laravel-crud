@@ -1,14 +1,14 @@
 <?php
 
-namespace DummyNamespace;
+namespace ModelNamespace;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DummyClass extends Model
+class ModeleStudly extends Model
 {
     #SOFTDELETE
     
-    protected $table = 'DummyTableName';
+    protected $table = 'PluralSnake';
 
     #TIMESTAMPS
     

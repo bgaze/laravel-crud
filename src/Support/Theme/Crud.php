@@ -4,6 +4,7 @@ namespace Bgaze\Crud\Support\Theme;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use Bgaze\Crud\Support\CrudHelpersTrait;
 
 /**
  * Description of Theme
@@ -11,6 +12,8 @@ use Illuminate\Support\Str;
  * @author bgaze
  */
 abstract class Crud {
+
+    use CrudHelpersTrait;
 
     /**
      * The filesystem instance.
@@ -165,7 +168,7 @@ abstract class Crud {
      * @param type $var
      * @return $this
      */
-    public function replaceInStub(&$stub, $name, $value = false) {
+    public function replace(&$stub, $name, $value = false) {
         if ($value === false) {
             $value = $this->{'get' . $name}();
         }
@@ -190,7 +193,7 @@ abstract class Crud {
         $stub = $replace($this, $stub);
 
         // Strip base path.
-        $path = self::stripBasePath($path);
+        $path = $this->stripBasePath($path);
 
         // Create output dir if necessary.
         if (!$this->files->isDirectory(dirname(base_path($path)))) {
@@ -220,45 +223,6 @@ abstract class Crud {
 
         // Return file path.
         return $path;
-    }
-
-    ############################################################################
-    # HELPERS
-
-    /**
-     * Prepare value for PHP generation depending on it's type
-     * 
-     * @param mixed $value
-     * @return mixed
-     */
-    static public function compileValueForPhp($value) {
-        if ($value === true || $value === 'true') {
-            return 'true';
-        }
-
-        if ($value === false || $value === 'false') {
-            return 'false';
-        }
-
-        if ($value === null || $value === 'null') {
-            return 'null';
-        }
-
-        if (!is_numeric($value)) {
-            return "'" . addslashes($value) . "'";
-        }
-
-        return $value;
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $path
-     * @return type
-     */
-    static public function stripBasePath($path) {
-        return str_replace(base_path() . '/', '', $path);
     }
 
     ############################################################################
@@ -402,6 +366,37 @@ abstract class Crud {
         $prefix = date('Y_m_d_His');
 
         return database_path("migrations/{$prefix}_{$file}.php");
+    }
+
+    ############################################################################
+    # Model
+
+    public function getModelNamespace() {
+        $namespace = trim(app()->getNamespace(), '\\');
+
+        if (!empty($this->namespace)) {
+            $namespace .= '\\' . $this->namespace;
+        }
+
+        return $namespace;
+    }
+
+    public function getModelClass() {
+        return $this->getModelNamespace() . '\\' . $this->getModeleStudly();
+    }
+
+    public function getModelPath() {
+        $path = !empty($this->namespace) ? $this->namespace . '\\' : '';
+
+        $path .= $this->getModeleStudly() . '.php';
+
+        $path = app_path(str_replace('\\', '/', $path));
+
+        if ($this->files->exists($path)) {
+            throw new \Exception("A {$path} file already exists.");
+        }
+
+        return $path;
     }
 
 }
