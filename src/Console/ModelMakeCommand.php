@@ -44,7 +44,7 @@ class ModelMakeCommand extends Command {
             $theme
                     ->replace($stub, 'ModelNamespace')
                     ->replace($stub, 'ModeleStudly')
-                    ->replace($stub, 'PluralSnake')
+                    ->replace($stub, 'TableName')
                     ->replace($stub, '#TIMESTAMPS', $this->option('timestamps') ? 'public $timestamps = true;' : '')
                     ->replace($stub, '#SOFTDELETE', $this->option('soft-delete') ? 'use Illuminate\Database\Eloquent\SoftDeletes;' : '')
                     ->replace($stub, '#FILLABLES', $this->getFillables())

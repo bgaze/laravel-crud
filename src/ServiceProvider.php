@@ -14,7 +14,7 @@ class ServiceProvider extends BaseServiceProvider {
      */
     public function boot() {
         // Publish configuration.
-        $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud-config');
+        $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud');
 
         // Register & publish default theme views.
         $this->loadViewsFrom(__DIR__ . '/Themes/DefaultTheme/views', 'crud-default');
@@ -42,7 +42,7 @@ class ServiceProvider extends BaseServiceProvider {
     public function register() {
         // Merge configuration.
         $this->mergeConfigFrom(__DIR__ . '/config/definitions.php', 'crud-definitions');
-        $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud-config');
+        $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
 
         // Register default theme class.
         $this->app->bind('CrudDefault', function ($app, $parameters) {

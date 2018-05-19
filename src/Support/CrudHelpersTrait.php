@@ -13,7 +13,7 @@ trait CrudHelpersTrait {
      * @return Bgaze\Crud\Support\Theme\Crud
      */
     public function getTheme() {
-        return $this->laravel->make($this->option('theme') ?: config('crud-config.theme'), [
+        return $this->laravel->make($this->option('theme') ?: config('crud.theme'), [
                     'model' => $this->argument('model'),
                     'plural' => $this->option('plural')
         ]);

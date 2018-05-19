@@ -8,7 +8,7 @@ class ModeleStudly extends Model
 {
     #SOFTDELETE
     
-    protected $table = 'PluralSnake';
+    protected $table = 'TableName';
 
     #TIMESTAMPS
     

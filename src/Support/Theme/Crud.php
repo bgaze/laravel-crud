@@ -225,6 +225,12 @@ abstract class Crud {
         return $path;
     }
 
+    /**
+     * TODO
+     * 
+     * @param type $separator
+     * @return type
+     */
     public function getModelWithParents($separator = '\\') {
         $name = '';
 
@@ -241,6 +247,12 @@ abstract class Crud {
         return $name;
     }
 
+    /**
+     * TODO
+     * 
+     * @param type $separator
+     * @return type
+     */
     public function getPluralWithParents($separator = '\\') {
         $name = '';
 
@@ -422,11 +434,7 @@ abstract class Crud {
     }
 
     public function getModelPath() {
-        $path = !empty($this->namespace) ? $this->namespace . '\\' : '';
-
-        $path .= $this->getModeleStudly() . '.php';
-
-        $path = app_path(str_replace('\\', '/', $path));
+        $path = app_path($this->getModelWithParents('/') . '.php');
 
         if ($this->files->exists($path)) {
             $path = $this->stripBasePath($path);
