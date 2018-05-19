@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Support\Theme;
+namespace Bgaze\Crud\Theme;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -11,7 +11,7 @@ use Bgaze\Crud\Support\CrudHelpersTrait;
  *
  * @author bgaze
  */
-abstract class Crud {
+class Crud {
 
     use CrudHelpersTrait;
 
@@ -58,7 +58,7 @@ abstract class Crud {
     protected $definitions;
 
     ############################################################################
-    # INITIALZATION
+    # INIT
 
     /**
      * TODO

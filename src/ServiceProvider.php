@@ -3,7 +3,7 @@
 namespace Bgaze\Crud;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Bgaze\Crud\Themes\DefaultTheme\Crud;
+use Bgaze\Crud\Theme\Crud;
 
 class ServiceProvider extends BaseServiceProvider {
 
@@ -17,8 +17,8 @@ class ServiceProvider extends BaseServiceProvider {
         $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud');
 
         // Register & publish default theme views.
-        $this->loadViewsFrom(__DIR__ . '/Themes/DefaultTheme/views', 'crud-default');
-        $this->publishes([__DIR__ . '/Themes/DefaultTheme/views' => resource_path('views/vendor/crud-default')]);
+        $this->loadViewsFrom(__DIR__ . '/Theme/views', 'crud-default');
+        $this->publishes([__DIR__ . '/Theme/views' => resource_path('views/vendor/crud-default')]);
 
         // Register commands.
         if ($this->app->runningInConsole()) {

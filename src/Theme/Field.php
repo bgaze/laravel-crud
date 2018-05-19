@@ -2,14 +2,17 @@
 
 namespace Bgaze\Crud\Support\Theme;
 
-use Bgaze\Crud\Support\Theme\Crud;
+use Bgaze\Crud\Theme\Crud;
+use Bgaze\Crud\Support\CrudHelpersTrait;
 
 /**
  * Description of Field
  *
  * @author bgaze
  */
-abstract class Field {
+class Field {
+
+    use CrudHelpersTrait;
 
     public $type;
     public $template;
