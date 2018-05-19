@@ -2,11 +2,12 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Foundation\Console\RequestMakeCommand as Base;
+use Illuminate\Console\Command;
+use Bgaze\Crud\Support\CrudHelpersTrait;
 
-class RequestMakeCommand extends Base {
+class RequestMakeCommand extends Command {
 
-    use \Bgaze\Crud\Support\CrudHelpersTrait;
+    use CrudHelpersTrait;
 
     /**
      * The console command signature.
@@ -14,7 +15,9 @@ class RequestMakeCommand extends Base {
      * @var string
      */
     protected $signature = 'crud:request 
-        {name : The name of the class.}
+        {model : The name of the Model.}
+        {--p|plural= : The plural version of the Model\'s name.}
+        {--t|theme= : The theme to use to generate CRUD.}{--r|rules=* : The lines to insert into request rules array.}
         {--r|rules=* : The lines to insert into request rules array.}';
 
     /**
@@ -27,34 +30,25 @@ class RequestMakeCommand extends Base {
     /**
      * Execute the console command.
      *
-     * @return bool|null
+     * @return void
      */
     public function handle() {
-        $name = $this->qualifyClass($this->getNameInput());
-        $path = $this->getPath($name);
+        // Get CRUD theme.
+        $theme = $this->getTheme();
 
-        if ($this->alreadyExists($this->getNameInput())) {
-            $this->error($this->type . ' already exists!');
-            return false;
-        }
+        // Write migration file.
+        $path = $theme->generatePhpFile('request', $theme->getRequestPath(), function($theme, $stub) {
+            $theme
+                    ->replace($stub, 'RequestNamespace')
+                    ->replace($stub, 'RequestClass')
+                    ->replace($stub, '/*RULES*/', $this->getRules())
+            ;
 
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-        $this->finalizeFileGeneration($path, 'Request created : %s');
-    }
+            return $stub;
+        });
 
-    /**
-     * Build the class with the given name.
-     *
-     * @param  string  $name
-     * @return string
-     */
-    protected function buildClass($name) {
-        $stub = $this->files->get($this->getStub());
-
-        return $this->replaceNamespace($stub, $name)
-                        ->replaceRules($stub)
-                        ->replaceClass($stub, $name);
+        // Show success message.
+        $this->info("Request created : <fg=white>$path</>");
     }
 
     /**
@@ -62,31 +56,16 @@ class RequestMakeCommand extends Base {
      * 
      * @return type
      */
-    public function getRulesInput() {
-        return collect($this->option('rules'))->map(function($v) {
+    protected function getRules() {
+        $rules = collect($this->option('rules'))->map(function($v) {
                     return trim($v);
                 })->filter();
-    }
 
-    /**
-     * TODO
-     * 
-     * @param type $stub
-     * @return $this
-     */
-    protected function replaceRules(&$stub) {
-        $stub = str_replace('#RULES', $this->getRulesInput()->implode(",\n"), $stub);
+        if ($rules->isEmpty()) {
+            return '';
+        }
 
-        return $this;
-    }
-
-    /**
-     * Get the stub file for the generator.
-     *
-     * @return string
-     */
-    protected function getStub() {
-        return config('crud.stubs.request');
+        return $rules->implode(",\n");
     }
 
 }

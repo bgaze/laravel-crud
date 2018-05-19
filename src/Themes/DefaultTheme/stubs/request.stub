@@ -1,10 +1,10 @@
 <?php
 
-namespace DummyNamespace;
+namespace RequestNamespace;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DummyClass extends FormRequest
+class RequestClass extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,8 +32,6 @@ class DummyClass extends FormRequest
      */
     public function rules() 
     {
-        return [
-            #RULES
-        ];
+        return [/*RULES*/];
     }
 }

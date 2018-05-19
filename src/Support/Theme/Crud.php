@@ -350,7 +350,7 @@ abstract class Crud {
         $class = 'Create' . $this->getPluralStudly() . 'Table';
 
         if (class_exists($class)) {
-            throw new \Exception("A {$class} class already exists.");
+            throw new \Exception("A '{$class}' class already exists.");
         }
 
         return $class;
@@ -360,7 +360,7 @@ abstract class Crud {
         $file = Str::snake($this->getMigrationClass());
 
         if (count($this->files->glob(database_path("migrations/*_{$file}.php")))) {
-            throw new \Exception("A {$file}.php migration file already exists.");
+            throw new \Exception("A '{$file}.php' migration file already exists.");
         }
 
         $prefix = date('Y_m_d_His');
@@ -369,7 +369,7 @@ abstract class Crud {
     }
 
     ############################################################################
-    # Model
+    # MODEL
 
     public function getModelNamespace() {
         $namespace = trim(app()->getNamespace(), '\\');
@@ -393,7 +393,44 @@ abstract class Crud {
         $path = app_path(str_replace('\\', '/', $path));
 
         if ($this->files->exists($path)) {
-            throw new \Exception("A {$path} file already exists.");
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    ############################################################################
+    # REQUEST
+
+    public function getRequestClass() {
+        return $this->getModeleStudly() . 'FormRequest';
+    }
+
+    public function getRequestNamespace() {
+        $namespace = trim(app()->getNamespace(), '\\') . '\\Http\\Requests';
+
+        if (!empty($this->namespace)) {
+            $namespace .= '\\' . $this->namespace;
+        }
+
+        return $namespace;
+    }
+
+    public function getRequestPath() {
+        $path = 'Http\\Requests\\';
+
+        if (!empty($this->namespace)) {
+            $path .= $this->namespace . '\\';
+        }
+
+        $path .= $this->getModeleStudly() . 'FormRequest.php';
+
+        $path = app_path(str_replace('\\', '/', $path));
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
         }
 
         return $path;

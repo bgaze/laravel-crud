@@ -14,7 +14,8 @@ class ModelMakeCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'crud:model {model : The name of the Model.}
+    protected $signature = 'crud:model 
+        {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
         {--theme= : The theme to use to generate CRUD.}
         {--t|timestamps : Add timestamps directives}
@@ -35,11 +36,8 @@ class ModelMakeCommand extends Command {
      * @return bool|null
      */
     public function handle() {
-        // Initialize CRUD theme.
-        $theme = $this->laravel->make($this->option('theme') ?: config('crud-config.theme'), [
-            'model' => $this->argument('model'),
-            'plural' => $this->option('plural')
-        ]);
+        // Get CRUD theme.
+        $theme = $this->getTheme();
 
         // Write model file.
         $path = $theme->generatePhpFile('model', $theme->getModelPath(), function($theme, $stub) {

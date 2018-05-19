@@ -4,15 +4,19 @@ namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use Bgaze\Crud\Support\CrudHelpersTrait;
 
 class MigrateMakeCommand extends Command {
+
+    use CrudHelpersTrait;
 
     /**
      * The console command signature.
      *
      * @var string
      */
-    protected $signature = 'crud:migration {model : The name of the Model.}
+    protected $signature = 'crud:migration 
+        {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
         {--c|content=* : The PHP lines of your migration body (one line by row).}
         {--theme= : The theme to use to generate CRUD.}';
@@ -48,11 +52,8 @@ class MigrateMakeCommand extends Command {
      * @return void
      */
     public function handle() {
-        // Initialize CRUD theme.
-        $theme = $this->laravel->make($this->option('theme') ?: config('crud-config.theme'), [
-            'model' => $this->argument('model'),
-            'plural' => $this->option('plural')
-        ]);
+        // Get CRUD theme.
+        $theme = $this->getTheme();
 
         // Write migration file.
         $path = $theme->generatePhpFile('migration', $theme->getMigrationPath(), function($theme, $stub) {
