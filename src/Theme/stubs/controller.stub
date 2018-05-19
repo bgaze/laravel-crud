@@ -1,11 +1,11 @@
 <?php
 
-namespace DummyNamespace;
+namespace ControllerNamespace;
 
-use DummyFullModelClass;
-use App\Http\Requests\DummyRequestClass as FormRequest;
+use ModelClass;
+use RequestNamespace\RequestClass as FormRequest;
 
-class DummyClass extends Controller
+class ControllerClass extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +14,10 @@ class DummyClass extends Controller
      */
     public function index()
     {
-        $DummyModelPluralVariable = DummyModelClass::all();
+        $PluralCamel = ModeleStudly::all();
         
-        return view('DummyViewsNamespace.index', [
-            'DummyModelPluralVariable' => $DummyModelPluralVariable
+        return view('PluralWithParentsKebabDot.index', [
+            'PluralCamel' => $PluralCamel
         ]);
     }
 
@@ -28,75 +28,75 @@ class DummyClass extends Controller
      */
     public function create()
     {
-        return view('DummyViewsNamespace.create', [
-            'DummyModelVariable' => new DummyModelClass()
+        return view('PluralWithParentsKebabDot.create', [
+            'ModeleCamel' => new ModeleStudly()
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\DummyRequestClass  $request
+     * @param  \RequestNamespace\RequestClass  $request
      * @return \Illuminate\Http\Response
      */
     public function store(FormRequest $request)
     {
-        DummyModelClass::create($request->all());
+        ModeleStudly::create($request->all());
 
-        return redirect()->route('DummyViewsNamespace.index')->with('success', "DummyModelClass was successfully created.");
+        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModeleStudly was successfully created.");
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \DummyFullModelClass  $DummyModelVariable
+     * @param  \ModelClass  $ModeleCamel
      * @return \Illuminate\Http\Response
      */
-    public function show(DummyModelClass $DummyModelVariable)
+    public function show(ModeleStudly $ModeleCamel)
     {
-        return view('DummyViewsNamespace.show', [
-            'DummyModelVariable' => $DummyModelVariable
+        return view('PluralWithParentsKebabDot.show', [
+            'ModeleCamel' => $ModeleCamel
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \DummyFullModelClass  $DummyModelVariable
+     * @param  \ModelClass  $ModeleCamel
      * @return \Illuminate\Http\Response
      */
-    public function edit(DummyModelClass $DummyModelVariable)
+    public function edit(ModeleStudly $ModeleCamel)
     {
-        return view('DummyViewsNamespace.edit', [
-            'DummyModelVariable' => $DummyModelVariable
+        return view('PluralWithParentsKebabDot.edit', [
+            'ModeleCamel' => $ModeleCamel
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\DummyRequestClass  $request
-     * @param  \DummyFullModelClass  $DummyModelVariable
+     * @param  \RequestNamespace\RequestClass  $request
+     * @param  \ModelClass  $ModeleCamel
      * @return \Illuminate\Http\Response
      */
-    public function update(FormRequest $request, DummyModelClass $DummyModelVariable)
+    public function update(FormRequest $request, ModeleStudly $ModeleCamel)
     {
-        $DummyModelVariable->fill($request->all());
+        $ModeleCamel->fill($request->all());
         
-        $DummyModelVariable->save();
+        $ModeleCamel->save();
 
-        return redirect()->route('DummyViewsNamespace.index')->with('success', "DummyModelClass was successfully updated.");
+        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModeleStudly was successfully updated.");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \DummyFullModelClass  $DummyModelVariable
+     * @param  \ModelClass  $ModeleCamel
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DummyModelClass $DummyModelVariable)
+    public function destroy(ModeleStudly $ModeleCamel)
     {
-        $DummyModelVariable->delete();
-        return redirect()->route('DummyViewsNamespace.index')->with('success', "DummyModelClass was successfully deleted.");
+        $ModeleCamel->delete();
+        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModeleStudly was successfully deleted.");
     }
 }

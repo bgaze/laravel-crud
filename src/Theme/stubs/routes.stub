@@ -1,16 +1,16 @@
 
 /*
- * DummyClass
+ * ModelWithParents
  *
  * Here is the compact version if you prefer : 
- * Route::resource('DummyViewsNamespace', 'DummyClass');
+ * Route::resource('PluralWithParentsKebabSlash', 'ModelWithParents');
  */
-Route::prefix('DummyViewsNamespace')->group(function () {
-    Route::get('/', 'DummyClass@index')->name('DummyViewsNamespace.index');
-    Route::get('/create', 'DummyClass@create')->name('DummyViewsNamespace.create');
-    Route::post('/', 'DummyClass@store')->name('DummyViewsNamespace.store');
-    Route::get('/{DummyModelVariable}', 'DummyClass@show')->where(['DummyModelVariable' => '\d+'])->name('DummyViewsNamespace.show');
-    Route::get('/{DummyModelVariable}/edit', 'DummyClass@edit')->where(['DummyModelVariable' => '\d+'])->name('DummyViewsNamespace.edit');
-    Route::put('/{DummyModelVariable}', 'DummyClass@update')->where(['DummyModelVariable' => '\d+'])->name('DummyViewsNamespace.update');
-    Route::delete('/{DummyModelVariable}', 'DummyClass@destroy')->where(['DummyModelVariable' => '\d+'])->name('DummyViewsNamespace.destroy');
+Route::prefix('PluralWithParentsKebabSlash')->group(function () {
+    Route::get('/', 'ModelWithParents@index')->name('PluralWithParentsKebabDot.index');
+    Route::get('/create', 'ModelWithParents@create')->name('PluralWithParentsKebabDot.create');
+    Route::post('/', 'ModelWithParents@store')->name('PluralWithParentsKebabDot.store');
+    Route::get('/{ModeleCamel}', 'ModelWithParents@show')->where(['ModeleCamel' => '\d+'])->name('PluralWithParentsKebabDot.show');
+    Route::get('/{ModeleCamel}/edit', 'ModelWithParents@edit')->where(['ModeleCamel' => '\d+'])->name('PluralWithParentsKebabDot.edit');
+    Route::put('/{ModeleCamel}', 'ModelWithParents@update')->where(['ModeleCamel' => '\d+'])->name('PluralWithParentsKebabDot.update');
+    Route::delete('/{ModeleCamel}', 'ModelWithParents@destroy')->where(['ModeleCamel' => '\d+'])->name('PluralWithParentsKebabDot.destroy');
 });

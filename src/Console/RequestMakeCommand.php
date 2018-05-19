@@ -36,7 +36,7 @@ class RequestMakeCommand extends Command {
         // Get CRUD theme.
         $theme = $this->getTheme();
 
-        // Write migration file.
+        // Write request file.
         $path = $theme->generatePhpFile('request', $theme->getRequestPath(), function($theme, $stub) {
             $theme
                     ->replace($stub, 'RequestNamespace')

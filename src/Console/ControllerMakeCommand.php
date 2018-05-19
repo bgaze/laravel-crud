@@ -2,13 +2,12 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Support\Str;
-use InvalidArgumentException;
-use Illuminate\Console\GeneratorCommand;
+use Illuminate\Console\Command;
+use Bgaze\Crud\Support\CrudHelpersTrait;
 
-class ControllerMakeCommand extends GeneratorCommand {
+class ControllerMakeCommand extends Command {
 
-    use \Bgaze\Crud\Support\CrudHelpersTrait;
+    use CrudHelpersTrait;
 
     /**
      * The console command signature.
@@ -16,10 +15,9 @@ class ControllerMakeCommand extends GeneratorCommand {
      * @var string
      */
     protected $signature = 'crud:controller 
-        {name : The name of the class.}
-        {--m|model= : The name of the Model class.}
-        {--p|plural= : The plural version of the Model class name.}
-        {--r|request= : The name of the request class validating Model\'s form.}';
+        {model : The name of the Model.}
+        {--p|plural= : The plural version of the Model\'s name.}
+        {--t|theme= : The theme to use to generate CRUD.}';
 
     /**
      * The console command description.
@@ -29,180 +27,65 @@ class ControllerMakeCommand extends GeneratorCommand {
     protected $description = 'Create a new CRUD controller class related to a Model';
 
     /**
-     * The type of class being generated.
-     *
-     * @var string
-     */
-    protected $type = 'Controller';
-
-    /**
      * Execute the console command.
      *
      * @return bool|null
      */
     public function handle() {
-        if (!preg_match('/^[A-Z][a-zA-Z]+Controller$/', $this->getNameInput())) {
-            throw new \Exception("Controller name must end with 'Controller'");
-        }
+        // Get CRUD theme.
+        $theme = $this->getTheme();
 
-        $name = $this->qualifyClass($this->getNameInput());
-        $path = $this->getPath($name);
+        // Write controller file.
+        $this->writeController($theme);
 
-        if ($this->alreadyExists($this->getNameInput())) {
-            throw new \Exception($this->stripBasePath($path) . ' already exists!');
-        }
-
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-        $this->finalizeFileGeneration($path, 'Controller created : %s');
-
-        $this->files->append(base_path('routes/web.php'), $this->buildRoutes($name));
-        $this->info("Routes added to <fg=white>routes/web.php</>");
-    }
-
-    /**
-     * Build the class with the given name.
-     *
-     * Remove the base controller import if we are already in base namespace.
-     *
-     * @param  string  $name
-     * @return string
-     */
-    protected function buildClass($name) {
-        $replace = $this->getReplacementValues($name);
-        return str_replace(array_keys($replace), array_values($replace), parent::buildClass($name));
+        // Write routes.
+        $this->writeRoutes($theme);
     }
 
     /**
      * TODO
      * 
-     * @param type $name
-     * @return type
+     * @param \Bgaze\Crud\Theme\Crud $theme
      */
-    public function buildRoutes($name) {
-        $replace = $this->getReplacementValues($name);
-        $stub = $this->replaceClass($this->files->get($this->getRoutesStub()), $name);
-        return str_replace(array_keys($replace), array_values($replace), $stub);
+    public function writeController($theme) {
+        $path = $theme->generatePhpFile('controller', $theme->getControllerPath(), function($theme, $stub) {
+            $theme
+                    ->replace($stub, 'ControllerNamespace')
+                    ->replace($stub, 'ControllerClass')
+                    ->replace($stub, 'RequestNamespace')
+                    ->replace($stub, 'RequestClass')
+                    ->replace($stub, 'ModelClass')
+                    ->replace($stub, 'ModeleStudly')
+                    ->replace($stub, 'ModeleCamel')
+                    ->replace($stub, 'PluralCamel')
+                    ->replace($stub, 'PluralWithParentsKebabDot')
+            ;
+
+            return $stub;
+        });
+
+        $this->info("Controller created : <fg=white>{$path}</>");
     }
 
     /**
      * TODO
      * 
-     * @param type $name
-     * @return type
+     * @param \Bgaze\Crud\Theme\Crud $theme
      */
-    protected function getReplacementValues($name) {
-        $controllerNamespace = $this->getNamespace($name);
-        $modelSingular = $this->getModelInput();
-        $modelPlural = $this->getPluralInput();
+    public function writeRoutes($theme) {
+        $stub = $theme->getStub('routes');
+        $path = $theme->getRoutesPath();
 
-        return [
-            'DummyFullModelClass' => $this->parseModel($modelSingular),
-            'DummyModelClass' => $modelSingular,
-            'DummyRequestClass' => $this->getRequestInput(),
-            'DummyModelVariable' => lcfirst($modelSingular),
-            'DummyModelPluralVariable' => lcfirst($modelPlural),
-            'DummyViewsNamespace' => Str::kebab($modelPlural),
-            "use {$controllerNamespace}\Controller;\n" => '',
-        ];
-    }
+        $theme
+                ->replace($stub, 'ModelWithParents')
+                ->replace($stub, 'ModeleCamel')
+                ->replace($stub, 'PluralWithParentsKebabDot')
+                ->replace($stub, 'PluralWithParentsKebabSlash')
+        ;
 
-    /**
-     * Get the fully-qualified model class name.
-     *
-     * @param  string  $model
-     * @return string
-     */
-    protected function parseModel($model) {
-        if (preg_match('([^A-Za-z0-9_/\\\\])', $model)) {
-            throw new InvalidArgumentException('Model name contains invalid characters.');
-        }
+        $theme->files->append($path, $stub);
 
-        $model = trim(str_replace('/', '\\', $model), '\\');
-
-        if (!Str::startsWith($model, $rootNamespace = $this->laravel->getNamespace())) {
-            $model = $rootNamespace . $model;
-        }
-
-        return $model;
-    }
-
-    /**
-     * Get the desired class name from the input.
-     *
-     * @return string
-     */
-    protected function getNameInput() {
-        return trim($this->argument('name'));
-    }
-
-    /**
-     * Get the name of the Model.
-     *
-     * @return string
-     */
-    protected function getModelInput() {
-        if ($this->option('model')) {
-            return trim($this->option('model'));
-        }
-
-        preg_match('/^([A-Z][a-zA-Z]+)Controller$/', $this->getNameInput(), $matches);
-
-        return $matches[1];
-    }
-
-    /**
-     * Get the plural version of the Model class name.
-     *
-     * @return string
-     */
-    protected function getPluralInput() {
-        if ($this->option('plural')) {
-            return trim($this->option('plural'));
-        }
-
-        return Str::plural($this->getModelInput());
-    }
-
-    /**
-     * Get the name of the request class validating Model\s form.
-     *
-     * @return string
-     */
-    protected function getRequestInput() {
-        if ($this->option('request')) {
-            return trim($this->option('request'));
-        }
-
-        return $this->getModelInput() . 'FormRequest';
-    }
-
-    /**
-     * Get the stub file for the generator.
-     *
-     * @return string
-     */
-    protected function getStub() {
-        return config('crud.stubs.controller');
-    }
-
-    /**
-     * Get the stub file for the routes.
-     *
-     * @return string
-     */
-    protected function getRoutesStub() {
-        return config('crud.stubs.routes');
-    }
-
-    /**
-     * Get the default namespace for the class.
-     *
-     * @param  string  $rootNamespace
-     * @return string
-     */
-    protected function getDefaultNamespace($rootNamespace) {
-        return $rootNamespace . '\Http\Controllers';
+        $this->info("Routes added to <fg=white>{$path}</>");
     }
 
 }

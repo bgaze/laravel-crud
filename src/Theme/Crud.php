@@ -20,14 +20,21 @@ class Crud {
      *
      * @var \Illuminate\Filesystem\Filesystem
      */
-    protected $files;
+    public $files;
 
     /**
      * TODO
      *
      * @var type 
      */
-    protected $root;
+    public $root;
+
+    /**
+     * TODO
+     *
+     * @var type 
+     */
+    public $definitions;
 
     /**
      * TODO
@@ -49,13 +56,6 @@ class Crud {
      * @var type 
      */
     protected $namespace;
-
-    /**
-     * TODO
-     *
-     * @var type 
-     */
-    protected $definitions;
 
     ############################################################################
     # INIT
@@ -157,7 +157,7 @@ class Crud {
      * @param type $name
      * @return type
      */
-    protected function getStub($name) {
+    public function getStub($name) {
         return $this->files->get($this->root . '/stubs/' . str_replace('.', '/', $name) . '.stub');
     }
 
@@ -225,6 +225,9 @@ class Crud {
         return $path;
     }
 
+    ############################################################################
+    # NESTED MODEL MANAGEMENT
+
     /**
      * TODO
      * 
@@ -267,6 +270,30 @@ class Crud {
         }
 
         return $name;
+    }
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    public function getPluralWithParentsKebabDot() {
+        return collect(explode('\\', $this->getPluralWithParents()))
+                        ->map(function($value) {
+                            return Str::kebab($value);
+                        })->implode('.');
+    }
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    public function getPluralWithParentsKebabSlash() {
+        return collect(explode('\\', $this->getPluralWithParents()))
+                        ->map(function($value) {
+                            return Str::kebab($value);
+                        })->implode('/');
     }
 
     ############################################################################
@@ -351,40 +378,6 @@ class Crud {
      */
     public function getNamespaceStudly() {
         return $this->namespace;
-    }
-
-    /**
-     * TODO
-     * 
-     * @return string
-     */
-    public function getNamespaceKebabDot() {
-        if (empty($this->namespace)) {
-            return $this->getPluralKebab();
-        }
-
-        return collect(explode('\\', $this->namespace))
-                        ->push($this->plural)
-                        ->map(function($value) {
-                            Str::kebab($value);
-                        })->implode('.');
-    }
-
-    /**
-     * TODO
-     * 
-     * @return string
-     */
-    public function getNamespaceKebabSlash() {
-        if (empty($this->namespace)) {
-            return $this->getPluralKebab();
-        }
-
-        return collect(explode('\\', $this->namespace))
-                        ->push($this->plural)
-                        ->map(function($value) {
-                            Str::kebab($value);
-                        })->implode('/');
     }
 
     ############################################################################
@@ -478,6 +471,46 @@ class Crud {
         }
 
         return $path;
+    }
+
+    ############################################################################
+    # CONTROLLER
+
+    public function getControllerClass() {
+        return $this->getModeleStudly() . 'Controller';
+    }
+
+    public function getControllerNamespace() {
+        $namespace = trim(app()->getNamespace(), '\\') . '\\Http\\Controllers';
+
+        if (!empty($this->namespace)) {
+            $namespace .= '\\' . $this->namespace;
+        }
+
+        return $namespace;
+    }
+
+    public function getControllerPath() {
+        $path = 'Http\\Controllers\\';
+
+        if (!empty($this->namespace)) {
+            $path .= $this->namespace . '\\';
+        }
+
+        $path .= $this->getModeleStudly() . 'Controller.php';
+
+        $path = app_path(str_replace('\\', '/', $path));
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    public function getRoutesPath() {
+        return base_path('routes/web.php');
     }
 
 }
