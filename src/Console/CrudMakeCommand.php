@@ -43,30 +43,42 @@ class CrudMakeCommand extends Command {
     protected $migration;
 
     /**
+     * TODO
+     */
+    public function __construct() {
+        parent::__construct();
+
+        // Prepare required definitions.
+        $this->prepareIndexesDefinition();
+        $this->prepareFieldsDefinition();
+    }
+
+    /**
      * Execute the console command.
      *
      * @return mixed
      */
     public function handle() {
+        // Intro.
+        $this->h1("Welcome to CRUD generator");
+
         // Initialize theme.
         $this->theme = $this->getTheme();
 
         // Check that no CRUD file already exists.
         $summary = $this->theme->crudFilesSummary();
 
-        // Intro.
-        $this->h1("Welcome to CRUD generator");
-        $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
-        $this->nl();
-
         // Acquire fields definition.
-        $this->h2("Model attributes definition");
         $this->getMigrationDefinition();
 
         // Ask for confirmation then generate CRUD.
-        $this->h2("CRUD generation");
-        $this->line($summary);
-        if ($this->confirm("Continue?", true)) {
+        if (!$this->option('no-interaction')) {
+            $this->h2("CRUD generation");
+            $this->line($summary);
+            $this->nl();
+        }
+
+        if ($this->option('no-interaction') || $this->confirm("Continue?", true)) {
             $this->makeMigration();
             $this->makeModel();
             $this->makeRequest();
@@ -80,10 +92,6 @@ class CrudMakeCommand extends Command {
      * Get migration content
      */
     protected function getMigrationDefinition() {
-        // Prepare required definitions.
-        $this->prepareIndexesDefinition();
-        $this->prepareFieldsDefinition();
-
         // Initialize migration.
         $this->migration = (object) [
                     'timestamps' => false,
@@ -92,7 +100,17 @@ class CrudMakeCommand extends Command {
                     'indexes' => []
         ];
 
+        // Quiet or no interaction modes.
+        if ($this->option('no-interaction') || $this->option('quiet')) {
+            $this->migration->timestamps = true;
+            $this->migration->softDeletes = true;
+            return;
+        }
+
         // Intro text.
+        $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
+        $this->nl();
+        $this->h2("Model attributes definition");
         $this->line("We are now going to build your model data.");
         $this->line("Please note that an <fg=cyan>auto-incremented id</> field will be automatically added.");
 
