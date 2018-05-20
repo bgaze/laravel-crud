@@ -28,8 +28,9 @@ class ServiceProvider extends Base {
                 Console\ModelMakeCommand::class,
                 Console\RequestMakeCommand::class,
                 Console\ViewsMakeCommand::class,
-                Console\RelationMakeCommand::class,
+                Console\FactoryMakeCommand::class,
                 Console\CrudMakeCommand::class,
+                Console\RelationMakeCommand::class,
             ]);
         }
     }

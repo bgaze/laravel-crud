@@ -213,7 +213,11 @@ class CrudMakeCommand extends Command {
      * Generate Model factory
      */
     protected function makeFactory() {
-        
+        $this->call('crud:factory', [
+            'model' => $this->argument('model'),
+            '--plural' => $this->option('plural'),
+            '--theme' => $this->option('theme')
+        ]);
     }
 
 }

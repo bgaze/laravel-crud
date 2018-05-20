@@ -93,7 +93,8 @@ class Crud {
             'getIndexViewPath',
             'getShowViewPath',
             'getCreateViewPath',
-            'getEditViewPath'
+            'getEditViewPath',
+            'getFactoryPath'
         ];
     }
 
@@ -597,7 +598,21 @@ class Crud {
     }
 
     ############################################################################
-    # CRUD GENERATION
+    # FACTORY
+
+    public function getFactoryPath() {
+        $path = database_path('factories/' . $this->getModelWithParents('') . 'Factory.php');
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    ############################################################################
+    # CRUD MAKE
 
     /**
      * TODO
