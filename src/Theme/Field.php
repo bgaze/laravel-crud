@@ -33,7 +33,7 @@ class Field {
      * 
      * @return string
      */
-    protected function compileMigrationRow() {
+    public function compileMigrationRow() {
         $tmp = $this->template;
 
         foreach ($this->arguments as $k => $v) {
@@ -54,7 +54,7 @@ class Field {
      * 
      * @return string
      */
-    protected function compileRequestRow() {
+    public function compileRequestRow() {
         
     }
 
@@ -63,7 +63,25 @@ class Field {
      * 
      * @return string
      */
-    protected function compileFormRow() {
+    public function compileTableHead() {
+        
+    }
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    public function compileTableBody() {
+        
+    }
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    public function compileFormRow() {
         
     }
 

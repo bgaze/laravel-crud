@@ -3,8 +3,6 @@
 namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
-use Illuminate\Filesystem\Filesystem;
 
 class CrudMakeCommand extends Command {
 
@@ -18,7 +16,10 @@ class CrudMakeCommand extends Command {
      *
      * @var string
      */
-    protected $signature = 'crud:make';
+    protected $signature = 'crud:make 
+        {model : The name of the Model.}
+        {--p|plural= : The plural version of the Model\'s name.}
+        {--t|theme= : The theme to use to generate CRUD.}';
 
     /**
      * The console command description.
@@ -28,18 +29,11 @@ class CrudMakeCommand extends Command {
     protected $description = 'Create a new CRUD';
 
     /**
-     * The filesystem instance.
+     * The theme instance.
      *
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var \Bgaze\Crud\Support\Theme\Crud
      */
-    protected $files;
-
-    /**
-     * Storage for migration names
-     * 
-     * @var \stdClass 
-     */
-    protected $names;
+    protected $theme;
 
     /**
      * Storage for migration data
@@ -49,66 +43,29 @@ class CrudMakeCommand extends Command {
     protected $migration;
 
     /**
-     * Constructor
-     */
-    public function __construct(Filesystem $files) {
-        parent::__construct();
-
-        // Initialize filesystem.
-        $this->files = $files;
-
-        // Initialize names.
-        $this->names = (object) [
-                    'singular' => false,
-                    'plurar' => false,
-                    'table' => false
-        ];
-
-        // Initialize migration.
-        $this->migration = (object) [
-                    'timestamps' => false,
-                    'softDeletes' => false,
-                    'fields' => [],
-                    'indexes' => []
-        ];
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
     public function handle() {
+        // Initialize theme.
+        $this->theme = $this->getTheme();
+
+        // Check that no CRUD file already exists.
+        $summary = $this->theme->getCrudFilesSummary();
+
         // Intro.
         $this->h1("Welcome to CRUD generator");
         $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
         $this->nl();
 
-        // Acquire names definition.
-        $this->h2("Step 1/3 : Names definition");
-        $this->getNamesDefinition();
-
-        // Check that no CRUD file already exists.
-        $this->checkForExistingFiles();
-
         // Acquire fields definition.
-        $this->h2("Step 2/3 : Model definition");
+        $this->h2("Model attributes definition");
         $this->getMigrationDefinition();
 
-        // Summarize CRUD.
-        $this->h2("Step 3/3 : CRUD generation");
-        $this->line("Following features will be generated based on your inputs.");
-        $this->nl();
-        $this->ul([
-            'Migration class',
-            'Model class',
-            'Request class with field type based validation',
-            'CRUD Views',
-            'Controller class with CRUD actions and routes',
-            'Model Factory'
-        ]);
-
         // Ask for confirmation then generate CRUD.
+        $this->h2("CRUD generation");
+        $this->line($summary);
         if ($this->confirm("Continue?", true)) {
             $this->makeMigration();
             $this->makeModel();
@@ -119,94 +76,6 @@ class CrudMakeCommand extends Command {
         }
     }
 
-    ############################################################################
-    # DEFINITIONS                                                              #
-    ############################################################################
-
-    /**
-     * Get the names to use to generate the CRUD
-     */
-    protected function getNamesDefinition() {
-        // Get Model name.
-        $this->line("We will first define the model name, which is also the Model class name.");
-        $this->line("It should be <fg=blue>camel cased and singular</>, for instance <fg=green>MyNewModel</>.");
-        while (!$this->names->singular) {
-            $tmp = $this->ask("Model name", "MyNewModel");
-
-            if (!$this->isValidCamelCase($tmp)) {
-                continue;
-            }
-
-            $this->names->singular = $tmp;
-        }
-
-        // Get name's plurar form.
-        $this->line("Please confirm plurar form of the Model name.");
-        $this->line("It should also be <fg=blue>camel cased</>, for instance <fg=green>MyNewModels</>.");
-        while (!$this->names->plurar) {
-            $tmp = $this->ask("Plural form", Str::plural($this->names->singular));
-
-            if (!$this->isValidCamelCase($tmp)) {
-                continue;
-            }
-
-            $this->names->plurar = $tmp;
-        }
-
-        // Get table name.
-        $this->line("Please confirm the Model table's name.");
-        $this->line("It should be <fg=blue>snake cased and plurar</>, for instance <fg=green>my_new_models</>.");
-        while (!$this->names->table) {
-            $tmp = $this->ask("Table name", Str::snake($this->names->plurar));
-
-            if (!$this->isValidSnakeCase($tmp)) {
-                continue;
-            }
-
-            $this->names->table = $tmp;
-        }
-    }
-
-    /**
-     * TODO
-     */
-    protected function checkForExistingFiles() {
-        $errors = collect([]);
-
-        // Migration.
-        $tmp = $this->files->glob(base_path("database/migrations/*_create_{$this->names->table}_table.php"));
-        if (count($tmp)) {
-            $errors = $errors->concat($tmp);
-        }
-
-        // Model.
-        $tmp = app_path($this->names->singular . '.php');
-        if ($this->files->exists($tmp)) {
-            $errors->push($tmp);
-        }
-
-        // Request.
-        $tmp = app_path('Http/Requests/' . $this->names->singular . 'FormRequest.php');
-        if ($this->files->exists($tmp)) {
-            $errors->push($tmp);
-        }
-
-        // Controller.
-        $tmp = app_path('Http/Controllers/' . $this->names->singular . 'Controller.php');
-        if ($this->files->exists($tmp)) {
-            $errors->push($tmp);
-        }
-
-        // If some files already exists, throw exception.
-        if ($errors->isNotEmpty()) {
-            $tmp = "Following file(s) already exist :\n";
-            $tmp .= $errors->map(function($p) {
-                        return ' - ' . $this->stripBasePath($p);
-                    })->implode("\n");
-            throw new \Exception($tmp);
-        }
-    }
-
     /**
      * Get migration content
      */
@@ -214,6 +83,14 @@ class CrudMakeCommand extends Command {
         // Prepare required definitions.
         $this->prepareIndexesDefinition();
         $this->prepareFieldsDefinition();
+
+        // Initialize migration.
+        $this->migration = (object) [
+                    'timestamps' => false,
+                    'softDeletes' => false,
+                    'fields' => [],
+                    'indexes' => []
+        ];
 
         // Intro text.
         $this->line("We are now going to build your model data.");
@@ -228,7 +105,7 @@ class CrudMakeCommand extends Command {
 
         // Soft delete.
         $this->h3('Soft delete');
-        $tmp = $this->choice('Do you wish enable soft delete?', ['softDeletes', 'softDeletesTz', 'No'], 0);
+        $tmp = $this->choice('Do you wish to enable soft delete?', ['softDeletes', 'softDeletesTz', 'No'], 0);
         if ($tmp !== 'No') {
             $this->migration->softDeletes = $tmp;
         }
@@ -249,10 +126,6 @@ class CrudMakeCommand extends Command {
         $this->line("Available types are : <fg=cyan>" . $this->indexes_definitions->keys()->implode('</>, <fg=cyan>') . "</>.");
         $this->indexesWizard();
     }
-
-    ############################################################################
-    # GENERATORS                                                               #
-    ############################################################################
 
     /**
      * Generate migration file
@@ -277,7 +150,9 @@ class CrudMakeCommand extends Command {
         }
 
         $this->call('crud:migration', [
-            'name' => "create_{$this->names->table}_table",
+            'model' => $this->argument('model'),
+            '--plural' => $this->option('plural'),
+            '--theme' => $this->option('theme'),
             '--content' => $content
         ]);
     }
@@ -289,8 +164,9 @@ class CrudMakeCommand extends Command {
         $fields = collect($this->migration->fields);
 
         $this->call('crud:model', [
-            'name' => $this->names->singular,
-            'table' => $this->names->table,
+            'model' => $this->argument('model'),
+            '--plural' => $this->option('plural'),
+            '--theme' => $this->option('theme'),
             '--timestamps' => $this->migration->timestamps,
             '--soft-delete' => $this->migration->softDeletes,
             '--fillables' => $fields->keys()->all(),
@@ -305,7 +181,9 @@ class CrudMakeCommand extends Command {
      */
     protected function makeRequest() {
         $this->call('crud:request', [
-            'name' => "{$this->names->singular}FormRequest",
+            'model' => $this->argument('model'),
+            '--plural' => $this->option('plural'),
+            '--theme' => $this->option('theme')
         ]);
     }
 
@@ -313,7 +191,11 @@ class CrudMakeCommand extends Command {
      * Generate views
      */
     protected function makeViews() {
-        
+        $this->call('crud:views', [
+            'model' => $this->argument('model'),
+            '--plural' => $this->option('plural'),
+            '--theme' => $this->option('theme')
+        ]);
     }
 
     /**
@@ -321,7 +203,9 @@ class CrudMakeCommand extends Command {
      */
     protected function makeController() {
         $this->call('crud:controller', [
-            'name' => "{$this->names->singular}Controller",
+            'model' => $this->argument('model'),
+            '--plural' => $this->option('plural'),
+            '--theme' => $this->option('theme')
         ]);
     }
 

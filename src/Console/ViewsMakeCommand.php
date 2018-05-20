@@ -51,16 +51,16 @@ class ViewsMakeCommand extends Command {
         }
 
         // Write index view.
-        $this->writeIndex($theme, $layout);
+        $this->writeIndexView($theme, $layout);
 
         // Write show view.
-        $this->writeShow($theme, $layout);
+        $this->writeShowView($theme, $layout);
 
         // Write create view.
-        $this->writeCreate($theme, $layout);
+        $this->writeCreateView($theme, $layout);
 
         // Write edit view.
-        $this->writeEdit($theme, $layout);
+        $this->writeEditView($theme, $layout);
     }
 
     /**
@@ -68,10 +68,8 @@ class ViewsMakeCommand extends Command {
      * 
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
-    protected function writeIndex($theme, $layout) {
-        $path = $theme->getViewsPath() . '/index.blade.php';
-
-        $path = $theme->generatePhpFile('views.index', $path, function($theme, $stub) use($layout) {
+    protected function writeIndexView($theme, $layout) {
+        $path = $theme->generatePhpFile('views.index', $theme->getIndexViewPath(), function($theme, $stub) use($layout) {
             $theme
                     ->replace($stub, 'ViewsLayout', $layout)
                     ->replace($stub, 'PluralWithParentsKebabDot')
@@ -95,10 +93,8 @@ class ViewsMakeCommand extends Command {
      * 
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
-    protected function writeShow($theme, $layout) {
-        $path = $theme->getViewsPath() . '/show.blade.php';
-
-        $path = $theme->generatePhpFile('views.show', $path, function($theme, $stub) use($layout) {
+    protected function writeShowView($theme, $layout) {
+        $path = $theme->generatePhpFile('views.show', $theme->getShowViewPath(), function($theme, $stub) use($layout) {
             $theme
                     ->replace($stub, 'ViewsLayout', $layout)
                     ->replace($stub, 'PluralWithParentsKebabDot')
@@ -120,10 +116,8 @@ class ViewsMakeCommand extends Command {
      * 
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
-    protected function writeCreate($theme, $layout) {
-        $path = $theme->getViewsPath() . '/create.blade.php';
-
-        $path = $theme->generatePhpFile('views.create', $path, function($theme, $stub) use($layout) {
+    protected function writeCreateView($theme, $layout) {
+        $path = $theme->generatePhpFile('views.create', $theme->getCreateViewPath(), function($theme, $stub) use($layout) {
             $theme
                     ->replace($stub, 'ViewsLayout', $layout)
                     ->replace($stub, 'PluralWithParentsKebabDot')
@@ -145,10 +139,8 @@ class ViewsMakeCommand extends Command {
      * 
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
-    protected function writeEdit($theme, $layout) {
-        $path = $theme->getViewsPath() . '/edit.blade.php';
-
-        $path = $theme->generatePhpFile('views.edit', $path, function($theme, $stub) use($layout) {
+    protected function writeEditView($theme, $layout) {
+        $path = $theme->generatePhpFile('views.edit', $theme->getEditViewPath(), function($theme, $stub) use($layout) {
             $theme
                     ->replace($stub, 'ViewsLayout', $layout)
                     ->replace($stub, 'PluralWithParentsKebabDot')

@@ -57,6 +57,9 @@ class Crud {
      */
     protected $namespace;
 
+    ############################################################################
+    # THEME "CONSTANTS"
+
     /**
      * TODO
      * 
@@ -73,6 +76,34 @@ class Crud {
      */
     static public function views() {
         return Str::kebab(self::name());
+    }
+
+    /**
+     * TODO
+     *
+     * @var array 
+     */
+    protected function filesMap() {
+        return [
+            'getMigrationPath',
+            'getModelPath',
+            'getRequestPath',
+            'getRequestPath',
+            'getControllerPath',
+            'getIndexViewPath',
+            'getShowViewPath',
+            'getCreateViewPath',
+            'getEditViewPath'
+        ];
+    }
+
+    /**
+     * TODO
+     *
+     * @var array 
+     */
+    protected function variablesMap() {
+        return [];
     }
 
     ############################################################################
@@ -534,12 +565,69 @@ class Crud {
     ############################################################################
     # VIEWS
 
+    protected function getViewPath($views) {
+        $path = resource_path('views/' . $this->getPluralWithParentsKebabSlash() . "/{$views}.blade.php");
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    public function getIndexViewPath() {
+        return $this->getViewPath('index');
+    }
+
+    public function getShowViewPath() {
+        return $this->getViewPath('show');
+    }
+
+    public function getCreateViewPath() {
+        return $this->getViewPath('create');
+    }
+
+    public function getEditViewPath() {
+        return $this->getViewPath('edit');
+    }
+
     public function getViewsLayout() {
         return self::views() . '::layout';
     }
 
-    public function getViewsPath() {
-        return resource_path('views/' . $this->getPluralWithParentsKebabSlash());
+    ############################################################################
+    # CRUD GENERATION
+
+    /**
+     * TODO
+     * 
+     * @return \Illuminate\Support\Collection
+     */
+    public function getCrudFilesSummary() {
+        $errors = collect([]);
+        $files = collect([]);
+
+        foreach ($this->filesMap() as $v) {
+            try {
+                $files->push($this->{$v}());
+            } catch (\Exception $e) {
+                $errors->push($e->getMessage());
+            }
+        }
+
+        if ($errors->isNotEmpty()) {
+            $tmp = "Cannot proceed to CRUD generation :\n - ";
+            $tmp .= $errors->implode("\n - ");
+            throw new \Exception($tmp);
+        }
+
+        $tmp = "<fg=green>Following files will be generated :</>\n - ";
+        $tmp .= $files->map(function($path) {
+                    return $this->stripBasePath($path);
+                })->implode("\n - ");
+
+        return $tmp;
     }
 
 }

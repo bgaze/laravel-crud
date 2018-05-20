@@ -10,7 +10,7 @@ trait CrudHelpersTrait {
     /**
      * TODO
      * 
-     * @return Bgaze\Crud\Support\Theme\Crud
+     * @return \Bgaze\Crud\Support\Theme\Crud
      */
     public function getTheme() {
         return $this->laravel->make($this->option('theme') ?: config('crud.theme'), [
