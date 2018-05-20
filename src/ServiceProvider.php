@@ -30,7 +30,7 @@ class ServiceProvider extends Base {
                 Console\ViewsMakeCommand::class,
                 Console\FactoryMakeCommand::class,
                 Console\CrudMakeCommand::class,
-                Console\RelationMakeCommand::class,
+                //Console\RelationMakeCommand::class,
             ]);
         }
     }
