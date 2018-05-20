@@ -46,7 +46,7 @@ class FactoryMakeCommand extends Command {
         });
 
         // Show success message.
-        $this->info("Factory created : <fg=white>$path</>");
+        $this->info("Factory file created : <fg=white>$path</>");
     }
 
 }

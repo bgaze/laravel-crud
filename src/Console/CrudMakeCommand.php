@@ -65,6 +65,11 @@ class CrudMakeCommand extends Command {
         // Initialize theme.
         $this->theme = $this->getTheme();
 
+        // Remind main variables.
+        $this->line('<fg=green>Model :</> ' . $this->theme->getModelWithParents());
+        $this->line('<fg=green>Plural form of model\'s name :</> ' . $this->theme->getPluralStudly());
+        $this->nl();
+
         // Check that no CRUD file already exists.
         $summary = $this->theme->crudFilesSummary();
 
@@ -81,10 +86,11 @@ class CrudMakeCommand extends Command {
         if ($this->option('no-interaction') || $this->confirm("Continue?", true)) {
             $this->makeMigration();
             $this->makeModel();
-            $this->makeRequest();
-            $this->makeViews();
-            $this->makeController();
             $this->makeFactory();
+            $this->makeRequest();
+            $this->makeController();
+            $this->makeViews();
+            $this->nl();
         }
     }
 

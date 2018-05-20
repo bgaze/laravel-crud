@@ -46,7 +46,7 @@ class RequestMakeCommand extends Command {
         });
 
         // Show success message.
-        $this->info("Request created : <fg=white>$path</>");
+        $this->info("Request class created : <fg=white>$path</>");
     }
 
 }

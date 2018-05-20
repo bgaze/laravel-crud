@@ -66,7 +66,7 @@ class MigrateMakeCommand extends Command {
         $this->composer->dumpAutoloads();
 
         // Show success message.
-        $this->info("Migration created : <fg=white>$path</>");
+        $this->info("Migration class created : <fg=white>$path</>");
     }
 
 }

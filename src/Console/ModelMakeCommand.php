@@ -54,7 +54,7 @@ class ModelMakeCommand extends Command {
         });
 
         // Show success message.
-        $this->info("Model created : <fg=white>$path</>");
+        $this->info("Model class created : <fg=white>$path</>");
     }
 
     /**

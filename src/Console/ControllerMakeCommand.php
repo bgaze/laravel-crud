@@ -49,7 +49,7 @@ class ControllerMakeCommand extends Command {
      */
     public function writeController($theme) {
         $path = $theme->generatePhpFile('controller', $theme->controllerPath());
-        $this->info("Controller created : <fg=white>{$path}</>");
+        $this->info("Controller class created : <fg=white>{$path}</>");
     }
 
     /**
