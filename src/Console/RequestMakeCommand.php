@@ -38,10 +38,12 @@ class RequestMakeCommand extends Command {
 
         // Write request file.
         $path = $theme->generatePhpFile('request', $theme->getRequestPath(), function($theme, $stub) {
+            $rules = $this->option('rules');
+
             $theme
                     ->replace($stub, 'RequestNamespace')
                     ->replace($stub, 'RequestClass')
-                    ->replace($stub, '/*RULES*/', $this->getRules())
+                    ->replace($stub, '#RULES', empty($rules) ? '//' : implode(",\n", $rules))
             ;
 
             return $stub;
@@ -49,23 +51,6 @@ class RequestMakeCommand extends Command {
 
         // Show success message.
         $this->info("Request created : <fg=white>$path</>");
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    protected function getRules() {
-        $rules = collect($this->option('rules'))->map(function($v) {
-                    return trim($v);
-                })->filter();
-
-        if ($rules->isEmpty()) {
-            return '';
-        }
-
-        return $rules->implode(",\n");
     }
 
 }

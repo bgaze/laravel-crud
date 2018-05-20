@@ -32,6 +32,8 @@ class RequestClass extends FormRequest
      */
     public function rules() 
     {
-        return [/*RULES*/];
+        return [
+            #RULES
+        ];
     }
 }
