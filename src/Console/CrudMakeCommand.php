@@ -65,20 +65,95 @@ class CrudMakeCommand extends Command {
         // Initialize theme.
         $this->theme = $this->getTheme();
 
-        // Remind main variables.
-        $this->line('<fg=green>Model :</> ' . $this->theme->getModelWithParents());
-        $this->line('<fg=green>Plural form of model\'s name :</> ' . $this->theme->getPluralStudly());
-        $this->nl();
+        // Initialize migration.
+        $this->migration = (object) [
+                    'timestamps' => ($this->option('no-interaction') || $this->option('quiet')),
+                    'softDeletes' => ($this->option('no-interaction') || $this->option('quiet')),
+                    'fields' => [],
+                    'indexes' => []
+        ];
+
+        // Show intro text.
+        $this->intro();
 
         // Check that no CRUD file already exists.
         $summary = $this->theme->crudFilesSummary();
 
-        // Acquire fields definition.
-        $this->getMigrationDefinition();
+        // Launch migration wizard.
+        if (!$this->option('no-interaction') && !$this->option('quiet')) {
+            $this->migrationWizard();
+        }
 
         // Ask for confirmation then generate CRUD.
+        $this->generate($summary);
+    }
+
+    /**
+     * TODO
+     * 
+     * @return void
+     */
+    protected function intro() {
         if (!$this->option('no-interaction')) {
-            $this->h2("CRUD generation");
+            $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
+            $this->nl();
+        }
+
+        $this->line('<fg=green>Model :</> ' . $this->theme->getModelWithParents());
+        $this->line('<fg=green>Plural form of model\'s name :</> ' . $this->theme->getPluralStudly());
+        $this->nl();
+
+        if (!$this->option('no-interaction')) {
+            $this->line("We are now going to build your model.");
+            $this->nl();
+        }
+    }
+
+    /**
+     * Get migration content
+     */
+    protected function migrationWizard() {
+        // Timestamps.
+        $this->h2('Timestamps');
+        $tmp = $this->choice('Do you wish to add timestamps?', ['timestamps', 'timestampsTz', 'nullableTimestamps', 'No'], 0);
+        if ($tmp !== 'No') {
+            $this->migration->timestamps = $tmp;
+        }
+
+        // Soft delete.
+        $this->h2('Soft delete');
+        $tmp = $this->choice('Do you wish to enable soft delete?', ['softDeletes', 'softDeletesTz', 'No'], 0);
+        if ($tmp !== 'No') {
+            $this->migration->softDeletes = $tmp;
+        }
+
+        // Fields wizard.
+        $this->h2('Fields');
+        $this->line("We are now going to define model's fields.");
+        $this->line("Please note that an <fg=cyan>auto-incremented id</> field will be automatically added.");
+        $this->nl();
+        $this->line("For available column types, enter <fg=cyan>list</>.");
+        $this->line("For a column detailed syntax, <fg=cyan>omit arguments and options.</>");
+        $this->fieldsWizard();
+
+        // Indexes wizard.
+        $this->h2('Indexes');
+        $this->line("Finaly, we can add indexes to the table.");
+        $this->nl();
+        $this->line("Syntax is <fg=cyan>indexType column1 [column2 column3 ...]</>");
+        $this->line("Available types are : <fg=cyan>" . $this->indexes_definitions->keys()->implode('</>, <fg=cyan>') . "</>.");
+        $this->indexesWizard();
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $summary
+     */
+    protected function generate($summary) {
+        $this->h2("CRUD generation");
+
+        if (!$this->option('no-interaction')) {
             $this->line($summary);
             $this->nl();
         }
@@ -92,63 +167,6 @@ class CrudMakeCommand extends Command {
             $this->makeViews();
             $this->nl();
         }
-    }
-
-    /**
-     * Get migration content
-     */
-    protected function getMigrationDefinition() {
-        // Initialize migration.
-        $this->migration = (object) [
-                    'timestamps' => false,
-                    'softDeletes' => false,
-                    'fields' => [],
-                    'indexes' => []
-        ];
-
-        // Quiet or no interaction modes.
-        if ($this->option('no-interaction') || $this->option('quiet')) {
-            $this->migration->timestamps = true;
-            $this->migration->softDeletes = true;
-            return;
-        }
-
-        // Intro text.
-        $this->line("This wizard will drive you through the process to create a ready-to-use CRUD related to a new Eloquent Model.");
-        $this->nl();
-        $this->h2("Model attributes definition");
-        $this->line("We are now going to build your model data.");
-        $this->line("Please note that an <fg=cyan>auto-incremented id</> field will be automatically added.");
-
-        // Timestamps.
-        $this->h3('Timestamps');
-        $tmp = $this->choice('Do you wish to add timestamps?', ['timestamps', 'timestampsTz', 'nullableTimestamps', 'No'], 0);
-        if ($tmp !== 'No') {
-            $this->migration->timestamps = $tmp;
-        }
-
-        // Soft delete.
-        $this->h3('Soft delete');
-        $tmp = $this->choice('Do you wish to enable soft delete?', ['softDeletes', 'softDeletesTz', 'No'], 0);
-        if ($tmp !== 'No') {
-            $this->migration->softDeletes = $tmp;
-        }
-
-        // Fields wizard.
-        $this->h3('Custom fields');
-        $this->line("We are now going to define model's fields.");
-        $this->nl();
-        $this->line("For available column types, enter <fg=cyan>list</>.");
-        $this->line("For a column detailed syntax, <fg=cyan>omit arguments and options.</>");
-        $this->fieldsWizard();
-
-        // Indexes wizard.
-        $this->h3('Indexes');
-        $this->line("Finaly, we can add indexes to the table if necessary.");
-        $this->nl();
-        $this->line("Syntax is <fg=cyan>indexType column1 [column2 column3 ...]</>");
-        $this->line("Available types are : <fg=cyan>" . $this->indexes_definitions->keys()->implode('</>, <fg=cyan>') . "</>.");
-        $this->indexesWizard();
     }
 
     /**

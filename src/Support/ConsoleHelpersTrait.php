@@ -35,18 +35,6 @@ trait ConsoleHelpersTrait {
      * @param string $text
      */
     public function h2($text) {
-        $this->nl();
-        $this->line("<fg=white;bg=blue>" . strtoupper($text) . "</>");
-        $this->nl();
-    }
-
-    /**
-     * Display a level 3 title.
-     * 
-     * @param string $text
-     */
-    public function h3($text) {
-        $this->nl();
         $this->line("<fg=blue>" . strtoupper($text) . "</>");
         $this->nl();
     }
