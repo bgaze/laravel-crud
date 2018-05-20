@@ -52,7 +52,7 @@ class CrudMakeCommand extends Command {
         $this->theme = $this->getTheme();
 
         // Check that no CRUD file already exists.
-        $summary = $this->theme->getCrudFilesSummary();
+        $summary = $this->theme->crudFilesSummary();
 
         // Intro.
         $this->h1("Welcome to CRUD generator");

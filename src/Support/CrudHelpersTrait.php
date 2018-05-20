@@ -8,18 +8,6 @@ namespace Bgaze\Crud\Support;
 trait CrudHelpersTrait {
 
     /**
-     * TODO
-     * 
-     * @return \Bgaze\Crud\Support\Theme\Crud
-     */
-    public function getTheme() {
-        return $this->laravel->make($this->option('theme') ?: config('crud.theme'), [
-                    'model' => $this->argument('model'),
-                    'plural' => $this->option('plural')
-        ]);
-    }
-
-    /**
      * Validate a camel case string.
      * 
      * @param string $str

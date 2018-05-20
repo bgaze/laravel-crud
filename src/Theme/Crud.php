@@ -57,9 +57,6 @@ class Crud {
      */
     protected $namespace;
 
-    ############################################################################
-    # THEME "CONSTANTS"
-
     /**
      * TODO
      * 
@@ -80,31 +77,11 @@ class Crud {
 
     /**
      * TODO
-     *
-     * @var array 
+     * 
+     * @return string
      */
-    protected function filesMap() {
-        return [
-            'getMigrationPath',
-            'getModelPath',
-            'getRequestPath',
-            'getRequestPath',
-            'getControllerPath',
-            'getIndexViewPath',
-            'getShowViewPath',
-            'getCreateViewPath',
-            'getEditViewPath',
-            'getFactoryPath'
-        ];
-    }
-
-    /**
-     * TODO
-     *
-     * @var array 
-     */
-    protected function variablesMap() {
-        return [];
+    static public function layout() {
+        return self::views() . '::layout';
     }
 
     ############################################################################
@@ -198,6 +175,46 @@ class Crud {
         return $tmp;
     }
 
+    /**
+     * TODO
+     *
+     * @var array 
+     */
+    protected function filesMap() {
+        return [
+            'migrationPath',
+            'modelPath',
+            'requestPath',
+            'controllerPath',
+            'indexViewPath',
+            'showViewPath',
+            'createViewPath',
+            'editViewPath',
+            'factoryPath'
+        ];
+    }
+
+    /**
+     * TODO
+     *
+     * @var array 
+     */
+    protected function variablesMap() {
+        $variables = [];
+
+        foreach (get_class_methods($this) as $method) {
+            if (substr($method, 0, 3) !== 'get') {
+                continue;
+            }
+
+            $variables[] = substr($method, 3);
+        }
+
+        rsort($variables);
+
+        return $variables;
+    }
+
     ############################################################################
     # FILES GENERATION
 
@@ -207,7 +224,7 @@ class Crud {
      * @param type $name
      * @return type
      */
-    public function getStub($name) {
+    public function stub($name) {
         return $this->files->get($this->root . '/stubs/' . str_replace('.', '/', $name) . '.stub');
     }
 
@@ -235,12 +252,19 @@ class Crud {
      * @param type $path
      * @param callable $replace
      */
-    public function generateFile($stub, $path, callable $replace) {
+    public function generateFile($stub, $path, callable $replace = null) {
         // Get stub content.
-        $stub = $this->getStub($stub);
+        $stub = $this->stub($stub);
+
+        // Replace common variables.
+        foreach ($this->variablesMap() as $var) {
+            $this->replace($stub, $var);
+        }
 
         // Do custom replacements.
-        $stub = $replace($this, $stub);
+        if ($replace !== null) {
+            $stub = $replace($this, $stub);
+        }
 
         // Strip base path.
         $path = $this->stripBasePath($path);
@@ -264,7 +288,7 @@ class Crud {
      * @param type $path
      * @param callable $replace
      */
-    public function generatePhpFile($stub, $path, callable $replace) {
+    public function generatePhpFile($stub, $path, callable $replace = null) {
         // Generate file.
         $path = $this->generateFile($stub, $path, $replace);
 
@@ -276,7 +300,211 @@ class Crud {
     }
 
     ############################################################################
-    # NESTED MODEL MANAGEMENT
+    # PATHES
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    public function crudFilesSummary() {
+        $errors = collect([]);
+        $files = collect([]);
+
+        foreach ($this->filesMap() as $v) {
+            try {
+                $files->push($this->{$v}());
+            } catch (\Exception $e) {
+                $errors->push($e->getMessage());
+            }
+        }
+
+        if ($errors->isNotEmpty()) {
+            $tmp = "Cannot proceed to CRUD generation :\n - ";
+            $tmp .= $errors->implode("\n - ");
+            throw new \Exception($tmp);
+        }
+
+        $tmp = "<fg=green>Following files will be generated :</>\n - ";
+        $tmp .= $files->map(function($path) {
+                    return $this->stripBasePath($path);
+                })->implode("\n - ");
+
+        return $tmp;
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function migrationPath() {
+        $file = Str::snake($this->getMigrationClass());
+
+        if (count($this->files->glob(database_path("migrations/*_{$file}.php")))) {
+            throw new \Exception("A '{$file}.php' migration file already exists.");
+        }
+
+        $prefix = date('Y_m_d_His');
+
+        return database_path("migrations/{$prefix}_{$file}.php");
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function modelPath() {
+        $path = app_path($this->getModelWithParents('/') . '.php');
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function requestPath() {
+        $path = 'Http\\Requests\\';
+
+        if (!empty($this->namespace)) {
+            $path .= $this->namespace . '\\';
+        }
+
+        $path .= $this->getModelStudly() . 'FormRequest.php';
+
+        $path = app_path(str_replace('\\', '/', $path));
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function controllerPath() {
+        $path = 'Http\\Controllers\\';
+
+        if (!empty($this->namespace)) {
+            $path .= $this->namespace . '\\';
+        }
+
+        $path .= $this->getModelStudly() . 'Controller.php';
+
+        $path = app_path(str_replace('\\', '/', $path));
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function routesPath() {
+        return base_path('routes/web.php');
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function factoryPath() {
+        $path = database_path('factories/' . $this->getModelWithParents('') . 'Factory.php');
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $views
+     * @return string
+     * @throws \Exception
+     */
+    protected function viewPath($views) {
+        $path = resource_path('views/' . $this->getPluralWithParentsKebabSlash() . "/{$views}.blade.php");
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
+        }
+
+        return $path;
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function indexViewPath() {
+        return $this->viewPath('index');
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function showViewPath() {
+        return $this->viewPath('show');
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function createViewPath() {
+        return $this->viewPath('create');
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     * @throws \Exception
+     */
+    public function editViewPath() {
+        return $this->viewPath('edit');
+    }
+
+    ############################################################################
+    # VARIABLES
 
     /**
      * TODO
@@ -345,9 +573,6 @@ class Crud {
                             return Str::kebab($value);
                         })->implode('/');
     }
-
-    ############################################################################
-    # VARIABLES
 
     /**
      * TODO
@@ -426,17 +651,15 @@ class Crud {
      * 
      * @return string
      */
-    public function getNamespaceStudly() {
-        return $this->namespace;
-    }
-
-    ############################################################################
-    # MIGRATION
-
     public function getTableName() {
         return Str::snake($this->getPluralWithParents(''));
     }
 
+    /**
+     * TODO
+     * 
+     * @return string
+     */
     public function getMigrationClass() {
         $class = 'Create' . $this->getPluralWithParents('') . 'Table';
 
@@ -447,21 +670,11 @@ class Crud {
         return $class;
     }
 
-    public function getMigrationPath() {
-        $file = Str::snake($this->getMigrationClass());
-
-        if (count($this->files->glob(database_path("migrations/*_{$file}.php")))) {
-            throw new \Exception("A '{$file}.php' migration file already exists.");
-        }
-
-        $prefix = date('Y_m_d_His');
-
-        return database_path("migrations/{$prefix}_{$file}.php");
-    }
-
-    ############################################################################
-    # MODEL
-
+    /**
+     * TODO
+     * 
+     * @return string
+     */
     public function getModelNamespace() {
         $namespace = trim(app()->getNamespace(), '\\');
 
@@ -472,28 +685,29 @@ class Crud {
         return $namespace;
     }
 
+    /**
+     * TODO
+     * 
+     * @return string
+     */
     public function getModelClass() {
         return $this->getModelNamespace() . '\\' . $this->getModelStudly();
     }
 
-    public function getModelPath() {
-        $path = app_path($this->getModelWithParents('/') . '.php');
-
-        if ($this->files->exists($path)) {
-            $path = $this->stripBasePath($path);
-            throw new \Exception("A '{$path}' file already exists.");
-        }
-
-        return $path;
-    }
-
-    ############################################################################
-    # REQUEST
-
+    /**
+     * TODO
+     * 
+     * @return string
+     */
     public function getRequestClass() {
         return $this->getModelStudly() . 'FormRequest';
     }
 
+    /**
+     * TODO
+     * 
+     * @return string
+     */
     public function getRequestNamespace() {
         $namespace = trim(app()->getNamespace(), '\\') . '\\Http\\Requests';
 
@@ -504,32 +718,20 @@ class Crud {
         return $namespace;
     }
 
-    public function getRequestPath() {
-        $path = 'Http\\Requests\\';
-
-        if (!empty($this->namespace)) {
-            $path .= $this->namespace . '\\';
-        }
-
-        $path .= $this->getModelStudly() . 'FormRequest.php';
-
-        $path = app_path(str_replace('\\', '/', $path));
-
-        if ($this->files->exists($path)) {
-            $path = $this->stripBasePath($path);
-            throw new \Exception("A '{$path}' file already exists.");
-        }
-
-        return $path;
-    }
-
-    ############################################################################
-    # CONTROLLER
-
+    /**
+     * TODO
+     * 
+     * @return string
+     */
     public function getControllerClass() {
         return $this->getModelStudly() . 'Controller';
     }
 
+    /**
+     * TODO
+     * 
+     * @return string
+     */
     public function getControllerNamespace() {
         $namespace = trim(app()->getNamespace(), '\\') . '\\Http\\Controllers';
 
@@ -538,111 +740,6 @@ class Crud {
         }
 
         return $namespace;
-    }
-
-    public function getControllerPath() {
-        $path = 'Http\\Controllers\\';
-
-        if (!empty($this->namespace)) {
-            $path .= $this->namespace . '\\';
-        }
-
-        $path .= $this->getModelStudly() . 'Controller.php';
-
-        $path = app_path(str_replace('\\', '/', $path));
-
-        if ($this->files->exists($path)) {
-            $path = $this->stripBasePath($path);
-            throw new \Exception("A '{$path}' file already exists.");
-        }
-
-        return $path;
-    }
-
-    public function getRoutesPath() {
-        return base_path('routes/web.php');
-    }
-
-    ############################################################################
-    # VIEWS
-
-    protected function getViewPath($views) {
-        $path = resource_path('views/' . $this->getPluralWithParentsKebabSlash() . "/{$views}.blade.php");
-
-        if ($this->files->exists($path)) {
-            $path = $this->stripBasePath($path);
-            throw new \Exception("A '{$path}' file already exists.");
-        }
-
-        return $path;
-    }
-
-    public function getIndexViewPath() {
-        return $this->getViewPath('index');
-    }
-
-    public function getShowViewPath() {
-        return $this->getViewPath('show');
-    }
-
-    public function getCreateViewPath() {
-        return $this->getViewPath('create');
-    }
-
-    public function getEditViewPath() {
-        return $this->getViewPath('edit');
-    }
-
-    public function getViewsLayout() {
-        return self::views() . '::layout';
-    }
-
-    ############################################################################
-    # FACTORY
-
-    public function getFactoryPath() {
-        $path = database_path('factories/' . $this->getModelWithParents('') . 'Factory.php');
-
-        if ($this->files->exists($path)) {
-            $path = $this->stripBasePath($path);
-            throw new \Exception("A '{$path}' file already exists.");
-        }
-
-        return $path;
-    }
-
-    ############################################################################
-    # CRUD MAKE
-
-    /**
-     * TODO
-     * 
-     * @return \Illuminate\Support\Collection
-     */
-    public function getCrudFilesSummary() {
-        $errors = collect([]);
-        $files = collect([]);
-
-        foreach ($this->filesMap() as $v) {
-            try {
-                $files->push($this->{$v}());
-            } catch (\Exception $e) {
-                $errors->push($e->getMessage());
-            }
-        }
-
-        if ($errors->isNotEmpty()) {
-            $tmp = "Cannot proceed to CRUD generation :\n - ";
-            $tmp .= $errors->implode("\n - ");
-            throw new \Exception($tmp);
-        }
-
-        $tmp = "<fg=green>Following files will be generated :</>\n - ";
-        $tmp .= $files->map(function($path) {
-                    return $this->stripBasePath($path);
-                })->implode("\n - ");
-
-        return $tmp;
     }
 
 }

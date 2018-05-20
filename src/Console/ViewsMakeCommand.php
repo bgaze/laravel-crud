@@ -3,11 +3,11 @@
 namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
-use Bgaze\Crud\Support\CrudHelpersTrait;
+use Bgaze\Crud\Support\ConsoleHelpersTrait;
 
 class ViewsMakeCommand extends Command {
 
-    use CrudHelpersTrait;
+    use ConsoleHelpersTrait;
 
     /**
      * The console command signature.
@@ -47,7 +47,7 @@ class ViewsMakeCommand extends Command {
         } elseif (config('crud.layout')) {
             $layout = config('crud.layout');
         } else {
-            $layout = $theme->getViewsLayout();
+            $layout = $theme::layout();
         }
 
         // Write index view.
@@ -69,14 +69,9 @@ class ViewsMakeCommand extends Command {
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
     protected function writeIndexView($theme, $layout) {
-        $path = $theme->generatePhpFile('views.index', $theme->getIndexViewPath(), function($theme, $stub) use($layout) {
+        $path = $theme->generatePhpFile('views.index', $theme->indexViewPath(), function($theme, $stub) use($layout) {
             $theme
                     ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, 'PluralWithParentsKebabDot')
-                    ->replace($stub, 'PluralWithParents')
-                    ->replace($stub, 'ModelCamel')
-                    ->replace($stub, 'PluralCamel')
-                    ->replace($stub, 'ModelWithParents')
                     ->replace($stub, '#THEAD', $this->option('index-thead') ?: '')
                     ->replace($stub, '#TBODY', $this->option('index-tbody') ?: '')
             ;
@@ -94,13 +89,9 @@ class ViewsMakeCommand extends Command {
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
     protected function writeShowView($theme, $layout) {
-        $path = $theme->generatePhpFile('views.show', $theme->getShowViewPath(), function($theme, $stub) use($layout) {
+        $path = $theme->generatePhpFile('views.show', $theme->showViewPath(), function($theme, $stub) use($layout) {
             $theme
                     ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, 'PluralWithParentsKebabDot')
-                    ->replace($stub, 'PluralWithParents')
-                    ->replace($stub, 'ModelWithParents')
-                    ->replace($stub, 'ModelCamel')
                     ->replace($stub, '#CONTENT', $this->option('show-content') ?: '')
             ;
 
@@ -117,13 +108,9 @@ class ViewsMakeCommand extends Command {
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
     protected function writeCreateView($theme, $layout) {
-        $path = $theme->generatePhpFile('views.create', $theme->getCreateViewPath(), function($theme, $stub) use($layout) {
+        $path = $theme->generatePhpFile('views.create', $theme->createViewPath(), function($theme, $stub) use($layout) {
             $theme
                     ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, 'PluralWithParentsKebabDot')
-                    ->replace($stub, 'PluralWithParents')
-                    ->replace($stub, 'ModelWithParents')
-                    ->replace($stub, 'ModelCamel')
                     ->replace($stub, '#FIELDS', $this->option('create-fields') ?: '')
             ;
 
@@ -140,14 +127,10 @@ class ViewsMakeCommand extends Command {
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
     protected function writeEditView($theme, $layout) {
-        $path = $theme->generatePhpFile('views.edit', $theme->getEditViewPath(), function($theme, $stub) use($layout) {
+        $path = $theme->generatePhpFile('views.edit', $theme->editViewPath(), function($theme, $stub) use($layout) {
             $theme
                     ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, 'PluralWithParentsKebabDot')
-                    ->replace($stub, 'PluralWithParents')
-                    ->replace($stub, 'ModelWithParents')
-                    ->replace($stub, 'ModelCamel')
-                    ->replace($stub, '#FIELDS', $this->option('create-fields') ?: '')
+                    ->replace($stub, '#FIELDS', $this->option('edit-fields') ?: '')
             ;
 
             return $stub;

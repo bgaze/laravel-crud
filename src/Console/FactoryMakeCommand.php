@@ -3,11 +3,11 @@
 namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
-use Bgaze\Crud\Support\CrudHelpersTrait;
+use Bgaze\Crud\Support\ConsoleHelpersTrait;
 
 class FactoryMakeCommand extends Command {
 
-    use CrudHelpersTrait;
+    use ConsoleHelpersTrait;
 
     /**
      * The console command signature.
@@ -37,13 +37,10 @@ class FactoryMakeCommand extends Command {
         $theme = $this->getTheme();
 
         // Write request file.
-        $path = $theme->generatePhpFile('factory', $theme->getFactoryPath(), function($theme, $stub) {
+        $path = $theme->generatePhpFile('factory', $theme->factoryPath(), function($theme, $stub) {
             $content = $this->option('content');
 
-            $theme
-                    ->replace($stub, 'ModelClass')
-                    ->replace($stub, '#CONTENT', empty($content) ? '//' : implode(",\n", $content))
-            ;
+            $theme->replace($stub, '#CONTENT', empty($content) ? '//' : implode(",\n", $content));
 
             return $stub;
         });

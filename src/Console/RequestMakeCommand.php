@@ -3,11 +3,11 @@
 namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
-use Bgaze\Crud\Support\CrudHelpersTrait;
+use Bgaze\Crud\Support\ConsoleHelpersTrait;
 
 class RequestMakeCommand extends Command {
 
-    use CrudHelpersTrait;
+    use ConsoleHelpersTrait;
 
     /**
      * The console command signature.
@@ -37,14 +37,10 @@ class RequestMakeCommand extends Command {
         $theme = $this->getTheme();
 
         // Write request file.
-        $path = $theme->generatePhpFile('request', $theme->getRequestPath(), function($theme, $stub) {
+        $path = $theme->generatePhpFile('request', $theme->requestPath(), function($theme, $stub) {
             $rules = $this->option('rules');
 
-            $theme
-                    ->replace($stub, 'RequestNamespace')
-                    ->replace($stub, 'RequestClass')
-                    ->replace($stub, '#RULES', empty($rules) ? '//' : implode(",\n", $rules))
-            ;
+            $theme->replace($stub, '#RULES', empty($rules) ? '//' : implode(",\n", $rules));
 
             return $stub;
         });

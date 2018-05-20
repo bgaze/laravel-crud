@@ -3,11 +3,11 @@
 namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
-use Bgaze\Crud\Support\CrudHelpersTrait;
+use Bgaze\Crud\Support\ConsoleHelpersTrait;
 
 class ControllerMakeCommand extends Command {
 
-    use CrudHelpersTrait;
+    use ConsoleHelpersTrait;
 
     /**
      * The console command signature.
@@ -48,22 +48,7 @@ class ControllerMakeCommand extends Command {
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
     public function writeController($theme) {
-        $path = $theme->generatePhpFile('controller', $theme->getControllerPath(), function($theme, $stub) {
-            $theme
-                    ->replace($stub, 'ControllerNamespace')
-                    ->replace($stub, 'ControllerClass')
-                    ->replace($stub, 'RequestNamespace')
-                    ->replace($stub, 'RequestClass')
-                    ->replace($stub, 'ModelClass')
-                    ->replace($stub, 'ModelStudly')
-                    ->replace($stub, 'ModelCamel')
-                    ->replace($stub, 'PluralCamel')
-                    ->replace($stub, 'PluralWithParentsKebabDot')
-            ;
-
-            return $stub;
-        });
-
+        $path = $theme->generatePhpFile('controller', $theme->controllerPath());
         $this->info("Controller created : <fg=white>{$path}</>");
     }
 
@@ -73,8 +58,8 @@ class ControllerMakeCommand extends Command {
      * @param \Bgaze\Crud\Theme\Crud $theme
      */
     public function writeRoutes($theme) {
-        $stub = $theme->getStub('routes');
-        $path = $theme->getRoutesPath();
+        $stub = $theme->stub('routes');
+        $path = $theme->routesPath();
 
         $theme
                 ->replace($stub, 'ModelWithParents')

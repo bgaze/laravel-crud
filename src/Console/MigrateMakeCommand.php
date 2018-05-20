@@ -4,11 +4,11 @@ namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use Bgaze\Crud\Support\CrudHelpersTrait;
+use Bgaze\Crud\Support\ConsoleHelpersTrait;
 
 class MigrateMakeCommand extends Command {
 
-    use CrudHelpersTrait;
+    use ConsoleHelpersTrait;
 
     /**
      * The console command signature.
@@ -56,12 +56,8 @@ class MigrateMakeCommand extends Command {
         $theme = $this->getTheme();
 
         // Write migration file.
-        $path = $theme->generatePhpFile('migration', $theme->getMigrationPath(), function($theme, $stub) {
-            $theme
-                    ->replace($stub, 'TableName')
-                    ->replace($stub, 'MigrationClass')
-                    ->replace($stub, '#CONTENT', implode("\n", $this->option('content')))
-            ;
+        $path = $theme->generatePhpFile('migration', $theme->migrationPath(), function($theme, $stub) {
+            $theme->replace($stub, '#CONTENT', implode("\n", $this->option('content')));
 
             return $stub;
         });

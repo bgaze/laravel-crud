@@ -4,10 +4,12 @@ namespace Bgaze\Crud\Console;
 
 use Illuminate\Console\Command;
 use Bgaze\Crud\Support\CrudHelpersTrait;
+use Bgaze\Crud\Support\ConsoleHelpersTrait;
 
 class ModelMakeCommand extends Command {
 
     use CrudHelpersTrait;
+    use ConsoleHelpersTrait;
 
     /**
      * The console command signature.
@@ -40,11 +42,8 @@ class ModelMakeCommand extends Command {
         $theme = $this->getTheme();
 
         // Write model file.
-        $path = $theme->generatePhpFile('model', $theme->getModelPath(), function($theme, $stub) {
+        $path = $theme->generatePhpFile('model', $theme->modelPath(), function($theme, $stub) {
             $theme
-                    ->replace($stub, 'ModelNamespace')
-                    ->replace($stub, 'ModelStudly')
-                    ->replace($stub, 'TableName')
                     ->replace($stub, '#TIMESTAMPS', $this->option('timestamps') ? 'public $timestamps = true;' : '')
                     ->replace($stub, '#SOFTDELETE', $this->option('soft-delete') ? 'use Illuminate\Database\Eloquent\SoftDeletes;' : '')
                     ->replace($stub, '#FILLABLES', $this->getFillables())
