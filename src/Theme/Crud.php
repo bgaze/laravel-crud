@@ -113,6 +113,7 @@ class Crud {
      * @throws Exception
      */
     protected function parseModelName($model, $plural) {
+        // Parse Model.
         $model = trim($model, '\\/ ');
         $model = str_replace('/', '\\', $model);
 
@@ -129,6 +130,7 @@ class Crud {
             $this->namespace = null;
         }
 
+        // Parse plural.
         if (!$plural) {
             $this->plural = Str::plural($this->model);
         } else if (!preg_match('/^([A-Z][a-z]+)+$/', $plural)) {
@@ -213,6 +215,25 @@ class Crud {
         rsort($variables);
 
         return $variables;
+    }
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    protected function modelsSubDirectory() {
+        $dir = config('crud.models-directory', false);
+
+        if ($dir === true) {
+            return 'Models';
+        }
+
+        if ($dir && !empty($dir)) {
+            return $dir;
+        }
+
+        return '';
     }
 
     ############################################################################
@@ -358,7 +379,9 @@ class Crud {
      * @throws \Exception
      */
     public function modelPath() {
-        $path = app_path($this->getModelWithParents('/') . '.php');
+        $path = $this->modelsSubDirectory() . '/' . $this->getModelWithParents('/') . '.php';
+
+        $path = app_path(trim($path, '/'));
 
         if ($this->files->exists($path)) {
             $path = $this->stripBasePath($path);
@@ -676,7 +699,13 @@ class Crud {
      * @return string
      */
     public function getModelNamespace() {
+        $dir = $this->modelsSubDirectory();
+        
         $namespace = trim(app()->getNamespace(), '\\');
+
+        if (!empty($dir)) {
+            $namespace .= '\\' . $dir;
+        }
 
         if (!empty($this->namespace)) {
             $namespace .= '\\' . $this->namespace;

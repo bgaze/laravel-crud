@@ -30,7 +30,7 @@ class ServiceProvider extends Base {
                 Console\ViewsMakeCommand::class,
                 Console\FactoryMakeCommand::class,
                 Console\CrudMakeCommand::class,
-                //Console\RelationMakeCommand::class,
+                    //Console\RelationMakeCommand::class,
             ]);
         }
     }
@@ -44,6 +44,12 @@ class ServiceProvider extends Base {
         // Merge configuration.
         $this->mergeConfigFrom(__DIR__ . '/config/definitions.php', 'crud-definitions');
         $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
+
+        // Validate configuration.
+        $dir = config('crud.models-directory', false);
+        if ($dir && !empty($dir) && $dir !== true && !preg_match('/^([A-Z][a-z]+)+$/', $dir)) {
+            throw new \Exception("Your configuration for 'crud.models-directory' is invalid.\nSpecified value must match /^([A-Z][a-z]+)+$/.");
+        }
 
         // Register default theme class.
         $this->app->bind(Crud::name(), function ($app, $parameters) {
