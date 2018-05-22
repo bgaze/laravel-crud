@@ -4,16 +4,14 @@ namespace Bgaze\Crud\Theme;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
-use Bgaze\Crud\Support\CrudHelpersTrait;
+use Bgaze\Crud\Theme\Content;
 
 /**
- * Description of Theme
+ * TODO
  *
  * @author bgaze
  */
 class Crud {
-
-    use CrudHelpersTrait;
 
     /**
      * The filesystem instance.
@@ -25,16 +23,9 @@ class Crud {
     /**
      * TODO
      *
-     * @var type 
+     * @var \Bgaze\Crud\Theme\Content 
      */
-    public $root;
-
-    /**
-     * TODO
-     *
-     * @var type 
-     */
-    public $definitions;
+    public $content;
 
     /**
      * TODO
@@ -56,6 +47,26 @@ class Crud {
      * @var type 
      */
     protected $namespace;
+
+    /**
+     * TODO
+     *
+     * @param  \Illuminate\Filesystem\Filesystem  $files
+     * @return void
+     */
+    public function __construct(Filesystem $files, $model, $plural = null) {
+        // Get Model name and namespace.
+        $this->parseModelName($model, $plural);
+
+        // Filesystem.
+        $this->files = $files;
+
+        // Init CRUD content.
+        $this->content = new Content();
+    }
+
+    ############################################################################
+    # THEME IDENTITY
 
     /**
      * TODO
@@ -85,24 +96,25 @@ class Crud {
     }
 
     ############################################################################
-    # INIT
+    # NAMES MANAGEMENT
 
     /**
      * TODO
-     *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
-     * @return void
+     * 
+     * @return string
      */
-    public function __construct(Filesystem $files, $model, $plural = null) {
-        // Theme root dir.
-        $class = new \ReflectionClass($this);
-        $this->root = dirname($class->getFileName());
+    protected function modelsSubDirectory() {
+        $dir = config('crud.models-directory', false);
 
-        // Filesystem.
-        $this->files = $files;
+        if ($dir === true) {
+            return 'Models';
+        }
 
-        // Get Model name and namespace.
-        $this->parseModelName($model, $plural);
+        if ($dir && !empty($dir)) {
+            return $dir;
+        }
+
+        return '';
     }
 
     /**
@@ -143,97 +155,45 @@ class Crud {
     /**
      * TODO
      * 
-     */
-    protected function loadDefinitions() {
-        $this->definitions = (object) [
-                    'validation' => collect(config('crud-definitions.migrate.validation')),
-                    'timestamps' => collect(config('crud-definitions.migrate.timestamps')),
-                    'indexes' => collect(config('crud-definitions.migrate.indexes')),
-                    'modifiers' => collect(config('crud-definitions.migrate.modifiers')),
-                    'fields' => collect(config('crud-definitions.migrate.fields'))->map([$this, 'loadFieldDefinition'])
-        ];
-    }
-
-    /**
-     * TODO
-     * 
-     * @param array $definition
-     * @param type $name
+     * @param type $separator
      * @return type
      */
-    protected function loadFieldDefinition(array $definition, $name) {
-        $tmp = (object) $definition;
+    public function getModelWithParents($separator = '\\') {
+        $name = '';
 
-        $help = SignedInput::help($tmp->signature);
-        $tmp->help = $name . ' ' . $help;
-
-        list($options, $arguments) = explode(' [--] ', $help);
-        $tmp->help_row = [
-            'name' => $name,
-            'arguments' => $arguments,
-            'options' => trim(str_replace('] [', ' ', $options), '[]')
-        ];
-
-        return $tmp;
-    }
-
-    /**
-     * TODO
-     *
-     * @var array 
-     */
-    protected function filesMap() {
-        return [
-            'migrationPath',
-            'modelPath',
-            'requestPath',
-            'controllerPath',
-            'indexViewPath',
-            'showViewPath',
-            'createViewPath',
-            'editViewPath',
-            'factoryPath'
-        ];
-    }
-
-    /**
-     * TODO
-     *
-     * @var array 
-     */
-    protected function variablesMap() {
-        $variables = [];
-
-        foreach (get_class_methods($this) as $method) {
-            if (substr($method, 0, 3) !== 'get') {
-                continue;
-            }
-
-            $variables[] = substr($method, 3);
+        if (!empty($this->namespace)) {
+            $name .= $this->namespace . '\\';
         }
 
-        rsort($variables);
+        $name .= $this->getModelStudly();
 
-        return $variables;
+        if ($separator !== '\\') {
+            return str_replace('\\', $separator, $name);
+        }
+
+        return $name;
     }
 
     /**
      * TODO
      * 
-     * @return string
+     * @param type $separator
+     * @return type
      */
-    protected function modelsSubDirectory() {
-        $dir = config('crud.models-directory', false);
+    public function getPluralWithParents($separator = '\\') {
+        $name = '';
 
-        if ($dir === true) {
-            return 'Models';
+        if (!empty($this->namespace)) {
+            $name .= $this->namespace . '\\';
         }
 
-        if ($dir && !empty($dir)) {
-            return $dir;
+        $name .= $this->getPluralStudly();
+
+        if ($separator !== '\\') {
+            return str_replace('\\', $separator, $name);
         }
 
-        return '';
+        return $name;
     }
 
     ############################################################################
@@ -246,7 +206,7 @@ class Crud {
      * @return type
      */
     public function stub($name) {
-        return $this->files->get($this->root . '/stubs/' . str_replace('.', '/', $name) . '.stub');
+        return $this->files->get(__DIR__ . '/stubs/' . str_replace('.', '/', $name) . '.stub');
     }
 
     /**
@@ -326,32 +286,29 @@ class Crud {
     /**
      * TODO
      * 
-     * @return string
+     * @param type $path
+     * @return type
      */
-    public function crudFilesSummary() {
-        $errors = collect([]);
-        $files = collect([]);
+    protected function stripBasePath($path) {
+        return str_replace(base_path() . '/', '', $path);
+    }
 
-        foreach ($this->filesMap() as $v) {
-            try {
-                $files->push($this->{$v}());
-            } catch (\Exception $e) {
-                $errors->push($e->getMessage());
-            }
+    /**
+     * TODO
+     * 
+     * @param type $views
+     * @return string
+     * @throws \Exception
+     */
+    protected function viewPath($views) {
+        $path = resource_path('views/' . $this->getPluralWithParentsKebabSlash() . "/{$views}.blade.php");
+
+        if ($this->files->exists($path)) {
+            $path = $this->stripBasePath($path);
+            throw new \Exception("A '{$path}' file already exists.");
         }
 
-        if ($errors->isNotEmpty()) {
-            $tmp = "Cannot proceed to CRUD generation :\n - ";
-            $tmp .= $errors->implode("\n - ");
-            throw new \Exception($tmp);
-        }
-
-        $tmp = "<fg=green>Following files will be generated :</>\n - ";
-        $tmp .= $files->map(function($path) {
-                    return $this->stripBasePath($path);
-                })->implode("\n - ");
-
-        return $tmp;
+        return $path;
     }
 
     /**
@@ -471,24 +428,6 @@ class Crud {
     /**
      * TODO
      * 
-     * @param type $views
-     * @return string
-     * @throws \Exception
-     */
-    protected function viewPath($views) {
-        $path = resource_path('views/' . $this->getPluralWithParentsKebabSlash() . "/{$views}.blade.php");
-
-        if ($this->files->exists($path)) {
-            $path = $this->stripBasePath($path);
-            throw new \Exception("A '{$path}' file already exists.");
-        }
-
-        return $path;
-    }
-
-    /**
-     * TODO
-     * 
      * @return type
      * @throws \Exception
      */
@@ -531,46 +470,23 @@ class Crud {
 
     /**
      * TODO
-     * 
-     * @param type $separator
-     * @return type
+     *
+     * @var array 
      */
-    public function getModelWithParents($separator = '\\') {
-        $name = '';
+    protected function variablesMap() {
+        $variables = [];
 
-        if (!empty($this->namespace)) {
-            $name .= $this->namespace . '\\';
+        foreach (get_class_methods($this) as $method) {
+            if (substr($method, 0, 3) !== 'get') {
+                continue;
+            }
+
+            $variables[] = substr($method, 3);
         }
 
-        $name .= $this->getModelStudly();
+        rsort($variables);
 
-        if ($separator !== '\\') {
-            return str_replace('\\', $separator, $name);
-        }
-
-        return $name;
-    }
-
-    /**
-     * TODO
-     * 
-     * @param type $separator
-     * @return type
-     */
-    public function getPluralWithParents($separator = '\\') {
-        $name = '';
-
-        if (!empty($this->namespace)) {
-            $name .= $this->namespace . '\\';
-        }
-
-        $name .= $this->getPluralStudly();
-
-        if ($separator !== '\\') {
-            return str_replace('\\', $separator, $name);
-        }
-
-        return $name;
+        return $variables;
     }
 
     /**
@@ -700,7 +616,7 @@ class Crud {
      */
     public function getModelNamespace() {
         $dir = $this->modelsSubDirectory();
-        
+
         $namespace = trim(app()->getNamespace(), '\\');
 
         if (!empty($dir)) {

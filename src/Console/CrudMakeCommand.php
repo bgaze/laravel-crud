@@ -2,14 +2,13 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
+use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class CrudMakeCommand extends Command {
+class CrudMakeCommand extends GeneratorCommand {
 
-    use \Bgaze\Crud\Support\ConsoleHelpersTrait;
-    use \Bgaze\Crud\Support\CrudHelpersTrait;
-    use \Bgaze\Crud\Support\Migration\FieldsWizardTrait;
-    use \Bgaze\Crud\Support\Migration\IndexesWizardTrait;
+    use ConsoleHelpersTrait;
 
     /**
      * The name and signature of the console command.
@@ -19,7 +18,10 @@ class CrudMakeCommand extends Command {
     protected $signature = 'crud:make 
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
-        {--t|theme= : The theme to use to generate CRUD.}';
+        {--t|timestamps : Add timestamps directives}
+        {--s|soft-deletes : Add soft delete directives}
+        {--c|content=* : The list of Model\'s fields (signature syntax).}
+        {--theme= : The theme to use to generate CRUD.}';
 
     /**
      * The console command description.
@@ -29,29 +31,11 @@ class CrudMakeCommand extends Command {
     protected $description = 'Create a new CRUD';
 
     /**
-     * The theme instance.
+     * The CRUD instance.
      *
      * @var \Bgaze\Crud\Support\Theme\Crud
      */
-    protected $theme;
-
-    /**
-     * Storage for migration data
-     *
-     * @var type 
-     */
-    protected $migration;
-
-    /**
-     * TODO
-     */
-    public function __construct() {
-        parent::__construct();
-
-        // Prepare required definitions.
-        $this->prepareIndexesDefinition();
-        $this->prepareFieldsDefinition();
-    }
+    protected $crud;
 
     /**
      * Execute the console command.
@@ -59,33 +43,34 @@ class CrudMakeCommand extends Command {
      * @return mixed
      */
     public function handle() {
-        // Intro.
         $this->h1("Welcome to CRUD generator");
+        parent::handle();
+    }
 
-        // Initialize theme.
-        $this->theme = $this->getTheme();
-
-        // Initialize migration.
-        $this->migration = (object) [
-                    'timestamps' => ($this->option('no-interaction') || $this->option('quiet')),
-                    'softDeletes' => ($this->option('no-interaction') || $this->option('quiet')),
-                    'fields' => [],
-                    'indexes' => []
-        ];
+    /**
+     * TODO
+     * 
+     * @param Crud $crud
+     */
+    protected function build(Crud $crud) {
+        // Make crud accessible globally.
+        $this->crud = $crud;
 
         // Show intro text.
         $this->intro();
 
         // Check that no CRUD file already exists.
-        $summary = $this->theme->crudFilesSummary();
+        $summary = $this->summary();
 
-        // Launch migration wizard.
+        // Acquire data.
         if (!$this->option('no-interaction') && !$this->option('quiet')) {
-            $this->migrationWizard();
+            $this->getTimestampsInput();
+            $this->getSoftDeleteInput();
+            $this->getFieldsInput();
         }
 
-        // Ask for confirmation then generate CRUD.
-        $this->generate($summary);
+        // Generate CRUD.
+        $this->make($summary);
     }
 
     /**
@@ -99,8 +84,8 @@ class CrudMakeCommand extends Command {
             $this->nl();
         }
 
-        $this->line('<fg=green>Model :</> ' . $this->theme->getModelWithParents());
-        $this->line('<fg=green>Plural form of model\'s name :</> ' . $this->theme->getPluralStudly());
+        $this->line('<fg=green>Model :</> ' . $this->crud->getModelWithParents());
+        $this->line('<fg=green>Plural form of model\'s name :</> ' . $this->crud->getPluralStudly());
         $this->nl();
 
         if (!$this->option('no-interaction')) {
@@ -110,47 +95,139 @@ class CrudMakeCommand extends Command {
     }
 
     /**
-     * Get migration content
+     * TODO
+     * 
+     * @return string
      */
-    protected function migrationWizard() {
-        // Timestamps.
+    public function summary() {
+        $errors = collect([]);
+        $files = collect([]);
+
+        foreach (['migration', 'model', 'request', 'controller', 'indexView', 'showView', 'createView', 'editView', 'factory'] as $v) {
+            try {
+                $files->push($this->crud->{"{$v}Path"}());
+            } catch (\Exception $e) {
+                $errors->push($e->getMessage());
+            }
+        }
+
+        if ($errors->isNotEmpty()) {
+            $tmp = "Cannot proceed to CRUD generation :\n - ";
+            $tmp .= $errors->implode("\n - ");
+            throw new \Exception($tmp);
+        }
+
+        $tmp = "<fg=green>Following files will be generated :</>\n - ";
+        $tmp .= $files->map(function($path) {
+                    return str_replace(base_path() . '/', '', $path);
+                })->implode("\n - ");
+
+        return $tmp;
+    }
+
+    ############################################################################
+    # ACQUIRE DATA
+
+    /**
+     * TODO
+     */
+    protected function getTimestampsInput() {
         $this->h2('Timestamps');
         $tmp = $this->choice('Do you wish to add timestamps?', ['timestamps', 'timestampsTz', 'nullableTimestamps', 'No'], 0);
-        if ($tmp !== 'No') {
-            $this->migration->timestamps = $tmp;
-        }
+        $this->crud->content->timestamps = ($tmp === 'No') ? false : $tmp;
+    }
 
-        // Soft delete.
+    /**
+     * TODO
+     */
+    protected function getSoftDeleteInput() {
         $this->h2('Soft delete');
         $tmp = $this->choice('Do you wish to enable soft delete?', ['softDeletes', 'softDeletesTz', 'No'], 0);
-        if ($tmp !== 'No') {
-            $this->migration->softDeletes = $tmp;
-        }
+        $this->crud->content->softDeletes = ($tmp === 'No') ? false : $tmp;
+    }
 
-        // Fields wizard.
-        $this->h2('Fields');
-        $this->line("We are now going to define model's fields.");
+    /**
+     * TODO
+     */
+    protected function getFieldsInput() {
+        // Intro.
+        $this->h2('Fields & indexes');
+        $this->line("We are now going to define model's data.");
         $this->line("Please note that an <fg=cyan>auto-incremented id</> field will be automatically added.");
         $this->nl();
-        $this->line("For available column types, enter <fg=cyan>list</>.");
-        $this->line("For a column detailed syntax, <fg=cyan>omit arguments and options.</>");
-        $this->fieldsWizard();
+        $this->line("For available types, enter <fg=cyan>list</>.");
+        $this->line("For a type detailed syntax, <fg=cyan>omit arguments and options.</>");
 
-        // Indexes wizard.
-        $this->h2('Indexes');
-        $this->line("Finaly, we can add indexes to the table.");
-        $this->nl();
-        $this->line("Syntax is <fg=cyan>indexType column1 [column2 column3 ...]</>");
-        $this->line("Available types are : <fg=cyan>" . $this->indexes_definitions->keys()->implode('</>, <fg=cyan>') . "</>.");
-        $this->indexesWizard();
+        // Commands list for autocomplete.
+        $fields = $this->crud->definitions->keys()->merge(['list', 'no'])->toArray();
+
+        // Loop and ask for fields while no explicit break.
+        while (true) {
+            // User input.
+            $question = trim($this->anticipate('Add a column', $fields, 'no'));
+
+            // Manage wizard exit.
+            if ($question === 'no') {
+                if ($this->crud->content->isEmpty() && !$this->confirm("You haven't added any field. Continue?", true)) {
+                    continue;
+                }
+                break;
+            }
+
+            // Manage 'list' command.
+            if ($question === 'list') {
+                $this->showFieldsHelp();
+                continue;
+            }
+
+            // Catch any error to prevent unwanted wizard exit.
+            try {
+                // Parse user input.
+                list($definition, $input) = $this->parseUserInput($question);
+
+                // If empty arguments, show help.
+                if (empty($input)) {
+                    $this->line($definition->help);
+                    continue;
+                }
+
+                // Add to content.
+                $this->crud->content->add($definition, $input);
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+                $this->error($e->getTraceAsString());
+            }
+        }
     }
+
+    protected function showFieldHelp($name) {
+        $config = config("crud-definitions.fields.{$name}");
+        $this->line("   {$config['description']}\n   Signature :   <fg=cyan>{$name} {$config['signature']}</>\n");
+    }
+
+    protected function showFieldsHelp() {
+        $rows = collect(config('crud-definitions.fields'))->map(function ($config, $name) {
+            $pos = strpos($config['signature'], '--');
+
+            if ($pos) {
+                return [$name, substr($config['signature'], 0, $pos - 2), substr($config['signature'], $pos - 1)];
+            }
+
+            return [$name, $config['signature'], ''];
+        });
+
+        $this->table(['Command', 'Arguments', 'Options'], $rows);
+    }
+
+    ############################################################################
+    # GENERATE CRUD
 
     /**
      * TODO
      * 
      * @param type $summary
      */
-    protected function generate($summary) {
+    protected function make($summary) {
         $this->h2("CRUD generation");
 
         if (!$this->option('no-interaction')) {
@@ -173,29 +250,13 @@ class CrudMakeCommand extends Command {
      * Generate migration file
      */
     protected function makeMigration() {
-        $content = [];
-
-        if ($this->migration->timestamps) {
-            $content[] = config("crud-definitions.migrate.timestamps.{$this->migration->timestamps}.template");
-        }
-
-        if ($this->migration->softDeletes) {
-            $content[] = config("crud-definitions.migrate.softDeletes.{$this->migration->softDeletes}.template");
-        }
-
-        foreach ($this->migration->fields as $field) {
-            $content[] = $this->compileMigrationField($field);
-        }
-
-        foreach ($this->migration->indexes as $index) {
-            $content[] = $this->compileMigrationIndex($index);
-        }
-
         $this->call('crud:migration', [
             'model' => $this->argument('model'),
             '--plural' => $this->option('plural'),
             '--theme' => $this->option('theme'),
-            '--content' => $content
+            '--timestamps' => $this->crud->content->timestamps,
+            '--soft-delete' => $this->crud->content->softDeletes,
+            '--content' => $this->crud->content->toSignatures()
         ]);
     }
 
@@ -203,14 +264,14 @@ class CrudMakeCommand extends Command {
      * Generate model file
      */
     protected function makeModel() {
-        $fields = collect($this->migration->fields);
+        $fields = collect($this->fields);
 
         $this->call('crud:model', [
             'model' => $this->argument('model'),
             '--plural' => $this->option('plural'),
             '--theme' => $this->option('theme'),
-            '--timestamps' => $this->migration->timestamps,
-            '--soft-delete' => $this->migration->softDeletes,
+            '--timestamps' => $this->crud->content->timestamps,
+            '--soft-delete' => $this->crud->content->softDeletes,
             '--fillables' => $fields->keys()->all(),
             '--dates' => $fields->filter(function($field) {
                         return in_array($field->type, ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz']);

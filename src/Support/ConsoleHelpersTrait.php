@@ -5,18 +5,6 @@ namespace Bgaze\Crud\Support;
 trait ConsoleHelpersTrait {
 
     /**
-     * TODO
-     * 
-     * @return \Bgaze\Crud\Support\Theme\Crud
-     */
-    public function getTheme() {
-        return $this->laravel->make($this->option('theme') ?: config('crud.theme'), [
-                    'model' => $this->argument('model'),
-                    'plural' => $this->option('plural')
-        ]);
-    }
-
-    /**
      * Display a level 1 title.
      * 
      * @param string $text

@@ -8,6 +8,6 @@
     <h1>Edit ModelWithParents #{{ $ModelCamel->id }}</h1>
 
     {!! Form::open($ModelCamel, ['route' => ['PluralWithParentsKebabDot.update', $ModelCamel->id], 'method' => 'put']) !!}
-        #FIELDS
+        #FORM
     {!! Form::close() !!}
 @endsection

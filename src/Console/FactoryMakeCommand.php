@@ -2,12 +2,10 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
-use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class FactoryMakeCommand extends Command {
-
-    use ConsoleHelpersTrait;
+class FactoryMakeCommand extends GeneratorCommand {
 
     /**
      * The console command signature.
@@ -18,7 +16,7 @@ class FactoryMakeCommand extends Command {
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
         {--t|theme= : The theme to use to generate CRUD.}
-        {--c|content=* : The lines to insert into factory array.}';
+        {--c|content=* : The list of Model\'s fields (signature syntax).}';
 
     /**
      * The console command description.
@@ -28,20 +26,14 @@ class FactoryMakeCommand extends Command {
     protected $description = 'Create a new CRUD model factory file';
 
     /**
-     * Execute the console command.
-     *
-     * @return void
+     * TODO
+     * 
+     * @param Crud $crud
      */
-    public function handle() {
-        // Get CRUD theme.
-        $theme = $this->getTheme();
-
+    protected function build(Crud $crud) {
         // Write request file.
-        $path = $theme->generatePhpFile('factory', $theme->factoryPath(), function($theme, $stub) {
-            $content = $this->option('content');
-
-            $theme->replace($stub, '#CONTENT', empty($content) ? '//' : implode(",\n", $content));
-
+        $path = $crud->generatePhpFile('factory', $crud->factoryPath(), function(Crud $crud, $stub) {
+            $crud->replace($stub, '#CONTENT', $crud->content->toFactory());
             return $stub;
         });
 

@@ -2,11 +2,11 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class MigrateMakeCommand extends Command {
+class MigrateMakeCommand extends GeneratorCommand {
 
     use ConsoleHelpersTrait;
 
@@ -18,7 +18,9 @@ class MigrateMakeCommand extends Command {
     protected $signature = 'crud:migration 
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
-        {--c|content=* : The PHP lines of your migration body (one line by row).}
+        {--t|timestamps : Add timestamps directives}
+        {--s|soft-delete : Add soft delete directives}
+        {--c|content=* : The list of Model\'s fields (signature syntax).}
         {--theme= : The theme to use to generate CRUD.}';
 
     /**
@@ -47,18 +49,14 @@ class MigrateMakeCommand extends Command {
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return void
+     * TODO
+     * 
+     * @param Crud $crud
      */
-    public function handle() {
-        // Get CRUD theme.
-        $theme = $this->getTheme();
-
+    protected function build(Crud $crud) {
         // Write migration file.
-        $path = $theme->generatePhpFile('migration', $theme->migrationPath(), function($theme, $stub) {
-            $theme->replace($stub, '#CONTENT', implode("\n", $this->option('content')));
-
+        $path = $crud->generatePhpFile('migration', $crud->migrationPath(), function(Crud $crud, $stub) {
+            $crud->replace($stub, '#CONTENT', $crud->content->toMigration());
             return $stub;
         });
 

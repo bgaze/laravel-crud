@@ -2,10 +2,10 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
-use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class ViewsMakeCommand extends Command {
+class ViewsMakeCommand extends GeneratorCommand {
 
     use ConsoleHelpersTrait;
 
@@ -17,13 +17,10 @@ class ViewsMakeCommand extends Command {
     protected $signature = 'crud:views 
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
-        {--t|theme= : The theme to use to generate CRUD.}
-        {--l|layout= : The layout to extend into generated views.}
-        {--index-thead= : The HTML to insert into index table head.}
-        {--index-tbody= : The HTML to insert into index table body.}
-        {--create-fields= : The HTML to insert into create form.}
-        {--edit-fields= : The HTML to insert into edit form.}
-        {--show-content= : The HTML to insert into show page.}';
+        {--t|timestamps : Add timestamps directives}
+        {--s|soft-deletes : Add soft delete directives}
+        {--c|content=* : The list of Model\'s fields (signature syntax).}
+        {--theme= : The theme to use to generate CRUD.}';
 
     /**
      * The console command description.
@@ -33,47 +30,45 @@ class ViewsMakeCommand extends Command {
     protected $description = 'Create CRUD views';
 
     /**
-     * Execute the console command.
-     *
-     * @return bool|null
+     * TODO
+     * 
+     * @param Crud $crud
      */
-    public function handle() {
-        // Get CRUD theme.
-        $theme = $this->getTheme();
-
+    protected function build(Crud $crud) {
         // Get layout.
         if ($this->option('layout')) {
             $layout = $this->option('layout');
         } elseif (config('crud.layout')) {
             $layout = config('crud.layout');
         } else {
-            $layout = $theme::layout();
+            $layout = $crud::layout();
         }
 
         // Write index view.
-        $this->writeIndexView($theme, $layout);
+        $this->writeIndexView($crud, $layout);
 
         // Write show view.
-        $this->writeShowView($theme, $layout);
+        $this->writeShowView($crud, $layout);
 
         // Write create view.
-        $this->writeCreateView($theme, $layout);
+        $this->writeCreateView($crud, $layout);
 
         // Write edit view.
-        $this->writeEditView($theme, $layout);
+        $this->writeEditView($crud, $layout);
     }
 
     /**
      * TODO
      * 
-     * @param \Bgaze\Crud\Theme\Crud $theme
+     * @param Crud $crud
+     * @param string $layout
      */
-    protected function writeIndexView($theme, $layout) {
-        $path = $theme->generatePhpFile('views.index', $theme->indexViewPath(), function($theme, $stub) use($layout) {
-            $theme
+    protected function writeIndexView(Crud $crud, $layout) {
+        $path = $crud->generatePhpFile('views.index', $crud->indexViewPath(), function(Crud $crud, $stub) use($layout) {
+            $crud
                     ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, '#THEAD', $this->option('index-thead') ?: '')
-                    ->replace($stub, '#TBODY', $this->option('index-tbody') ?: '')
+                    ->replace($stub, '#THEAD', $crud->content->toTableHead())
+                    ->replace($stub, '#TBODY', $crud->content->toTableBody())
             ;
 
             return $stub;
@@ -86,13 +81,14 @@ class ViewsMakeCommand extends Command {
     /**
      * TODO
      * 
-     * @param \Bgaze\Crud\Theme\Crud $theme
+     * @param Crud $crud
+     * @param string $layout
      */
-    protected function writeShowView($theme, $layout) {
-        $path = $theme->generatePhpFile('views.show', $theme->showViewPath(), function($theme, $stub) use($layout) {
-            $theme
+    protected function writeShowView(Crud $crud, $layout) {
+        $path = $crud->generatePhpFile('views.show', $crud->showViewPath(), function(Crud $crud, $stub) use($layout) {
+            $crud
                     ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, '#CONTENT', $this->option('show-content') ?: '')
+                    ->replace($stub, '#CONTENT', $crud->content->toShow())
             ;
 
             return $stub;
@@ -105,14 +101,14 @@ class ViewsMakeCommand extends Command {
     /**
      * TODO
      * 
-     * @param \Bgaze\Crud\Theme\Crud $theme
+     * @param Crud $crud
+     * @param string $layout
      */
-    protected function writeCreateView($theme, $layout) {
-        $path = $theme->generatePhpFile('views.create', $theme->createViewPath(), function($theme, $stub) use($layout) {
-            $theme
+    protected function writeCreateView(Crud $crud, $layout) {
+        $path = $crud->generatePhpFile('views.create', $crud->createViewPath(), function(Crud $crud, $stub) use($layout) {
+            $crud
                     ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, '#FIELDS', $this->option('create-fields') ?: '')
-            ;
+                    ->replace($stub, '#FORM', $crud->content->toForm(true));
 
             return $stub;
         });
@@ -124,13 +120,14 @@ class ViewsMakeCommand extends Command {
     /**
      * TODO
      * 
-     * @param \Bgaze\Crud\Theme\Crud $theme
+     * @param Crud $crud
+     * @param string $layout
      */
-    protected function writeEditView($theme, $layout) {
-        $path = $theme->generatePhpFile('views.edit', $theme->editViewPath(), function($theme, $stub) use($layout) {
-            $theme
+    protected function writeEditView(Crud $crud, $layout) {
+        $path = $crud->generatePhpFile('views.edit', $crud->editViewPath(), function(Crud $crud, $stub) use($layout) {
+            $crud
                     ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, '#FIELDS', $this->option('edit-fields') ?: '')
+                    ->replace($stub, '#FORM', $crud->content->toForm(false))
             ;
 
             return $stub;

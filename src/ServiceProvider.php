@@ -30,7 +30,6 @@ class ServiceProvider extends Base {
                 Console\ViewsMakeCommand::class,
                 Console\FactoryMakeCommand::class,
                 Console\CrudMakeCommand::class,
-                    //Console\RelationMakeCommand::class,
             ]);
         }
     }
@@ -41,9 +40,14 @@ class ServiceProvider extends Base {
      * @return void
      */
     public function register() {
-        // Merge configuration.
+        // Merge definitions.
         $this->mergeConfigFrom(__DIR__ . '/config/definitions.php', 'crud-definitions');
+
+        // Merge package configuration.
         $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
+
+        // Register helpers file.
+        require __DIR__ . '/helpers.php';
 
         // Validate configuration.
         $dir = config('crud.models-directory', false);
