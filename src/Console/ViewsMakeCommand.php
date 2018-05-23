@@ -7,8 +7,6 @@ use Bgaze\Crud\Theme\Crud;
 
 class ViewsMakeCommand extends GeneratorCommand {
 
-    use ConsoleHelpersTrait;
-
     /**
      * The console command signature.
      *
@@ -20,7 +18,8 @@ class ViewsMakeCommand extends GeneratorCommand {
         {--t|timestamps : Add timestamps directives}
         {--s|soft-deletes : Add soft delete directives}
         {--c|content=* : The list of Model\'s fields (signature syntax).}
-        {--theme= : The theme to use to generate CRUD.}';
+        {--theme= : The theme to use to generate CRUD.}
+        {--layout= : The layout to extend into generated views.}';
 
     /**
      * The console command description.

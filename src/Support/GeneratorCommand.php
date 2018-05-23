@@ -19,7 +19,7 @@ abstract class GeneratorCommand extends Command {
      */
     public function handle() {
         // Instantiate CRUD.
-        $crud = $this->laravel->make($this->option('theme') ?: config('crud.theme'), [
+        $crud = $this->laravel->make($this->option('theme') ? $this->option('theme') : config('crud.theme'), [
             'model' => $this->argument('model'),
             'plural' => $this->option('plural')
         ]);

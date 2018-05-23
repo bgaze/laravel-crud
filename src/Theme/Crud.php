@@ -321,7 +321,7 @@ class Crud {
         $file = Str::snake($this->getMigrationClass());
 
         if (count($this->files->glob(database_path("migrations/*_{$file}.php")))) {
-            throw new \Exception("A '{$file}.php' migration file already exists.");
+            throw new \Exception("A '*_{$file}.php' migration file already exists.");
         }
 
         $prefix = date('Y_m_d_His');

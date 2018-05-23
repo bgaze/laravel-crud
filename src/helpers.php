@@ -8,7 +8,9 @@
  */
 function compile_value_for_php($value) {
     if (is_array($value)) {
-        return collect($value)->map([$this, 'compileValueForPhp'])->implode(', ');
+        return collect($value)->map(function($v) {
+                    return compile_value_for_php($v);
+                })->implode(', ');
     }
 
     if ($value === true || $value === 'true') {

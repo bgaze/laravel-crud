@@ -2,12 +2,10 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
-use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class ControllerMakeCommand extends Command {
-
-    use ConsoleHelpersTrait;
+class ControllerMakeCommand extends GeneratorCommand {
 
     /**
      * The console command signature.
@@ -27,14 +25,11 @@ class ControllerMakeCommand extends Command {
     protected $description = 'Create a new CRUD controller class related to a Model';
 
     /**
-     * Execute the console command.
-     *
-     * @return bool|null
+     * TODO
+     * 
+     * @param Crud $crud
      */
-    public function handle() {
-        // Initialize CRUD.
-        $crud = $this->initCrud();
-
+    protected function build(Crud $crud) {
         // Write controller file.
         $this->writeController($crud);
 

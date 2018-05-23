@@ -170,7 +170,7 @@ class Content {
             $dates->prepend('deleted_at');
         }
 
-        return '$dates $fillable = [' . compile_value_for_php($dates->toArray()) . '];';
+        return 'protected $dates = [' . compile_value_for_php($dates->toArray()) . '];';
     }
 
     /**

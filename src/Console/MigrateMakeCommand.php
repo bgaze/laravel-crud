@@ -8,8 +8,6 @@ use Bgaze\Crud\Theme\Crud;
 
 class MigrateMakeCommand extends GeneratorCommand {
 
-    use ConsoleHelpersTrait;
-
     /**
      * The console command signature.
      *

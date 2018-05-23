@@ -7,8 +7,6 @@ use Bgaze\Crud\Theme\Crud;
 
 class ModelMakeCommand extends GeneratorCommand {
 
-    use ConsoleHelpersTrait;
-
     /**
      * The console command signature.
      *
