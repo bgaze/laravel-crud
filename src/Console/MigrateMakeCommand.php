@@ -17,7 +17,7 @@ class MigrateMakeCommand extends GeneratorCommand {
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
         {--t|timestamps : Add timestamps directives}
-        {--s|soft-delete : Add soft delete directives}
+        {--s|soft-deletes : Add soft delete directives}
         {--c|content=* : The list of Model\'s fields (signature syntax).}
         {--theme= : The theme to use to generate CRUD.}';
 

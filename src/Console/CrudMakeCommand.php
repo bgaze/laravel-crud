@@ -18,10 +18,8 @@ class CrudMakeCommand extends GeneratorCommand {
     protected $signature = 'crud:make 
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
-        {--t|timestamps : Add timestamps directives}
-        {--s|soft-deletes : Add soft delete directives}
-        {--c|content=* : The list of Model\'s fields (signature syntax).}
-        {--theme= : The theme to use to generate CRUD.}';
+        {--theme= : The theme to use to generate CRUD.}
+        {--layout= : The layout to extend into generated views.}';
 
     /**
      * The console command description.
@@ -159,7 +157,7 @@ class CrudMakeCommand extends GeneratorCommand {
         $this->line("For a type detailed syntax, <fg=cyan>omit arguments and options.</>");
 
         // Commands list for autocomplete.
-        $fields = $this->crud->definitions->keys()->merge(['list', 'no'])->toArray();
+        $fields = collect(config('crud-definitions.fields'))->keys()->merge(['list', 'no'])->toArray();
 
         // Loop and ask for fields while no explicit break.
         while (true) {
@@ -255,8 +253,8 @@ class CrudMakeCommand extends GeneratorCommand {
             '--plural' => $this->option('plural'),
             '--theme' => $this->option('theme'),
             '--timestamps' => $this->crud->content->timestamps,
-            '--soft-delete' => $this->crud->content->softDeletes,
-            '--content' => $this->crud->content->toSignatures()
+            '--soft-deletes' => $this->crud->content->softDeletes,
+            '--content' => $this->crud->content->originalInputs()
         ]);
     }
 
@@ -264,18 +262,25 @@ class CrudMakeCommand extends GeneratorCommand {
      * Generate model file
      */
     protected function makeModel() {
-        $fields = collect($this->fields);
-
         $this->call('crud:model', [
             'model' => $this->argument('model'),
             '--plural' => $this->option('plural'),
             '--theme' => $this->option('theme'),
             '--timestamps' => $this->crud->content->timestamps,
-            '--soft-delete' => $this->crud->content->softDeletes,
-            '--fillables' => $fields->keys()->all(),
-            '--dates' => $fields->filter(function($field) {
-                        return in_array($field->type, ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz']);
-                    })->keys()->all()
+            '--soft-deletes' => $this->crud->content->softDeletes,
+            '--content' => $this->crud->content->originalInputs()
+        ]);
+    }
+
+    /**
+     * Generate Model factory
+     */
+    protected function makeFactory() {
+        $this->call('crud:factory', [
+            'model' => $this->argument('model'),
+            '--plural' => $this->option('plural'),
+            '--theme' => $this->option('theme'),
+            '--content' => $this->crud->content->originalInputs()
         ]);
     }
 
@@ -286,7 +291,8 @@ class CrudMakeCommand extends GeneratorCommand {
         $this->call('crud:request', [
             'model' => $this->argument('model'),
             '--plural' => $this->option('plural'),
-            '--theme' => $this->option('theme')
+            '--theme' => $this->option('theme'),
+            '--content' => $this->crud->content->originalInputs()
         ]);
     }
 
@@ -297,7 +303,11 @@ class CrudMakeCommand extends GeneratorCommand {
         $this->call('crud:views', [
             'model' => $this->argument('model'),
             '--plural' => $this->option('plural'),
-            '--theme' => $this->option('theme')
+            '--theme' => $this->option('theme'),
+            '--layout' => $this->option('layout'),
+            '--timestamps' => $this->crud->content->timestamps,
+            '--soft-deletes' => $this->crud->content->softDeletes,
+            '--content' => $this->crud->content->originalInputs()
         ]);
     }
 
@@ -306,17 +316,6 @@ class CrudMakeCommand extends GeneratorCommand {
      */
     protected function makeController() {
         $this->call('crud:controller', [
-            'model' => $this->argument('model'),
-            '--plural' => $this->option('plural'),
-            '--theme' => $this->option('theme')
-        ]);
-    }
-
-    /**
-     * Generate Model factory
-     */
-    protected function makeFactory() {
-        $this->call('crud:factory', [
             'model' => $this->argument('model'),
             '--plural' => $this->option('plural'),
             '--theme' => $this->option('theme')

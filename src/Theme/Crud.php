@@ -139,7 +139,7 @@ class Crud {
             $this->namespace = implode('\\', $tmp);
         } else {
             $this->model = $model;
-            $this->namespace = null;
+            $this->namespace = '';
         }
 
         // Parse plural.
@@ -159,13 +159,7 @@ class Crud {
      * @return type
      */
     public function getModelWithParents($separator = '\\') {
-        $name = '';
-
-        if (!empty($this->namespace)) {
-            $name .= $this->namespace . '\\';
-        }
-
-        $name .= $this->getModelStudly();
+        $name = trim($this->namespace . '\\' . $this->getModelStudly(), '\\');
 
         if ($separator !== '\\') {
             return str_replace('\\', $separator, $name);
@@ -181,13 +175,7 @@ class Crud {
      * @return type
      */
     public function getPluralWithParents($separator = '\\') {
-        $name = '';
-
-        if (!empty($this->namespace)) {
-            $name .= $this->namespace . '\\';
-        }
-
-        $name .= $this->getPluralStudly();
+        $name = trim($this->namespace . '\\' . $this->getPluralStudly(), '\\');
 
         if ($separator !== '\\') {
             return str_replace('\\', $separator, $name);
@@ -495,10 +483,13 @@ class Crud {
      * @return string
      */
     public function getPluralWithParentsKebabDot() {
-        return collect(explode('\\', $this->getPluralWithParents()))
+        return collect(explode('\\', $this->namespace))
                         ->map(function($value) {
-                            return Str::kebab($value);
-                        })->implode('.');
+                            return Str::kebab(Str::plural($value));
+                        })
+                        ->push($this->getPluralKebab())
+                        ->filter()
+                        ->implode('.');
     }
 
     /**
@@ -507,10 +498,13 @@ class Crud {
      * @return string
      */
     public function getPluralWithParentsKebabSlash() {
-        return collect(explode('\\', $this->getPluralWithParents()))
+        return collect(explode('\\', $this->namespace))
                         ->map(function($value) {
-                            return Str::kebab($value);
-                        })->implode('/');
+                            return Str::kebab(Str::plural($value));
+                        })
+                        ->push($this->getPluralKebab())
+                        ->filter()
+                        ->implode('/');
     }
 
     /**

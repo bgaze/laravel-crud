@@ -5,7 +5,7 @@
  * Here is the compact version if you prefer : 
  * Route::resource('PluralWithParentsKebabSlash', 'ModelWithParents');
  */
-Route::prefix('PluralWithParentsKebabSlash')->group(function () {
+Route::prefix('/PluralWithParentsKebabSlash')->group(function () {
     Route::get('/', 'ModelWithParents@index')->name('PluralWithParentsKebabDot.index');
     Route::get('/create', 'ModelWithParents@create')->name('PluralWithParentsKebabDot.create');
     Route::post('/', 'ModelWithParents@store')->name('PluralWithParentsKebabDot.store');
