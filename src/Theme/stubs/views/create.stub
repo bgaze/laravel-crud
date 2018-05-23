@@ -1,13 +1,13 @@
 @extends('ViewsLayout')
 
-@section('title', 'ModelWithParents - Create')
+@section('title', 'ModelFullName - Create')
 
 @section('content')
-    <p><a href="{{ route('PluralWithParentsKebabDot.index') }}">Back to PluralWithParents</a></p>
+    <p><a href="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</a></p>
 
-    <h1>Create a new ModelWithParents</h1>
+    <h1>Create a new ModelFullName</h1>
 
-    {!! Form::open($ModelCamel, ['route' => 'PluralWithParentsKebabDot.store']) !!}
+    {!! Form::open($ModelCamel, ['route' => 'PluralsKebabDot.store']) !!}
         #FORM
     {!! Form::close() !!}
 @endsection

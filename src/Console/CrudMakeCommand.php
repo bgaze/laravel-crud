@@ -82,8 +82,8 @@ class CrudMakeCommand extends GeneratorCommand {
             $this->nl();
         }
 
-        $this->line('<fg=green>Model :</> ' . $this->crud->getModelWithParents());
-        $this->line('<fg=green>Plural form of model\'s name :</> ' . $this->crud->getPluralStudly());
+        $this->line('<fg=green>Model :</> ' . $this->crud->getModelFullName());
+        $this->line('<fg=green>Plural form of model\'s namespace components :</> ' . $this->crud->getPluralsFullName());
         $this->nl();
 
         if (!$this->option('no-interaction')) {
@@ -323,3 +323,5 @@ class CrudMakeCommand extends GeneratorCommand {
     }
 
 }
+
+// (ModelKebab|ModelSnake|PluralStudly|PluralKebab|PluralSnake)

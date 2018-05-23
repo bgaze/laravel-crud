@@ -1,13 +1,13 @@
 @extends('ViewsLayout')
 
-@section('title', 'ModelWithParents #{{ $ModelCamel->id }} - Edit')
+@section('title', 'ModelFullName #{{ $ModelCamel->id }} - Edit')
 
 @section('content')
-    <p><a href="{{ route('PluralWithParentsKebabDot.index') }}">Back to PluralWithParents</a></p>
+    <p><a href="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</a></p>
     
-    <h1>Edit ModelWithParents #{{ $ModelCamel->id }}</h1>
+    <h1>Edit ModelFullName #{{ $ModelCamel->id }}</h1>
 
-    {!! Form::open($ModelCamel, ['route' => ['PluralWithParentsKebabDot.update', $ModelCamel->id], 'method' => 'put']) !!}
+    {!! Form::open($ModelCamel, ['route' => ['PluralsKebabDot.update', $ModelCamel->id], 'method' => 'put']) !!}
         #FORM
     {!! Form::close() !!}
 @endsection

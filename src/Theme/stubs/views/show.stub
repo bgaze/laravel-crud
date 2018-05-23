@@ -1,11 +1,11 @@
 @extends('ViewsLayout')
 
-@section('title', 'ModelWithParents #' . $ModelCamel->id)
+@section('title', 'ModelFullName #' . $ModelCamel->id)
 
 @section('content')
-    <p><a href="{{ route('PluralWithParentsKebabDot.index') }}">Back to PluralWithParents</a></p>
+    <p><a href="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</a></p>
 
-    <h1>ModelWithParents #{{ $ModelCamel->id }}</h1>
+    <h1>ModelFullName #{{ $ModelCamel->id }}</h1>
 
     #CONTENT
 @endsection

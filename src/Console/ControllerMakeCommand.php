@@ -56,10 +56,10 @@ class ControllerMakeCommand extends GeneratorCommand {
         $stub = $crud->stub('routes');
 
         $crud
-                ->replace($stub, 'ModelWithParents')
+                ->replace($stub, 'ModelFullName')
                 ->replace($stub, 'ModelCamel')
-                ->replace($stub, 'PluralWithParentsKebabDot')
-                ->replace($stub, 'PluralWithParentsKebabSlash')
+                ->replace($stub, 'PluralsKebabDot')
+                ->replace($stub, 'PluralsKebabSlash')
         ;
 
         $path = $crud->routesPath();

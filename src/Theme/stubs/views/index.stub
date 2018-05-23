@@ -1,15 +1,15 @@
 @extends('ViewsLayout')
 
-@section('title', 'PluralWithParents')
+@section('title', 'PluralFullName')
 
 @section('content')
     @if(session('success'))
         <p>{{ session('success') }}</p>
     @endif
 
-    <h1>PluralWithParents</h1>
+    <h1>PluralFullName</h1>
 
-    <p><a href="{{ route('PluralWithParentsKebabDot.create') }}">Create a new ModelWithParents</a></p>
+    <p><a href="{{ route('PluralsKebabDot.create') }}">Create a new ModelFullName</a></p>
 
     <table>
         <thead>
