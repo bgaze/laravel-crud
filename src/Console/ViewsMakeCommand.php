@@ -30,42 +30,37 @@ class ViewsMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
-     * 
-     * @param Crud $crud
      */
-    protected function build(Crud $crud) {
-        // Get layout.
-        if ($this->option('layout')) {
-            $layout = $this->option('layout');
-        } elseif (config('crud.layout')) {
-            $layout = config('crud.layout');
-        } else {
-            $layout = $crud::layout();
-        }
-
-        // Write index view.
-        $this->writeIndexView($crud, $layout);
-
-        // Write show view.
-        $this->writeShowView($crud, $layout);
-
-        // Write create view.
-        $this->writeCreateView($crud, $layout);
-
-        // Write edit view.
-        $this->writeEditView($crud, $layout);
+    protected function files() {
+        return ['indexViewPath', 'showViewPath', 'createViewPath', 'editViewPath'];
     }
 
     /**
      * TODO
      * 
-     * @param Crud $crud
+     */
+    protected function build() {
+        // Write index view.
+        $this->writeIndexView();
+
+        // Write show view.
+        $this->writeShowView();
+
+        // Write create view.
+        $this->writeCreateView();
+
+        // Write edit view.
+        $this->writeEditView();
+    }
+
+    /**
+     * TODO
+     * 
      * @param string $layout
      */
-    protected function writeIndexView(Crud $crud, $layout) {
-        $path = $crud->generatePhpFile('views.index', $crud->indexViewPath(), function(Crud $crud, $stub) use($layout) {
+    protected function writeIndexView() {
+        $path = $this->crud->generatePhpFile('views.index', $this->crud->indexViewPath(), function(Crud $crud, $stub) {
             $crud
-                    ->replace($stub, 'ViewsLayout', $layout)
                     ->replace($stub, '#THEAD', $crud->content->toTableHead())
                     ->replace($stub, '#TBODY', $crud->content->toTableBody())
             ;
@@ -73,67 +68,52 @@ class ViewsMakeCommand extends GeneratorCommand {
             return $stub;
         });
 
-        // Show success message.
-        $this->info("Index view created : <fg=white>$path</>");
+        $this->info(" Index view created : <fg=white>$path</>");
     }
 
     /**
      * TODO
      * 
-     * @param Crud $crud
      * @param string $layout
      */
-    protected function writeShowView(Crud $crud, $layout) {
-        $path = $crud->generatePhpFile('views.show', $crud->showViewPath(), function(Crud $crud, $stub) use($layout) {
-            $crud
-                    ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, '#CONTENT', $crud->content->toShow())
-            ;
+    protected function writeShowView() {
+        $path = $this->crud->generatePhpFile('views.show', $this->crud->showViewPath(), function(Crud $crud, $stub) {
+            $crud->replace($stub, '#CONTENT', $crud->content->toShow());
 
             return $stub;
         });
 
-        // Show success message.
-        $this->info("Show view created : <fg=white>$path</>");
+        $this->info(" Show view created : <fg=white>$path</>");
     }
 
     /**
      * TODO
      * 
-     * @param Crud $crud
      * @param string $layout
      */
-    protected function writeCreateView(Crud $crud, $layout) {
-        $path = $crud->generatePhpFile('views.create', $crud->createViewPath(), function(Crud $crud, $stub) use($layout) {
-            $crud
-                    ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, '#FORM', $crud->content->toForm(true));
+    protected function writeCreateView() {
+        $path = $this->crud->generatePhpFile('views.create', $this->crud->createViewPath(), function(Crud $crud, $stub) {
+            $crud->replace($stub, '#FORM', $crud->content->toForm(true));
 
             return $stub;
         });
 
-        // Show success message.
-        $this->info("Create view created : <fg=white>$path</>");
+        $this->info(" Create view created : <fg=white>$path</>");
     }
 
     /**
      * TODO
      * 
-     * @param Crud $crud
      * @param string $layout
      */
-    protected function writeEditView(Crud $crud, $layout) {
-        $path = $crud->generatePhpFile('views.edit', $crud->editViewPath(), function(Crud $crud, $stub) use($layout) {
-            $crud
-                    ->replace($stub, 'ViewsLayout', $layout)
-                    ->replace($stub, '#FORM', $crud->content->toForm(false))
-            ;
+    protected function writeEditView() {
+        $path = $this->crud->generatePhpFile('views.edit', $this->crud->editViewPath(), function(Crud $crud, $stub) {
+            $crud->replace($stub, '#FORM', $crud->content->toForm(false));
 
             return $stub;
         });
 
-        // Show success message.
-        $this->info("Edit view created : <fg=white>$path</>");
+        $this->info(" Edit view created : <fg=white>$path</>");
     }
 
 }

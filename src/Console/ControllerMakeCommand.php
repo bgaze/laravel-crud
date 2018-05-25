@@ -26,46 +26,50 @@ class ControllerMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
-     * 
-     * @param Crud $crud
      */
-    protected function build(Crud $crud) {
+    protected function files() {
+        return ['controllerPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write controller file.
-        $this->writeController($crud);
+        $this->writeController();
 
         // Write routes.
-        $this->writeRoutes($crud);
+        $this->writeRoutes();
     }
 
     /**
      * TODO
      * 
-     * @param \Bgaze\Crud\Theme\Crud $crud
      */
-    public function writeController($crud) {
-        $path = $crud->generatePhpFile('controller', $crud->controllerPath());
-        $this->info("Controller class created : <fg=white>{$path}</>");
+    public function writeController() {
+        $path = $this->crud->generatePhpFile('controller', $this->crud->controllerPath());
+        $this->info(" Controller class created : <fg=white>{$path}</>");
     }
 
     /**
      * TODO
      * 
-     * @param \Bgaze\Crud\Theme\Crud $crud
      */
-    public function writeRoutes($crud) {
-        $stub = $crud->stub('routes');
+    public function writeRoutes() {
+        $stub = $this->crud->stub('routes');
 
-        $crud
+        $this->crud
                 ->replace($stub, 'ModelFullName')
                 ->replace($stub, 'ModelCamel')
                 ->replace($stub, 'PluralsKebabDot')
                 ->replace($stub, 'PluralsKebabSlash')
         ;
 
-        $path = $crud->routesPath();
-        $crud->files->append($path, $stub);
+        $path = $this->crud->routesPath();
+        $this->crud->files->append($path, $stub);
 
-        $this->info("Routes added to <fg=white>{$path}</>");
+        $this->info(" Routes added to <fg=white>{$path}</>");
     }
 
 }

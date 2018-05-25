@@ -28,9 +28,9 @@ return [
         'comment' => 'nullable|string'
     ],
     'timestamps' => [
-        'nullableTimestamps' => '$table->timestampsTz();',
         'timestamps' => '$table->timestamps();',
         'timestampsTz' => '$table->timestampsTz();',
+        'nullableTimestamps' => '$table->timestampsTz();',
     ],
     'softDeletes' => [
         'softDeletes' => '$table->softDeletes();',

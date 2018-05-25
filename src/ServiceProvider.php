@@ -56,8 +56,8 @@ class ServiceProvider extends Base {
         }
 
         // Register default theme class.
-        $this->app->bind(Crud::name(), function ($app, $parameters) {
-            return new Crud($app->make('Illuminate\Filesystem\Filesystem'), $parameters['model'], isset($parameters['plural']) ? $parameters['plural'] : null);
+        $this->app->bind(Crud::name(), function ($app, array $parameters) {
+            return new Crud($app->make('Illuminate\Filesystem\Filesystem'), isset($parameters['model']) ? $parameters['model'] : null);
         });
     }
 

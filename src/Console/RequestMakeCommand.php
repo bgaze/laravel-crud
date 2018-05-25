@@ -27,18 +27,24 @@ class RequestMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
-     * 
-     * @param Crud $crud
      */
-    protected function build(Crud $crud) {
+    protected function files() {
+        return ['requestPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write request file.
-        $path = $crud->generatePhpFile('request', $crud->requestPath(), function(Crud $crud, $stub) {
+        $path = $this->crud->generatePhpFile('request', $this->crud->requestPath(), function(Crud $crud, $stub) {
             $crud->replace($stub, '#RULES', $crud->content->toRequest());
             return $stub;
         });
 
         // Show success message.
-        $this->info("Request class created : <fg=white>$path</>");
+        $this->info(" Request class created : <fg=white>$path</>");
     }
 
 }

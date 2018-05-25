@@ -23,13 +23,6 @@ class Crud {
     /**
      * TODO
      *
-     * @var \Bgaze\Crud\Theme\Content 
-     */
-    public $content;
-
-    /**
-     * TODO
-     *
      * @var \Illuminate\Support\Collection 
      */
     protected $model;
@@ -51,26 +44,44 @@ class Crud {
     /**
      * TODO
      *
+     * @var string
+     */
+    protected $layout;
+
+    /**
+     * TODO
+     *
+     * @var \Bgaze\Crud\Theme\Content 
+     */
+    public $content;
+
+    /**
+     * TODO
+     *
      * @param  \Illuminate\Filesystem\Filesystem  $files
      * @return void
      */
-    public function __construct(Filesystem $files, $model, $plural = null) {
-        // Parse model input to get model full name.
-        $this->model = $this->parseModel($model);
-
-        // Parse plurar input to get model full plurar form.
-        $this->plurals = $this->parsePlural($plural);
-
-        // Determine plural form.
-        $this->plural = clone $this->model;
-        $this->plural->pop();
-        $this->plural->push($this->plurals->last());
-
+    public function __construct(Filesystem $files, $model) {
         // Filesystem.
         $this->files = $files;
 
         // Init CRUD content.
         $this->content = new Content();
+
+        // Parse model input to get model full name.
+        $this->model = $this->parseModel($model);
+
+        // Init plurars.
+        $this->setPlurals();
+
+        // Init timestamps.
+        $this->setTimestamps();
+
+        // Init soft deletes.
+        $this->setSoftDeletes();
+
+        // Init layout.
+        $this->setLayout();
     }
 
     ############################################################################
@@ -145,31 +156,88 @@ class Crud {
     /**
      * TODO
      * 
-     * @param type $plural
+     * @param type $plurals
      * @return \Illuminate\Support\Collection
      * @throws \Exception
      */
-    protected function parsePlural($plural) {
-        $auto = $this->model->map(function($v) {
+    public function setPlurals($value = false) {
+        $this->plurals = $this->model->map(function($v) {
             return Str::plural($v);
         });
-        $error = "Plural name is invalid. It sould be something like : " . $auto->implode('\\');
 
-        if (empty($plural)) {
-            return $auto;
+        if (!empty($value)) {
+            $error = "Plural names are invalid. It sould be something like : " . $this->plurals->implode('\\');
+
+            $value = str_replace('/', '\\', trim($value, '\\/ '));
+            if (!preg_match('/^((([A-Z][a-z]+)+)\\\\)*(([A-Z][a-z]+)+)$/', $value)) {
+                throw new \Exception($error);
+            }
+
+            $value = collect(explode('\\', $value));
+            if ($value->count() !== $this->model->count()) {
+                throw new \Exception($error);
+            }
+
+            $this->plurals = $value;
         }
 
-        $plural = str_replace('/', '\\', trim($plural, '\\/ '));
-        if (!preg_match('/^((([A-Z][a-z]+)+)\\\\)*(([A-Z][a-z]+)+)$/', $plural)) {
-            throw new \Exception($error);
-        }
+        // Determine plural form.
+        $this->plural = clone $this->model;
+        $this->plural->pop();
+        $this->plural->push($this->plurals->last());
+    }
 
-        $plural = collect(explode('\\', $model));
-        if ($plural->count() !== $this->model->count()) {
-            throw new \Exception($error);
-        }
+    /**
+     * TODO
+     * 
+     * @param type $value
+     * @throws \Exception
+     */
+    public function setTimestamps($value = false) {
+        $timestamps = array_keys(config('crud-definitions.timestamps'));
+        $this->content->timestamps = $timestamps[0];
 
-        return $plural;
+        if (!empty($value)) {
+            if (!in_array($value, $timestamps)) {
+                throw new \Exception("Allowed values for timestamps are : " . implode(', ', $timestamps));
+            }
+
+            $this->content->timestamps = $value;
+        }
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $value
+     * @throws \Exception
+     */
+    public function setSoftDeletes($value = false) {
+        $softDeletes = array_keys(config('crud-definitions.softDeletes'));
+        $this->content->softDeletes = $softDeletes[0];
+
+        if (!empty($value)) {
+            if (!in_array($value, $softDeletes)) {
+                throw new \Exception("Allowed values for timestamps are : " . implode(', ', $softDeletes));
+            }
+
+            $this->content->softDeletes = $value;
+        }
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $value
+     */
+    public function setLayout($value = false) {
+        if ($value) {
+            $this->layout = $this->option('layout');
+        } elseif (config('crud.layout')) {
+            $this->layout = config('crud.layout');
+        } else {
+            $this->layout = self::layout();
+        }
     }
 
     ############################################################################
@@ -609,6 +677,13 @@ class Crud {
         $parents = clone $this->model;
         $parents->pop();
         return app()->getNamespace() . trim('Http\\Controllers\\' . $parents->implode('\\'), '\\');
+    }
+
+    /**
+     * TODO
+     */
+    public function getViewsLayout() {
+        return $this->layout;
     }
 
 }

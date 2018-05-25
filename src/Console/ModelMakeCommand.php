@@ -29,12 +29,18 @@ class ModelMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
-     * 
-     * @param Crud $crud
      */
-    protected function build(Crud $crud) {
+    protected function files() {
+        return ['modelPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write model file.
-        $path = $crud->generatePhpFile('model', $crud->modelPath(), function(Crud $crud, $stub) {
+        $path = $this->crud->generatePhpFile('model', $this->crud->modelPath(), function(Crud $crud, $stub) {
             $crud
                     ->replace($stub, '#TIMESTAMPS', $crud->content->timestamps ? 'public $timestamps = true;' : '')
                     ->replace($stub, '#SOFTDELETE', $crud->content->softDeletes ? 'use Illuminate\Database\Eloquent\SoftDeletes;' : '')
@@ -46,7 +52,7 @@ class ModelMakeCommand extends GeneratorCommand {
         });
 
         // Show success message.
-        $this->info("Model class created : <fg=white>$path</>");
+        $this->info(" Model class created : <fg=white>$path</>");
     }
 
 }

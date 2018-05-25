@@ -48,12 +48,18 @@ class MigrateMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
-     * 
-     * @param Crud $crud
      */
-    protected function build(Crud $crud) {
+    protected function files() {
+        return ['migrationPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write migration file.
-        $path = $crud->generatePhpFile('migration', $crud->migrationPath(), function(Crud $crud, $stub) {
+        $path = $this->crud->generatePhpFile('migration', $this->crud->migrationPath(), function(Crud $crud, $stub) {
             $crud->replace($stub, '#CONTENT', $crud->content->toMigration());
             return $stub;
         });
@@ -62,7 +68,7 @@ class MigrateMakeCommand extends GeneratorCommand {
         $this->composer->dumpAutoloads();
 
         // Show success message.
-        $this->info("Migration class created : <fg=white>$path</>");
+        $this->info(" Migration class created : <fg=white>$path</>");
     }
 
 }

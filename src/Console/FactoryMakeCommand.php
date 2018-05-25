@@ -27,18 +27,24 @@ class FactoryMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
-     * 
-     * @param Crud $crud
      */
-    protected function build(Crud $crud) {
+    protected function files() {
+        return ['factoryPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write request file.
-        $path = $crud->generatePhpFile('factory', $crud->factoryPath(), function(Crud $crud, $stub) {
+        $path = $this->crud->generatePhpFile('factory', $this->crud->factoryPath(), function(Crud $crud, $stub) {
             $crud->replace($stub, '#CONTENT', $crud->content->toFactory());
             return $stub;
         });
 
         // Show success message.
-        $this->info("Factory file created : <fg=white>$path</>");
+        $this->info(" Factory file created : <fg=white>$path</>");
     }
 
 }
