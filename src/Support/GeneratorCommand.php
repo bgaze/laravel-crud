@@ -244,7 +244,7 @@ abstract class GeneratorCommand extends Command {
             foreach ($this->option('content') as $question) {
                 list($field, $data) = $this->parseSignedInput($question);
                 $this->crud->content->add($field, $data);
-                $this->dl('Field added', $question);
+                $this->dl('Field added', $question, !$this->isSubCommand);
             }
         }
 

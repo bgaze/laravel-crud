@@ -42,8 +42,10 @@ trait ConsoleHelpersTrait {
         }
     }
 
-    public function dl($dt, $dd) {
-        $this->info(" {$dt} : <fg=white>{$dd}</>");
+    public function dl($dt, $dd, $test = true) {
+        if ($test) {
+            $this->info(" {$dt} : <fg=white>{$dd}</>");
+        }
     }
 
 }

@@ -85,7 +85,7 @@ class Field {
 
         // Generate field unique name.
         if ($this->dataType === 'index') {
-            $this->name = 'index:' . implode(',', $this->input->getArgument('columns'));
+            $this->name = 'index:' . implode('_', $this->input->getArgument('columns'));
         } else {
             $this->name = $this->input->getArgument('column');
         }
@@ -120,7 +120,7 @@ class Field {
     protected function validate() {
         // Check that input matches signature format.
         $this->input->validate();
-
+        
         // Check that provided values are valid.
         $validator = Validator::make($this->input->getOptions() + $this->input->getArguments(), config('crud-definitions.validation'));
         if ($validator->fails()) {
