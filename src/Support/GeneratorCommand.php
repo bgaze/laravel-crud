@@ -16,6 +16,13 @@ abstract class GeneratorCommand extends Command {
     use ConsoleHelpersTrait;
 
     /**
+     * TODO
+     * 
+     * @var type 
+     */
+    protected $isSubCommand = false;
+
+    /**
      * The CRUD instance.
      *
      * @var \Bgaze\Crud\Support\Theme\Crud
@@ -29,9 +36,12 @@ abstract class GeneratorCommand extends Command {
      */
     public function handle() {
         try {
+            // Show title when direct call.
+            $this->h1($this->welcome(), !$this->isSubCommand);
+            $this->h2('Configuration', !$this->isSubCommand);
+
             // Instantiate CRUD based on theme and model inputs.
-            $theme = $this->option('theme') ? $this->option('theme') : config('crud.theme');
-            $this->crud = $this->laravel->make($theme, ['model' => $this->argument('model')]);
+            $this->getCrud();
 
             // Get plurals value.
             $this->getPluralsInput();
@@ -49,17 +59,15 @@ abstract class GeneratorCommand extends Command {
                 $this->getSoftDeletesInput();
             }
 
-            // Init views layout.
-            if ($this->optionExists('layout')) {
-                $this->crud->setLayout($this->option('layout'));
-            }
-
             // Add content.
             if ($this->optionExists('content')) {
                 $this->getFieldsInput();
             }
 
             // Build.
+            $this->nl(!$this->isSubCommand && $this->option('no-interaction'));
+            $this->h2('Generation', !$this->isSubCommand);
+
             if (!$this->option('no-interaction')) {
                 $this->line($summary);
                 $this->nl();
@@ -67,27 +75,47 @@ abstract class GeneratorCommand extends Command {
 
             if ($this->option('no-interaction') || $this->confirm('Continue?', true)) {
                 $this->build();
-                $this->nl();
+                $this->nl(!$this->isSubCommand);
             }
         } catch (\Exception $e) {
             $this->error($e->getMessage());
-            $this->line($e->getTraceAsString());
+            $this->nl();
+            //$this->line($e->getTraceAsString());
         }
     }
 
     /**
      * TODO
      * 
-     * @param Crud $crud
+     */
+    abstract protected function welcome();
+
+    /**
+     * TODO
+     * 
      */
     abstract protected function build();
 
     /**
      * TODO
      * 
-     * @param Crud $crud
      */
     abstract protected function files();
+
+    protected function getCrud() {
+        $theme = $this->option('theme') ? $this->option('theme') : config('crud.theme');
+        $this->crud = $this->laravel->make($theme, ['model' => $this->argument('model')]);
+
+        if ($this->optionExists('layout')) {
+            $this->crud->setLayout($this->option('layout'));
+        }
+
+        if (!$this->isSubCommand) {
+            $this->dl('Theme', $theme);
+            $this->dl('Model name', $this->crud->getModelFullName());
+            $this->dl('Views layout', $this->crud->getViewsLayout());
+        }
+    }
 
     /**
      * TODO
@@ -101,7 +129,7 @@ abstract class GeneratorCommand extends Command {
 
         foreach ($this->files() as $v) {
             try {
-                $files->push(str_replace(base_path(), '', $this->crud->{$v}()));
+                $files->push(str_replace(base_path() . '/', '', $this->crud->{$v}()));
             } catch (\Exception $e) {
                 $errors->push($e->getMessage());
             }
@@ -115,11 +143,35 @@ abstract class GeneratorCommand extends Command {
             return " <fg=green>Following file will be generated :</> " . $files->first();
         }
 
-        return " <fg=green>Following files will be generated :</>\n " . $files->implode("\n ");
+        return " <fg=green>Following files will be generated :</>\n  " . $files->implode("\n  ");
     }
 
+    /**
+     * TODO
+     * 
+     * @param type $option
+     * @return type
+     */
     protected function optionExists($option) {
-        return preg_match("/--{$option}/", $this->signature);
+        return preg_match("/--([a-zA-Z]\\|)?{$option}/", $this->signature);
+    }
+
+    /**
+     * Call another console command.
+     *
+     * @param  string  $command
+     * @param  array   $arguments
+     * @return int
+     */
+    public function call($command, array $arguments = []) {
+        $arguments['command'] = $command;
+        $command = $this->getApplication()->find($command);
+
+        if ($command instanceof \Bgaze\Crud\Support\GeneratorCommand) {
+            $command->isSubCommand = true;
+        }
+
+        return $command->run($this->createInputFromArguments($arguments), $this->output);
     }
 
     ############################################################################
@@ -130,12 +182,17 @@ abstract class GeneratorCommand extends Command {
      */
     protected function getPluralsInput() {
         $value = $this->option('plural');
+        $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
-        if (!$value && !$this->option('no-interaction') && !$this->option('quiet')) {
+        if ($ask) {
             $value = $this->ask('Please confirm plurals version of Model name :', $this->crud->getPluralsFullName());
         }
 
         $this->crud->setPlurals($value);
+
+        if (!$ask && !$this->isSubCommand) {
+            $this->dl('Plurals', $this->crud->getPluralsFullName());
+        }
     }
 
     /**
@@ -143,14 +200,19 @@ abstract class GeneratorCommand extends Command {
      */
     protected function getTimestampsInput() {
         $value = $this->option('timestamps');
+        $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
-        if (!$value && !$this->option('no-interaction') && !$this->option('quiet')) {
+        if ($ask) {
             $timestamps = array_keys(config('crud-definitions.timestamps'));
             $timestamps[] = 'none';
             $value = $this->choice('Do you wish to add timestamps?', $timestamps, 0);
         }
 
         $this->crud->setTimestamps(($value === 'none') ? false : $value);
+
+        if (!$ask && !$this->isSubCommand) {
+            $this->dl('Timsestamps', $this->crud->content->timestamps ? $this->crud->content->timestamps : 'none');
+        }
     }
 
     /**
@@ -158,14 +220,19 @@ abstract class GeneratorCommand extends Command {
      */
     protected function getSoftDeletesInput() {
         $value = $this->option('soft-deletes');
+        $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
-        if (!$value && !$this->option('no-interaction') && !$this->option('quiet')) {
+        if ($ask) {
             $softDeletes = array_keys(config('crud-definitions.softDeletes'));
             $softDeletes[] = 'none';
             $value = $this->choice('Do you wish to add SoftDeletes?', $softDeletes, 0);
         }
 
         $this->crud->setSoftDeletes(($value === 'none') ? false : $value);
+
+        if (!$ask && !$this->isSubCommand) {
+            $this->dl('Soft deletes', $this->crud->content->softDeletes ? $this->crud->content->softDeletes : 'none');
+        }
     }
 
     /**
@@ -177,7 +244,7 @@ abstract class GeneratorCommand extends Command {
             foreach ($this->option('content') as $question) {
                 list($field, $data) = $this->parseSignedInput($question);
                 $this->crud->content->add($field, $data);
-                $this->info("Field added : <fg=white>$question</>");
+                $this->dl('Field added', $question);
             }
         }
 
@@ -230,19 +297,19 @@ abstract class GeneratorCommand extends Command {
         // Catch any error to prevent unwanted wizard exit.
         try {
             // Parse user input.
-            list($definition, $input) = $this->parseSignedInput($question);
+            list($name, $input) = $this->parseSignedInput($question);
 
             // If empty arguments, show help.
             if (empty($input)) {
-                $this->line($definition->help);
+                $this->line($this->showFieldHelp($name));
                 return true;
             }
 
             // Add to content.
-            $this->crud->content->add($definition, $input);
+            $this->crud->content->add($name, $input);
+            $this->dl('Field added', $question);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
-            $this->error($e->getTraceAsString());
         }
 
         // Continue.
@@ -276,7 +343,7 @@ abstract class GeneratorCommand extends Command {
      */
     protected function showFieldHelp($name) {
         $config = config("crud-definitions.fields.{$name}");
-        $this->line("   {$config['description']}\n   Signature :   <fg=cyan>{$name} {$config['signature']}</>\n");
+        $this->line("   <fg=green>{$config['description']}</>\n   Signature :   <fg=cyan>{$name} {$config['signature']}</>\n");
     }
 
     /**

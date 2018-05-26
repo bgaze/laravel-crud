@@ -48,6 +48,15 @@ class MigrateMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
+     * 
+     * @return string
+     */
+    protected function welcome() {
+        return "Welcome to CRUD Migration generator";
+    }
+
+    /**
+     * TODO
      */
     protected function files() {
         return ['migrationPath'];
@@ -68,7 +77,7 @@ class MigrateMakeCommand extends GeneratorCommand {
         $this->composer->dumpAutoloads();
 
         // Show success message.
-        $this->info(" Migration class created : <fg=white>$path</>");
+        $this->dl('Migration class created', $path);
     }
 
 }

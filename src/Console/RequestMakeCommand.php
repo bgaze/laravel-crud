@@ -27,6 +27,15 @@ class RequestMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
+     * 
+     * @return string
+     */
+    protected function welcome() {
+        return "Welcome to CRUD Request generator";
+    }
+
+    /**
+     * TODO
      */
     protected function files() {
         return ['requestPath'];
@@ -44,7 +53,7 @@ class RequestMakeCommand extends GeneratorCommand {
         });
 
         // Show success message.
-        $this->info(" Request class created : <fg=white>$path</>");
+        $this->dl('Request class created', $path);
     }
 
 }

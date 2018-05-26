@@ -26,6 +26,14 @@ class ModelMakeCommand extends GeneratorCommand {
      * @var string
      */
     protected $description = 'Create a new CRUD Eloquent model class';
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    protected function welcome() {
+        return "Welcome to CRUD Model generator";
+    }
 
     /**
      * TODO
@@ -52,7 +60,7 @@ class ModelMakeCommand extends GeneratorCommand {
         });
 
         // Show success message.
-        $this->info(" Model class created : <fg=white>$path</>");
+        $this->dl('Model class created', $path);
     }
 
 }

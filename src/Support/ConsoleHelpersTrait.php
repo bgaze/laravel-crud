@@ -9,12 +9,14 @@ trait ConsoleHelpersTrait {
      * 
      * @param string $text
      */
-    public function h1($text) {
-        $this->nl();
-        $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
-        $this->line("<fg=white;bg=blue>" . str_pad(strtoupper(" $text"), 80) . "</>");
-        $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
-        $this->nl();
+    public function h1($text, $test = true) {
+        if ($test) {
+            $this->nl();
+            $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
+            $this->line("<fg=white;bg=blue>" . str_pad(strtoupper(" $text"), 80) . "</>");
+            $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
+            $this->nl();
+        }
     }
 
     /**
@@ -22,21 +24,10 @@ trait ConsoleHelpersTrait {
      * 
      * @param string $text
      */
-    public function h2($text) {
-        $this->line("<fg=blue>" . strtoupper($text) . "</>");
-        $this->nl();
-    }
-
-    /**
-     * Display a list.
-     * 
-     * @param array $items
-     * @param string $color
-     * @param integer $indent
-     */
-    public function ul(array $items, $color = 'cyan', $indent = 2) {
-        foreach ($items as $i) {
-            $this->line(str_repeat(' ', $indent) . "<fg=$color>* $i</>");
+    public function h2($text, $test = true) {
+        if ($test) {
+            $this->line(" <fg=blue>" . strtoupper($text) . "</>");
+            $this->nl();
         }
     }
 
@@ -45,8 +36,14 @@ trait ConsoleHelpersTrait {
      * 
      * @param integer $multiplier
      */
-    public function nl($multiplier = 1) {
-        $this->line(str_repeat("\n", $multiplier - 1));
+    public function nl($test = true) {
+        if ($test) {
+            echo "\n";
+        }
+    }
+
+    public function dl($dt, $dd) {
+        $this->info(" {$dt} : <fg=white>{$dd}</>");
     }
 
 }

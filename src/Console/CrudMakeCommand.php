@@ -41,11 +41,10 @@ class CrudMakeCommand extends GeneratorCommand {
     /**
      * TODO
      * 
+     * @return string
      */
-    public function handle() {
-        $this->h1("Welcome to CRUD generator");
-        
-        parent::handle();
+    protected function welcome() {
+        return "Welcome to CRUD generator";
     }
 
     /**
@@ -53,6 +52,17 @@ class CrudMakeCommand extends GeneratorCommand {
      */
     protected function files() {
         return ['migrationPath', 'modelPath', 'factoryPath', 'requestPath', 'controllerPath', 'indexViewPath', 'showViewPath', 'createViewPath', 'editViewPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    protected function summary() {
+        return " <fg=green>Routes will be added to :</> "
+                . str_replace(base_path() . '/', '', $this->crud->routesPath())
+                . "\n" . parent::summary();
     }
 
     /**

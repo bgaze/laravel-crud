@@ -27,6 +27,15 @@ class FactoryMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
+     * 
+     * @return string
+     */
+    protected function welcome() {
+        return "Welcome to CRUD Factory generator";
+    }
+
+    /**
+     * TODO
      */
     protected function files() {
         return ['factoryPath'];
@@ -44,7 +53,7 @@ class FactoryMakeCommand extends GeneratorCommand {
         });
 
         // Show success message.
-        $this->info(" Factory file created : <fg=white>$path</>");
+        $this->dl('Factory file created', $path);
     }
 
 }

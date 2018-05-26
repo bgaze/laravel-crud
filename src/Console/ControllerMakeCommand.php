@@ -26,9 +26,29 @@ class ControllerMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
+     * 
+     * @return string
+     */
+    protected function welcome() {
+        return "Welcome to CRUD Controller generator";
+    }
+
+    /**
+     * TODO
      */
     protected function files() {
         return ['controllerPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    protected function summary() {
+        return " <fg=green>Routes will be added to :</> "
+                . str_replace(base_path() . '/', '', $this->crud->routesPath())
+                . "\n" . parent::summary();
     }
 
     /**
@@ -49,7 +69,7 @@ class ControllerMakeCommand extends GeneratorCommand {
      */
     public function writeController() {
         $path = $this->crud->generatePhpFile('controller', $this->crud->controllerPath());
-        $this->info(" Controller class created : <fg=white>{$path}</>");
+        $this->dl('Controller class created', $path);
     }
 
     /**
@@ -69,7 +89,7 @@ class ControllerMakeCommand extends GeneratorCommand {
         $path = $this->crud->routesPath();
         $this->crud->files->append($path, $stub);
 
-        $this->info(" Routes added to <fg=white>{$path}</>");
+        $this->info(" Routes added to :<fg=white> " . str_replace(base_path() . '/', '', $path) . "</>");
     }
 
 }

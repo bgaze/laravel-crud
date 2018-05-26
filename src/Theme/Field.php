@@ -137,12 +137,12 @@ class Field {
         $tmp = $this->template;
 
         foreach ($this->input->getArguments() as $k => $v) {
-            $tmp = str_replace("%$k", $this->compileValueForPhp($v), $tmp);
+            $tmp = str_replace("%$k", compile_value_for_php($v), $tmp);
         }
 
         foreach ($this->input->getOptions() as $k => $v) {
             if ($v) {
-                $tmp .= str_replace('%value', $this->compileValueForPhp($v), config("crud-definitions.modifiers.{$k}"));
+                $tmp .= str_replace('%value', compile_value_for_php($v), config("crud-definitions.modifiers.{$k}"));
             }
         }
 

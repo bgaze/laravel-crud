@@ -30,6 +30,15 @@ class ViewsMakeCommand extends GeneratorCommand {
 
     /**
      * TODO
+     * 
+     * @return string
+     */
+    protected function welcome() {
+        return "Welcome to CRUD views generator";
+    }
+
+    /**
+     * TODO
      */
     protected function files() {
         return ['indexViewPath', 'showViewPath', 'createViewPath', 'editViewPath'];
@@ -68,7 +77,7 @@ class ViewsMakeCommand extends GeneratorCommand {
             return $stub;
         });
 
-        $this->info(" Index view created : <fg=white>$path</>");
+        $this->dl('Index view created', $path);
     }
 
     /**
@@ -83,7 +92,7 @@ class ViewsMakeCommand extends GeneratorCommand {
             return $stub;
         });
 
-        $this->info(" Show view created : <fg=white>$path</>");
+        $this->dl('Show view created', $path);
     }
 
     /**
@@ -98,7 +107,7 @@ class ViewsMakeCommand extends GeneratorCommand {
             return $stub;
         });
 
-        $this->info(" Create view created : <fg=white>$path</>");
+        $this->dl('Create view created', $path);
     }
 
     /**
@@ -113,7 +122,7 @@ class ViewsMakeCommand extends GeneratorCommand {
             return $stub;
         });
 
-        $this->info(" Edit view created : <fg=white>$path</>");
+        $this->dl('Edit view created', $path);
     }
 
 }
