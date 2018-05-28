@@ -1,0 +1,5 @@
+<p>
+    <b>FieldLabel</b>
+    <br/>
+    {{ $ModelCamel->FieldName }}
+</p>

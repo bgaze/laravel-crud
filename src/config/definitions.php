@@ -67,7 +67,7 @@ return [
             'signature' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
             'template' => '$table->boolean(%column)',
             'description' => 'Add a boolean field to table.',
-            'type' => 'integer',
+            'type' => 'boolean',
         ],
         'char' => [
             'signature' => '{column} {length?} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',

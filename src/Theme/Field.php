@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\StringInput;
 use Validator;
 use Bgaze\Crud\Theme\Crud;
+use Illuminate\Support\Str;
 
 /**
  * TODO
@@ -138,6 +139,19 @@ class Field {
     }
 
     /**
+     * TODO
+     */
+    public function label() {
+        $label = Str::studly($this->name);
+
+        if (!preg_match_all('/[A-Z][a-z]+|\d+/', $label, $matches) || !isset($matches[0])) {
+            return $label;
+        }
+
+        return implode(' ', $matches[0]);
+    }
+
+    /**
      * Compile field to migration PHP sentence.
      * 
      * @return string
@@ -164,33 +178,33 @@ class Field {
      * @return string
      */
     public function toFactory() {
-        $template = $this->config('factory', $this->getFactoryDefaultTemplate());
+        if ($this->isIndex()) {
+            return null;
+        }
+
+        $template = $this->config('factory');
 
         if (!$template) {
-            return null;
+            $template = $this->getDefaultFactoryTemplate();
         }
 
         return "'{$this->name}' => {$template},";
     }
 
-    protected function getFactoryDefaultTemplate() {
-        if ($this->config('factory')) {
-            return $this->config('factory');
-        }
-
+    protected function getDefaultFactoryTemplate() {
         switch ($this->config('type')) {
+            case 'boolean':
+                return '(mt_rand(0, 1) === 1)';
             case 'integer':
                 return 'mt_rand(0, 1000)';
             case 'float':
                 return "(mt_rand() / mt_getrandmax()) * " . str_repeat('9', $this->input->getArgument('total'));
             case 'date':
                 return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
-            case 'string':
-                return "\$faker->sentence()";
             case 'array':
                 return 'array_random(' . compile_value_for_php($this->input->getArgument('allowed')) . ')';
             default:
-                return false;
+                return "\$faker->sentence()";
         }
     }
 
@@ -200,6 +214,10 @@ class Field {
      * @return string
      */
     public function toRequest() {
+        if ($this->isIndex()) {
+            return null;
+        }
+
         return '// ' . $this->question;
     }
 
@@ -213,7 +231,7 @@ class Field {
             return null;
         }
 
-        return '<th>' . $this->name . '</th>';
+        return '<th>' . $this->label() . '</th>';
     }
 
     /**
@@ -239,7 +257,26 @@ class Field {
             return null;
         }
 
-        return "<!-- {$this->question} -->";
+        $stub = $this->crud->stub('views.form-group');
+
+        $this->crud
+                ->replace($stub, 'FieldLabel', $this->label())
+                ->replace($stub, '#FIELD', $this->getDefaultFormTemplate())
+                ->replace($stub, 'FieldName', $this->name)
+        ;
+
+        return $stub;
+    }
+
+    protected function getDefaultFormTemplate() {
+        switch ($this->config('type')) {
+            case 'boolean':
+                return "Form::checkbox('FieldName', '1')";
+            case 'array':
+                return "Form::select('FieldName', " . compile_value_for_php($this->input->getArgument('allowed')) . ")";
+            default:
+                return "Form::text('FieldName')";
+        }
     }
 
     /**
@@ -252,7 +289,15 @@ class Field {
             return null;
         }
 
-        return "<!-- {$this->question} -->";
+        $stub = $this->crud->stub('views.show-group');
+
+        $this->crud
+                ->replace($stub, 'ModelCamel')
+                ->replace($stub, 'FieldLabel', $this->label())
+                ->replace($stub, 'FieldName', $this->name)
+        ;
+
+        return $stub;
     }
 
 }
