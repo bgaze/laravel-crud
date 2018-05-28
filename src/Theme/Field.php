@@ -231,7 +231,11 @@ class Field {
             return null;
         }
 
-        return '<th>' . $this->label() . '</th>';
+        $stub = $this->crud->stub('views.partial.table-head');
+
+        $this->crud->replace($stub, 'FieldLabel', $this->label());
+
+        return $stub;
     }
 
     /**
@@ -244,7 +248,14 @@ class Field {
             return null;
         }
 
-        return '<td>{{ $' . $this->crud->getModelCamel() . '->' . $this->name . ' }}</td>';
+        $stub = $this->crud->stub('views.partial.table-body');
+
+        $this->crud
+                ->replace($stub, 'FieldLabel', $this->label())
+                ->replace($stub, 'FieldName', $this->name)
+        ;
+
+        return $stub;
     }
 
     /**
@@ -257,7 +268,7 @@ class Field {
             return null;
         }
 
-        $stub = $this->crud->stub('views.form-group');
+        $stub = $this->crud->stub('views.partial.form-group');
 
         $this->crud
                 ->replace($stub, 'FieldLabel', $this->label())
@@ -289,7 +300,7 @@ class Field {
             return null;
         }
 
-        $stub = $this->crud->stub('views.show-group');
+        $stub = $this->crud->stub('views.partial.show-group');
 
         $this->crud
                 ->replace($stub, 'ModelCamel')

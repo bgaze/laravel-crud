@@ -8,6 +8,6 @@
     <h1>Create a new ModelFullName</h1>
 
     {!! Form::open($ModelCamel, ['route' => 'PluralsKebabDot.store']) !!}
-        #FORM
+#FORM
     {!! Form::close() !!}
 @endsection

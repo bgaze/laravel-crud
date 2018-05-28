@@ -113,11 +113,13 @@ class Content {
             return $ifEmpty;
         }
 
-        return $this->fields->map(function(Field $field) use ($function, $arguments) {
+        $content = $this->fields->map(function(Field $field) use ($function, $arguments) {
                             return call_user_func_array([$field, $function], $arguments);
                         })
                         ->filter()
                         ->implode("\n");
+                        
+                return rtrim($content);
     }
 
     /**
