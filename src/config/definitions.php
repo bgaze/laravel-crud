@@ -49,7 +49,7 @@ return [
             'signature' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
             'template' => '$table->bigIncrements(%column)',
             'description' => 'Add a bigIncrements field to table.',
-            'type' => 'integer',
+            'type' => 'integer'
         ],
         'bigInteger' => [
             'signature' => '{column} {--n|nullable} {--a|autoIncrement} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',

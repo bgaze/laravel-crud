@@ -80,7 +80,7 @@ abstract class GeneratorCommand extends Command {
         } catch (\Exception $e) {
             $this->error($e->getMessage());
             $this->nl();
-            //$this->line($e->getTraceAsString());
+            $this->line($e->getTraceAsString());
         }
     }
 

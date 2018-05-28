@@ -52,12 +52,12 @@ class Content {
 
         // Check that it doesn't already exists.
         if ($this->has($field->name)) {
-            $type = ($field->dataType === 'index' ) ? 'index' : field;
+            $type = $field->isIndex() ? 'index' : 'field';
             throw new \Exception("'{$field->name}' {$type} already exists.");
         }
 
         // If field is an index, check that all selected columns exists.
-        if ($field->dataType === 'index') {
+        if ($field->config('type') === 'index') {
             foreach ($field->input->getArgument('columns') as $column) {
                 if (!$this->has($column)) {
                     throw new \Exception("'$column' doesn't exists in fields list.");
@@ -104,11 +104,11 @@ class Content {
             return $ifEmpty;
         }
 
-        return $this->fields->filter(function(Field $field) {
-                    return ($field->dataType !== 'index');
-                })->map(function(Field $field) use ($function, $arguments) {
-                    return call_user_func_array([$field, $function], $arguments);
-                })->implode("\n");
+        return $this->fields->map(function(Field $field) use ($function, $arguments) {
+                            return call_user_func_array([$field, $function], $arguments);
+                        })
+                        ->filter()
+                        ->implode("\n");
     }
 
     /**
@@ -118,7 +118,7 @@ class Content {
      */
     public function originalInputs() {
         return $this->fields->map(function(Field $field) {
-                    return $field->originalInput;
+                    return $field->question;
                 })->toArray();
     }
 
@@ -150,7 +150,7 @@ class Content {
      */
     public function toModeleFillables() {
         $fillables = $this->fields->filter(function(Field $field) {
-                    return ($field->dataType !== 'index');
+                    return !$field->isIndex();
                 })->keys();
 
         return 'protected $fillable = [' . compile_value_for_php($fillables->toArray()) . '];';
@@ -163,7 +163,7 @@ class Content {
      */
     public function toModeleDates() {
         $dates = $this->fields->filter(function(Field $field) {
-                    return ($field->dataType === 'date');
+                    return ($field->config('type') === 'date');
                 })->keys();
 
         if ($this->softDeletes && !$dates->contains('deleted_at')) {

@@ -19,21 +19,7 @@ class Field {
      * 
      * @var string 
      */
-    public $columnType;
-
-    /**
-     * TODO
-     * 
-     * @var string 
-     */
-    public $template;
-
-    /**
-     * TODO
-     *
-     * @var string 
-     */
-    public $dataType;
+    public $type;
 
     /**
      * TODO
@@ -47,7 +33,7 @@ class Field {
      * 
      * @var string 
      */
-    public $originalInput;
+    public $question;
 
     /**
      * TODO
@@ -60,31 +46,23 @@ class Field {
      * TODO
      * 
      * @param string $field
-     * @param string $data
+     * @param string $question
      */
-    public function __construct($field, $data) {
+    public function __construct($field, $question) {
         // Store original user input.
-        $this->originalInput = $field . ' ' . $data;
-
-        // Get field definition.
-        $definition = config("crud-definitions.fields.$field");
+        $this->question = $field . ' ' . $question;
 
         // Store definition data.
-        $this->template = $definition['template'];
-        $this->dataType = $definition['type'];
-        $this->columnType = $field;
-
-        // Field definition.
-        $this->definition = $definition;
+        $this->type = $field;
 
         // Parse user input.
-        $this->parse($definition['signature'], $data);
+        $this->parse($this->config('signature'), $question);
 
         // Validate user input.
         $this->validate();
 
         // Generate field unique name.
-        if ($this->dataType === 'index') {
+        if ($this->isIndex()) {
             $this->name = 'index:' . implode('_', $this->input->getArgument('columns'));
         } else {
             $this->name = $this->input->getArgument('column');
@@ -96,7 +74,7 @@ class Field {
      * 
      * @param type $data
      */
-    protected function parse($signature, $data) {
+    protected function parse($signature, $question) {
         // Parse signature.
         list($name, $arguments, $options) = Parser::parse($signature);
 
@@ -110,7 +88,7 @@ class Field {
         }
 
         // Create StringInput.
-        $this->input = new StringInput($data);
+        $this->input = new StringInput($question);
         $this->input->bind($definition);
     }
 
@@ -120,7 +98,7 @@ class Field {
     protected function validate() {
         // Check that input matches signature format.
         $this->input->validate();
-        
+
         // Check that provided values are valid.
         $validator = Validator::make($this->input->getOptions() + $this->input->getArguments(), config('crud-definitions.validation'));
         if ($validator->fails()) {
@@ -129,12 +107,31 @@ class Field {
     }
 
     /**
+     * TODO
+     * 
+     * @param type $key
+     * @return type
+     */
+    public function config($key, $default = false) {
+        return config("crud-definitions.fields.{$this->type}.{$key}", $default);
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    public function isIndex() {
+        return ($this->config('type') === 'index');
+    }
+
+    /**
      * Compile field to migration PHP sentence.
      * 
      * @return string
      */
     public function toMigration() {
-        $tmp = $this->template;
+        $tmp = $this->config('template');
 
         foreach ($this->input->getArguments() as $k => $v) {
             $tmp = str_replace("%$k", compile_value_for_php($v), $tmp);
@@ -155,7 +152,27 @@ class Field {
      * @return string
      */
     public function toFactory() {
-        return '// ' . $this->originalInput;
+        switch ($this->config('type')) {
+            case 'integer':
+                $default = 'mt_rand(0, 1000)';
+                break;
+            case 'float':
+                $default = "(mt_rand() / mt_getrandmax()) * " . str_repeat('9', $this->input->getArgument('total'));
+                break;
+            case 'date':
+                $default = "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
+                break;
+            case 'string':
+                $default = "\$faker->sentence()";
+                break;
+            case 'array':
+                $default = 'array_random(' . compile_value_for_php($this->input->getArgument('allowed')) . ')';
+                break;
+            default:
+                return null;
+        }
+
+        return "'{$this->name}' => " . $this->config('factory', $default) . ",";
     }
 
     /**
@@ -164,7 +181,7 @@ class Field {
      * @return string
      */
     public function toRequest() {
-        return '// ' . $this->originalInput;
+        return '// ' . $this->question;
     }
 
     /**
@@ -173,7 +190,7 @@ class Field {
      * @return string
      */
     public function toTableHead() {
-        return "<!-- {$this->originalInput} -->";
+        return "<!-- {$this->question} -->";
     }
 
     /**
@@ -182,7 +199,7 @@ class Field {
      * @return string
      */
     public function toTableBody() {
-        return "<!-- {$this->originalInput} -->";
+        return "<!-- {$this->question} -->";
     }
 
     /**
@@ -191,7 +208,7 @@ class Field {
      * @return string
      */
     public function toForm(bool $create) {
-        return "<!-- {$this->originalInput} -->";
+        return "<!-- {$this->question} -->";
     }
 
     /**
@@ -200,7 +217,7 @@ class Field {
      * @return string
      */
     public function toShow() {
-        return "<!-- {$this->originalInput} -->";
+        return "<!-- {$this->question} -->";
     }
 
 }
