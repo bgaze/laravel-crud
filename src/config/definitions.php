@@ -88,7 +88,7 @@ return [
             'type' => 'date',
         ],
         'dateTimeTz' => [
-            'signature' => '{column} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+            'signature' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
             'template' => '$table->dateTimeTz(%column)',
             'description' => 'Add a dateTimeTz field to table.',
             'type' => 'date',
@@ -220,7 +220,7 @@ return [
             'type' => 'string',
         ],
         'nullableMorphs' => [
-            'signature' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+            'signature' => '{column} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
             'template' => '$table->nullableMorphs(%column)',
             'description' => 'Add a nullableMorphs field to table.',
             'type' => 'string',

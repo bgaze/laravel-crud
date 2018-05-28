@@ -54,6 +54,20 @@ class Field {
     /**
      * TODO
      * 
+     * @var \Illuminate\Support\Collection 
+     */
+    protected $arguments;
+
+    /**
+     * TODO
+     * 
+     * @var \Illuminate\Support\Collection 
+     */
+    protected $options;
+
+    /**
+     * TODO
+     * 
      * @param \Bgaze\Crud\Theme\Crud  $crud
      * @param type $field
      * @param type $question
@@ -61,6 +75,10 @@ class Field {
     public function __construct(Crud $crud, $field, $question) {
         // Link to CRUD instance.
         $this->crud = $crud;
+
+        // Instanciate arguments and options.
+        $this->arguments = collect();
+        $this->options = collect();
 
         // Store original user input.
         $this->question = $field . ' ' . $question;
@@ -95,9 +113,11 @@ class Field {
         $definition = new InputDefinition();
         foreach ($arguments as $argument) {
             $definition->addArgument($argument);
+            $this->arguments->push($argument->getName());
         }
         foreach ($options as $option) {
             $definition->addOption($option);
+            $this->options->push($option->getName());
         }
 
         // Create StringInput.
@@ -218,7 +238,42 @@ class Field {
             return null;
         }
 
-        return '// ' . $this->question;
+        $rules = [];
+
+        if ($this->options->contains('nullable')) {
+            $rules[] = $this->input->getOption('nullable') ? 'nullable' : 'required';
+        } elseif (preg_match('/^nullable/', $this->type)) {
+            $rules[] = 'nullable';
+        } else {
+            $rules[] = 'required';
+        }
+
+        switch ($this->config('type')) {
+            case 'boolean':
+                $rules[] = 'boolean';
+                break;
+            case 'integer':
+                $rules[] = 'integer';
+                break;
+            case 'float':
+                $rules[] = 'numeric';
+                break;
+            case 'date':
+                $rules[] = 'date';
+                break;
+            case 'array':
+                $rules[] = 'in:' . implode(',', $this->input->getArgument('allowed'));
+                break;
+            default:
+                break;
+        }
+
+
+        if ($this->options->contains('unique') && $this->input->getOption('unique')) {
+            $rules[] = 'unique:' . $this->crud->getTableName() . ',' . $this->name;
+        }
+
+        return sprintf("'%s' => '%s',", $this->name, implode('|', $rules));
     }
 
     /**
