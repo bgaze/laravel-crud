@@ -6,6 +6,7 @@ use Illuminate\Console\Parser;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\StringInput;
 use Validator;
+use Bgaze\Crud\Theme\Crud;
 
 /**
  * TODO
@@ -13,6 +14,13 @@ use Validator;
  * @author bgaze
  */
 class Field {
+
+    /**
+     * TODO
+     * 
+     * @var \Bgaze\Crud\Theme\Crud 
+     */
+    protected $crud;
 
     /**
      * TODO
@@ -45,10 +53,14 @@ class Field {
     /**
      * TODO
      * 
-     * @param string $field
-     * @param string $question
+     * @param \Bgaze\Crud\Theme\Crud  $crud
+     * @param type $field
+     * @param type $question
      */
-    public function __construct($field, $question) {
+    public function __construct(Crud $crud, $field, $question) {
+        // Link to CRUD instance.
+        $this->crud = $crud;
+
         // Store original user input.
         $this->question = $field . ' ' . $question;
 
@@ -152,27 +164,34 @@ class Field {
      * @return string
      */
     public function toFactory() {
-        switch ($this->config('type')) {
-            case 'integer':
-                $default = 'mt_rand(0, 1000)';
-                break;
-            case 'float':
-                $default = "(mt_rand() / mt_getrandmax()) * " . str_repeat('9', $this->input->getArgument('total'));
-                break;
-            case 'date':
-                $default = "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
-                break;
-            case 'string':
-                $default = "\$faker->sentence()";
-                break;
-            case 'array':
-                $default = 'array_random(' . compile_value_for_php($this->input->getArgument('allowed')) . ')';
-                break;
-            default:
-                return null;
+        $template = $this->config('factory', $this->getFactoryDefaultTemplate());
+
+        if (!$template) {
+            return null;
         }
 
-        return "'{$this->name}' => " . $this->config('factory', $default) . ",";
+        return "'{$this->name}' => {$template},";
+    }
+
+    protected function getFactoryDefaultTemplate() {
+        if ($this->config('factory')) {
+            return $this->config('factory');
+        }
+
+        switch ($this->config('type')) {
+            case 'integer':
+                return 'mt_rand(0, 1000)';
+            case 'float':
+                return "(mt_rand() / mt_getrandmax()) * " . str_repeat('9', $this->input->getArgument('total'));
+            case 'date':
+                return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
+            case 'string':
+                return "\$faker->sentence()";
+            case 'array':
+                return 'array_random(' . compile_value_for_php($this->input->getArgument('allowed')) . ')';
+            default:
+                return false;
+        }
     }
 
     /**
@@ -190,7 +209,11 @@ class Field {
      * @return string
      */
     public function toTableHead() {
-        return "<!-- {$this->question} -->";
+        if ($this->isIndex()) {
+            return null;
+        }
+
+        return '<th>' . $this->name . '</th>';
     }
 
     /**
@@ -199,7 +222,11 @@ class Field {
      * @return string
      */
     public function toTableBody() {
-        return "<!-- {$this->question} -->";
+        if ($this->isIndex()) {
+            return null;
+        }
+
+        return '<td>{{ $' . $this->crud->getModelCamel() . '->' . $this->name . ' }}</td>';
     }
 
     /**
@@ -208,6 +235,10 @@ class Field {
      * @return string
      */
     public function toForm(bool $create) {
+        if ($this->isIndex()) {
+            return null;
+        }
+
         return "<!-- {$this->question} -->";
     }
 
@@ -217,6 +248,10 @@ class Field {
      * @return string
      */
     public function toShow() {
+        if ($this->isIndex()) {
+            return null;
+        }
+
         return "<!-- {$this->question} -->";
     }
 

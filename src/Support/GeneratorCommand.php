@@ -41,35 +41,14 @@ abstract class GeneratorCommand extends Command {
             $this->h2('Configuration', !$this->isSubCommand);
 
             // Instantiate CRUD based on theme and model inputs.
-            $this->getCrud();
-
-            // Get plurals value.
-            $this->getPluralsInput();
-
-            // Check that no file already exists.
-            $summary = $this->summary();
-
-            // Get timestamps value.
-            if ($this->optionExists('timestamps')) {
-                $this->getTimestampsInput();
-            }
-
-            // Get timestamps value.
-            if ($this->optionExists('soft-deletes')) {
-                $this->getSoftDeletesInput();
-            }
-
-            // Add content.
-            if ($this->optionExists('content')) {
-                $this->getFieldsInput();
-            }
+            $summary = $this->getCrud();
 
             // Build.
             $this->nl(!$this->isSubCommand && $this->option('no-interaction'));
             $this->h2('Generation', !$this->isSubCommand);
 
             if (!$this->option('no-interaction')) {
-                $this->line($summary);
+                $this->line($this->summary());
                 $this->nl();
             }
 
@@ -81,6 +60,58 @@ abstract class GeneratorCommand extends Command {
             $this->error($e->getMessage());
             $this->nl();
             $this->line($e->getTraceAsString());
+        }
+    }
+
+    /**
+     * TODO 
+     * 
+     * @return type
+     */
+    protected function getCrud() {
+        // Get required theme.
+        $theme = $this->option('theme') ? $this->option('theme') : config('crud.theme');
+
+        // Resolve CRUD instance.
+        $this->crud = $this->laravel->make($theme);
+
+        // Quit if subcommand, as CRUD is already initialized.
+        if ($this->isSubCommand) {
+            return null;
+        }
+
+        // Initialize CRUD.
+        $this->crud->init($this->argument('model'));
+
+        // Get Layout.
+        if ($this->optionExists('layout')) {
+            $this->crud->setLayout($this->option('layout'));
+        }
+
+        // Show configuration summary.
+        $this->dl('Theme', $theme);
+        $this->dl('Model name', $this->crud->getModelFullName());
+        $this->dl('Views layout', $this->crud->getViewsLayout());
+
+        // Get plurals value.
+        $this->getPluralsInput();
+
+        // Check that no file already exists.
+        $this->summary();
+
+        // Get timestamps value.
+        if ($this->optionExists('timestamps')) {
+            $this->getTimestampsInput();
+        }
+
+        // Get timestamps value.
+        if ($this->optionExists('soft-deletes')) {
+            $this->getSoftDeletesInput();
+        }
+
+        // Add content.
+        if ($this->optionExists('content')) {
+            $this->getFieldsInput();
         }
     }
 
@@ -101,21 +132,6 @@ abstract class GeneratorCommand extends Command {
      * 
      */
     abstract protected function files();
-
-    protected function getCrud() {
-        $theme = $this->option('theme') ? $this->option('theme') : config('crud.theme');
-        $this->crud = $this->laravel->make($theme, ['model' => $this->argument('model')]);
-
-        if ($this->optionExists('layout')) {
-            $this->crud->setLayout($this->option('layout'));
-        }
-
-        if (!$this->isSubCommand) {
-            $this->dl('Theme', $theme);
-            $this->dl('Model name', $this->crud->getModelFullName());
-            $this->dl('Views layout', $this->crud->getViewsLayout());
-        }
-    }
 
     /**
      * TODO

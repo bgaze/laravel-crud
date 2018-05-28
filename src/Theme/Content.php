@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Theme;
 
 use Bgaze\Crud\Theme\Field;
+use Bgaze\Crud\Theme\Crud;
 
 /**
  * TODO
@@ -10,6 +11,13 @@ use Bgaze\Crud\Theme\Field;
  * @author bgaze
  */
 class Content {
+
+    /**
+     * TODO
+     * 
+     * @var \Bgaze\Crud\Theme\Crud 
+     */
+    protected $crud;
 
     /**
      * TODO
@@ -36,7 +44,8 @@ class Content {
      * TODO
      * 
      */
-    public function __construct() {
+    public function __construct(Crud $crud) {
+        $this->crud = $crud;
         $this->fields = collect([]);
     }
 
@@ -48,7 +57,7 @@ class Content {
      */
     public function add($field, $data) {
         // Instanciate field.
-        $field = new Field($field, $data);
+        $field = new Field($this->crud, $field, $data);
 
         // Check that it doesn't already exists.
         if ($this->has($field->name)) {

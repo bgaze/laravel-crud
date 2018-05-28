@@ -61,12 +61,19 @@ class Crud {
      * @param  \Illuminate\Filesystem\Filesystem  $files
      * @return void
      */
-    public function __construct(Filesystem $files, $model) {
+    public function __construct(Filesystem $files) {
         // Filesystem.
         $this->files = $files;
+    }
 
+    /**
+     * TODO
+     * 
+     * @param type $model
+     */
+    public function init($model) {
         // Init CRUD content.
-        $this->content = new Content();
+        $this->content = new Content($this);
 
         // Parse model input to get model full name.
         $this->model = $this->parseModel($model);
