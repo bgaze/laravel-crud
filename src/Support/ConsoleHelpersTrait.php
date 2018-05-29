@@ -7,7 +7,8 @@ trait ConsoleHelpersTrait {
     /**
      * Display a level 1 title.
      * 
-     * @param string $text
+     * @param string $text The text to display
+     * @param boolean $test Nothing is displayed if test fails
      */
     public function h1($text, $test = true) {
         if ($test) {
@@ -23,6 +24,7 @@ trait ConsoleHelpersTrait {
      * Display a level 2 title.
      * 
      * @param string $text
+     * @param boolean $test Nothing is displayed if test fails
      */
     public function h2($text, $test = true) {
         if ($test) {
@@ -32,9 +34,10 @@ trait ConsoleHelpersTrait {
     }
 
     /**
-     * Displays new line(s).
+     * Displays a new line.
      * 
-     * @param integer $multiplier
+     * @param string $text The text to display
+     * @param boolean $test Nothing is displayed if test fails
      */
     public function nl($test = true) {
         if ($test) {
@@ -42,6 +45,13 @@ trait ConsoleHelpersTrait {
         }
     }
 
+    /**
+     * Display a definition.
+     * 
+     * @param string $dt The label of definition
+     * @param string $dd The value of definition
+     * @param boolean $test Nothing is displayed if test fails
+     */
     public function dl($dt, $dd, $test = true) {
         if ($test) {
             $this->info(" {$dt} : <fg=white>{$dd}</>");

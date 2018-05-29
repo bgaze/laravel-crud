@@ -1,10 +1,12 @@
 <?php
 
 /**
- * Prepare value for PHP generation depending on it's type
+ * Prepare value for PHP generation depending on it's type.
+ * 
+ * This function export a PHP value to a string that can be inserted into generated stuff.
  * 
  * @param mixed $value
- * @return mixed
+ * @return string
  */
 function compile_value_for_php($value) {
     if (is_array($value)) {

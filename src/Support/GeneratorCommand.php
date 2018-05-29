@@ -7,7 +7,13 @@ use Bgaze\Crud\Support\ConsoleHelpersTrait;
 use Bgaze\Crud\Theme\Crud;
 
 /**
- * Description of GeneratorCommand
+ * GeneratorCommand
+ * 
+ * This is the base Class for all the commands of this package.
+ * 
+ * It mainly do two thing :
+ * - Managing CRUD instance for the command and it's sub commands based on provided arguments.
+ * - Managing user inputs, providing wizards if possible.
  *
  * @author bgaze
  */
@@ -16,9 +22,11 @@ abstract class GeneratorCommand extends Command {
     use ConsoleHelpersTrait;
 
     /**
-     * TODO
+     * Sub command status.
      * 
-     * @var type 
+     * True if current execution was called within an other GeneratorCommand execution.
+     * 
+     * @var boolean 
      */
     protected $isSubCommand = false;
 
@@ -64,9 +72,12 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO 
+     * Get the CRUD instance.
      * 
-     * @return type
+     * If this is a sub command, the parent command CRUD instance is returned.
+     * Otherwise, a new instance is created based on command arguments and options.
+     * 
+     * @return void
      */
     protected function getCrud() {
         // Get required theme.
@@ -77,7 +88,7 @@ abstract class GeneratorCommand extends Command {
 
         // Quit if subcommand, as CRUD is already initialized.
         if ($this->isSubCommand) {
-            return null;
+            return;
         }
 
         // Initialize CRUD.
@@ -116,27 +127,33 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO
+     * The message to display when the command is ran.
      * 
+     * @return string
      */
     abstract protected function welcome();
 
     /**
-     * TODO
+     * Build the files that the generator must produce.
      * 
+     * @return void
      */
     abstract protected function build();
 
     /**
-     * TODO
+     * An array of CRUD method to execute in order to check that no file to generate already exists.
      * 
+     * @return array
      */
     abstract protected function files();
 
     /**
-     * TODO
+     * Generate a summary of generator's actions.
      * 
-     * @return type
+     * If some files to generate already exists, an eroor is raised, 
+     * otherwise a formatted summary of generated files is returned.
+     * 
+     * @return string
      * @throws \Exception
      */
     protected function summary() {
@@ -163,10 +180,11 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO
+     * Check if an option is present into command signature.
      * 
-     * @param type $option
-     * @return type
+     * @param string $option The full name of the option without dashes.
+     * 
+     * @return boolean
      */
     protected function optionExists($option) {
         return preg_match("/--([a-zA-Z]\\|)?{$option}/", $this->signature);
@@ -174,10 +192,14 @@ abstract class GeneratorCommand extends Command {
 
     /**
      * Call another console command.
+     * 
+     * If the command is an instance of \Bgaze\Crud\Support\GeneratorCommand, it
+     * isSubCommand status is set to true.
      *
-     * @param  string  $command
-     * @param  array   $arguments
-     * @return int
+     * @param  string  $command The command name
+     * @param  array   $arguments The command arguments
+     * 
+     * @return int The command exit code
      */
     public function call($command, array $arguments = []) {
         $arguments['command'] = $command;
@@ -194,7 +216,12 @@ abstract class GeneratorCommand extends Command {
     # MANAGE INPUTS
 
     /**
-     * TODO
+     * Set CRUD's plurals names based on command inputs.
+     * 
+     * If plural wasn't provided and interraction are allowed, user is
+     * ask to confirm default value based on Model's name, or to provide his own.
+     * 
+     * @return void 
      */
     protected function getPluralsInput() {
         $value = $this->option('plural');
@@ -212,7 +239,12 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO
+     * Set Models's Timestamps type based on command inputs.
+     * 
+     * If option wasn't provided and interraction are allowed, user is
+     * ask to choose a value.
+     * 
+     * @return void 
      */
     protected function getTimestampsInput() {
         $value = $this->option('timestamps');
@@ -232,7 +264,12 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO
+     * Set Model's SoftDeletes type based on command inputs.
+     * 
+     * If option wasn't provided and interraction are allowed, user is
+     * ask to choose a value.
+     * 
+     * @return void 
      */
     protected function getSoftDeletesInput() {
         $value = $this->option('soft-deletes');
@@ -252,7 +289,12 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO
+     * Set Model's fields based on command inputs.
+     * 
+     * If option was provided, content is prepended to model.
+     * If interraction are allowed, content wizard is fired.
+     * 
+     * @return void 
      */
     protected function getFieldsInput() {
         // If fields where provided through option, add them.
@@ -290,10 +332,11 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO
+     * Ask the user for a new Model field.
      * 
-     * @param array $fields
-     * @return boolean
+     * @param array $fields The list of available fields.
+     * 
+     * @return boolean Wether to continue or not to add fields to Model.
      */
     protected function askForFieldInput(array $fields) {
         // User input.
@@ -333,11 +376,14 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO
+     * Parse the user input and return an array conatining two values :
+     * - First : the name of the field type to add.
+     * - Second : arguments and options to generate the field.
      * 
-     * @param string $question
-     * @return array
-     * @throws \Exception
+     * @param string $question The user input
+     * 
+     * @return array 
+     * @throws \Exception The asked field wasn't recognized
      */
     protected function parseSignedInput($question) {
         $reg = '/^(' . collect(config('crud-definitions.fields'))->keys()->implode('|') . ')(\s.*)?$/';
@@ -347,15 +393,15 @@ abstract class GeneratorCommand extends Command {
         }
 
         return [
-            $matches[1], // Field name
-            isset($matches[2]) ? trim($matches[2]) : '' // User input
+            $matches[1], // Field type.
+            isset($matches[2]) ? trim($matches[2]) : '' // Arguments and options.
         ];
     }
 
     /**
-     * TODO
+     * Display help for a field type.
      * 
-     * @param type $name
+     * @param type $name The name of the field.
      */
     protected function showFieldHelp($name) {
         $config = config("crud-definitions.fields.{$name}");
@@ -363,7 +409,7 @@ abstract class GeneratorCommand extends Command {
     }
 
     /**
-     * TODO
+     * Display a help tablefor all availables fields type.
      */
     protected function showFieldsHelp() {
         $rows = collect(config('crud-definitions.fields'))->map(function ($config, $name) {
