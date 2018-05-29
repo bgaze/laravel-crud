@@ -42,6 +42,13 @@ class Field {
      * 
      * @var string 
      */
+    public $label;
+
+    /**
+     * TODO
+     * 
+     * @var string 
+     */
     public $question;
 
     /**
@@ -93,11 +100,10 @@ class Field {
         $this->validate();
 
         // Generate field unique name.
-        if ($this->isIndex()) {
-            $this->name = 'index:' . implode('_', $this->input->getArgument('columns'));
-        } else {
-            $this->name = $this->input->getArgument('column');
-        }
+        $this->name = $this->getName();
+
+        // Generate field's label.
+        $this->label = $this->getLabel();
     }
 
     /**
@@ -161,7 +167,18 @@ class Field {
     /**
      * TODO
      */
-    public function label() {
+    public function getName() {
+        if ($this->isIndex()) {
+            return 'index:' . implode('_', $this->input->getArgument('columns'));
+        }
+
+        return $this->input->getArgument('column');
+    }
+
+    /**
+     * TODO
+     */
+    public function getLabel() {
         $label = Str::studly($this->name);
 
         if (!preg_match_all('/[A-Z][a-z]+|\d+/', $label, $matches) || !isset($matches[0])) {
@@ -169,6 +186,44 @@ class Field {
         }
 
         return implode(' ', $matches[0]);
+    }
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    protected function getDefaultFactoryTemplate() {
+        switch ($this->config('type')) {
+            case 'boolean':
+                return '(mt_rand(0, 1) === 1)';
+            case 'integer':
+                return 'mt_rand(0, 1000)';
+            case 'float':
+                return "(mt_rand() / mt_getrandmax()) * " . str_repeat('9', $this->input->getArgument('total'));
+            case 'date':
+                return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
+            case 'array':
+                return 'array_random(' . compile_value_for_php($this->input->getArgument('allowed')) . ')';
+            default:
+                return "\$faker->sentence()";
+        }
+    }
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    protected function getDefaultFormTemplate() {
+        switch ($this->config('type')) {
+            case 'boolean':
+                return "Form::checkbox('FieldName', '1')";
+            case 'array':
+                return "Form::select('FieldName', " . compile_value_for_php($this->input->getArgument('allowed')) . ")";
+            default:
+                return "Form::text('FieldName')";
+        }
     }
 
     /**
@@ -211,23 +266,6 @@ class Field {
         return "'{$this->name}' => {$template},";
     }
 
-    protected function getDefaultFactoryTemplate() {
-        switch ($this->config('type')) {
-            case 'boolean':
-                return '(mt_rand(0, 1) === 1)';
-            case 'integer':
-                return 'mt_rand(0, 1000)';
-            case 'float':
-                return "(mt_rand() / mt_getrandmax()) * " . str_repeat('9', $this->input->getArgument('total'));
-            case 'date':
-                return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
-            case 'array':
-                return 'array_random(' . compile_value_for_php($this->input->getArgument('allowed')) . ')';
-            default:
-                return "\$faker->sentence()";
-        }
-    }
-
     /**
      * TODO
      * 
@@ -268,7 +306,6 @@ class Field {
                 break;
         }
 
-
         if ($this->options->contains('unique') && $this->input->getOption('unique')) {
             $rules[] = 'unique:' . $this->crud->getTableName() . ',' . $this->name;
         }
@@ -286,11 +323,9 @@ class Field {
             return null;
         }
 
-        $stub = $this->crud->stub('views.partial.table-head');
-
-        $this->crud->replace($stub, 'FieldLabel', $this->label());
-
-        return $stub;
+        return $this->crud->populateStub('views.partial.table-head', function(Crud $crud, $stub) {
+                    $crud->replace($stub, 'FieldLabel', $this->label);
+                });
     }
 
     /**
@@ -303,14 +338,12 @@ class Field {
             return null;
         }
 
-        $stub = $this->crud->stub('views.partial.table-body');
-
-        $this->crud
-                ->replace($stub, 'FieldLabel', $this->label())
-                ->replace($stub, 'FieldName', $this->name)
-        ;
-
-        return $stub;
+        return $this->crud->populateStub('views.partial.table-body', function(Crud $crud, $stub) {
+                    $crud
+                            ->replace($stub, 'FieldLabel', $this->label)
+                            ->replace($stub, 'FieldName', $this->name)
+                    ;
+                });
     }
 
     /**
@@ -323,26 +356,13 @@ class Field {
             return null;
         }
 
-        $stub = $this->crud->stub('views.partial.form-group');
-
-        $this->crud
-                ->replace($stub, 'FieldLabel', $this->label())
-                ->replace($stub, '#FIELD', $this->getDefaultFormTemplate())
-                ->replace($stub, 'FieldName', $this->name)
-        ;
-
-        return $stub;
-    }
-
-    protected function getDefaultFormTemplate() {
-        switch ($this->config('type')) {
-            case 'boolean':
-                return "Form::checkbox('FieldName', '1')";
-            case 'array':
-                return "Form::select('FieldName', " . compile_value_for_php($this->input->getArgument('allowed')) . ")";
-            default:
-                return "Form::text('FieldName')";
-        }
+        return $this->crud->populateStub('views.partial.form-group', function(Crud $crud, $stub) {
+                    $crud
+                            ->replace($stub, 'FieldLabel', $this->label)
+                            ->replace($stub, '#FIELD', $this->getDefaultFormTemplate())
+                            ->replace($stub, 'FieldName', $this->name)
+                    ;
+                });
     }
 
     /**
@@ -355,15 +375,13 @@ class Field {
             return null;
         }
 
-        $stub = $this->crud->stub('views.partial.show-group');
-
-        $this->crud
-                ->replace($stub, 'ModelCamel')
-                ->replace($stub, 'FieldLabel', $this->label())
-                ->replace($stub, 'FieldName', $this->name)
-        ;
-
-        return $stub;
+        return $this->crud->populateStub('views.partial.show-group', function(Crud $crud, $stub) {
+                    $crud
+                            ->replace($stub, 'ModelCamel')
+                            ->replace($stub, 'FieldLabel', $this->label)
+                            ->replace($stub, 'FieldName', $this->name)
+                    ;
+                });
     }
 
 }

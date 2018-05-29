@@ -114,12 +114,12 @@ class Content {
         }
 
         $content = $this->fields->map(function(Field $field) use ($function, $arguments) {
-                            return call_user_func_array([$field, $function], $arguments);
-                        })
-                        ->filter()
-                        ->implode("\n");
-                        
-                return rtrim($content);
+                    return call_user_func_array([$field, $function], $arguments);
+                })
+                ->filter()
+                ->implode("\n");
+
+        return rtrim($content);
     }
 
     /**
@@ -164,7 +164,7 @@ class Content {
                     return !$field->isIndex();
                 })->keys();
 
-        return 'protected $fillable = [' . compile_value_for_php($fillables->toArray()) . '];';
+        return 'protected $fillable = ' . compile_value_for_php($fillables->toArray()) . ';';
     }
 
     /**
@@ -181,7 +181,7 @@ class Content {
             $dates->prepend('deleted_at');
         }
 
-        return 'protected $dates = [' . compile_value_for_php($dates->toArray()) . '];';
+        return 'protected $dates = ' . compile_value_for_php($dates->toArray()) . ';';
     }
 
     /**

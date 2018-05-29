@@ -51,7 +51,7 @@ class ModelMakeCommand extends GeneratorCommand {
         $path = $this->crud->generatePhpFile('model', $this->crud->modelPath(), function(Crud $crud, $stub) {
             $crud
                     ->replace($stub, '#TIMESTAMPS', $crud->content->timestamps ? 'public $timestamps = true;' : '')
-                    ->replace($stub, '#SOFTDELETE', $crud->content->softDeletes ? 'use Illuminate\Database\Eloquent\SoftDeletes;' : '')
+                    ->replace($stub, '#SOFTDELETE', $crud->content->softDeletes ? 'use \Illuminate\Database\Eloquent\SoftDeletes;' : '')
                     ->replace($stub, '#FILLABLES', $crud->content->toModeleFillables())
                     ->replace($stub, '#DATES', $crud->content->toModeleDates())
             ;

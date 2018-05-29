@@ -77,14 +77,7 @@ class ControllerMakeCommand extends GeneratorCommand {
      * 
      */
     public function writeRoutes() {
-        $stub = $this->crud->stub('routes');
-
-        $this->crud
-                ->replace($stub, 'ModelFullName')
-                ->replace($stub, 'ModelCamel')
-                ->replace($stub, 'PluralsKebabDot')
-                ->replace($stub, 'PluralsKebabSlash')
-        ;
+        $stub = $this->crud->populateStub('routes');
 
         $path = $this->crud->routesPath();
         $this->crud->files->append($path, $stub);

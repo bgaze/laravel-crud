@@ -281,10 +281,10 @@ class Crud {
      * TODO
      * 
      * @param type $stub
-     * @param type $path
-     * @param callable $replace
+     * @param \Bgaze\Crud\Theme\callable $replace
+     * @return type
      */
-    public function generateFile($stub, $path, callable $replace = null) {
+    public function populateStub($stub, callable $replace = null) {
         // Get stub content.
         $stub = $this->stub($stub);
 
@@ -297,6 +297,20 @@ class Crud {
         if ($replace !== null) {
             $stub = $replace($this, $stub);
         }
+
+        return $stub;
+    }
+
+    /**
+     * TODO
+     * 
+     * @param type $stub
+     * @param type $path
+     * @param callable $replace
+     */
+    public function generateFile($stub, $path, callable $replace = null) {
+        // Get stub content.
+        $stub = $this->populateStub($stub, $replace);
 
         // Strip base path.
         $path = $this->stripBasePath($path);
@@ -673,6 +687,15 @@ class Crud {
      */
     public function getControllerClass() {
         return $this->model->last() . 'Controller';
+    }
+
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    public function getControllerFullName() {
+        return $this->getModelFullName() . 'Controller';
     }
 
     /**
