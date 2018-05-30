@@ -2,12 +2,10 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
-use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class RequestMakeCommand extends Command {
-
-    use ConsoleHelpersTrait;
+class RequestMakeCommand extends GeneratorCommand {
 
     /**
      * The console command signature.
@@ -17,8 +15,8 @@ class RequestMakeCommand extends Command {
     protected $signature = 'crud:request 
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
-        {--t|theme= : The theme to use to generate CRUD.}{--r|rules=* : The lines to insert into request rules array.}
-        {--r|rules=* : The lines to insert into request rules array.}';
+        {--t|theme= : The theme to use to generate CRUD.}
+        {--c|content=* : The list of Model\'s fields (signature syntax).}';
 
     /**
      * The console command description.
@@ -28,25 +26,34 @@ class RequestMakeCommand extends Command {
     protected $description = 'Create a new CRUD form request class';
 
     /**
-     * Execute the console command.
-     *
-     * @return void
+     * TODO
+     * 
+     * @return string
      */
-    public function handle() {
-        // Get CRUD theme.
-        $theme = $this->getTheme();
+    protected function welcome() {
+        return "Welcome to CRUD Request generator";
+    }
 
+    /**
+     * TODO
+     */
+    protected function files() {
+        return ['requestPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write request file.
-        $path = $theme->generatePhpFile('request', $theme->requestPath(), function($theme, $stub) {
-            $rules = $this->option('rules');
-
-            $theme->replace($stub, '#RULES', empty($rules) ? '//' : implode(",\n", $rules));
-
+        $path = $this->crud->generatePhpFile('request', $this->crud->requestPath(), function(Crud $crud, $stub) {
+            $crud->replace($stub, '#RULES', $crud->content->toRequest());
             return $stub;
         });
 
         // Show success message.
-        $this->info("Request class created : <fg=white>$path</>");
+        $this->dl('Request class created', $path);
     }
 
 }

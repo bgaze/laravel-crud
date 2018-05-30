@@ -5,60 +5,57 @@ namespace Bgaze\Crud\Support;
 trait ConsoleHelpersTrait {
 
     /**
-     * TODO
-     * 
-     * @return \Bgaze\Crud\Support\Theme\Crud
-     */
-    public function getTheme() {
-        return $this->laravel->make($this->option('theme') ?: config('crud.theme'), [
-                    'model' => $this->argument('model'),
-                    'plural' => $this->option('plural')
-        ]);
-    }
-
-    /**
      * Display a level 1 title.
      * 
-     * @param string $text
+     * @param string $text The text to display
+     * @param boolean $test Nothing is displayed if test fails
      */
-    public function h1($text) {
-        $this->nl();
-        $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
-        $this->line("<fg=white;bg=blue>" . str_pad(strtoupper(" $text"), 80) . "</>");
-        $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
-        $this->nl();
+    public function h1($text, $test = true) {
+        if ($test) {
+            $this->nl();
+            $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
+            $this->line("<fg=white;bg=blue>" . str_pad(strtoupper(" $text"), 80) . "</>");
+            $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
+            $this->nl();
+        }
     }
 
     /**
      * Display a level 2 title.
      * 
      * @param string $text
+     * @param boolean $test Nothing is displayed if test fails
      */
-    public function h2($text) {
-        $this->line("<fg=blue>" . strtoupper($text) . "</>");
-        $this->nl();
-    }
-
-    /**
-     * Display a list.
-     * 
-     * @param array $items
-     * @param string $color
-     * @param integer $indent
-     */
-    public function ul(array $items, $color = 'cyan', $indent = 2) {
-        foreach ($items as $i) {
-            $this->line(str_repeat(' ', $indent) . "<fg=$color>* $i</>");
+    public function h2($text, $test = true) {
+        if ($test) {
+            $this->line(" <fg=blue>" . strtoupper($text) . "</>");
+            $this->nl();
         }
     }
 
     /**
-     * Displays new line(s).
+     * Displays a new line.
      * 
-     * @param integer $multiplier
+     * @param string $text The text to display
+     * @param boolean $test Nothing is displayed if test fails
      */
-    public function nl($multiplier = 1) {
-        $this->line(str_repeat("\n", $multiplier - 1));
+    public function nl($test = true) {
+        if ($test) {
+            echo "\n";
+        }
+    }
+
+    /**
+     * Display a definition.
+     * 
+     * @param string $dt The label of definition
+     * @param string $dd The value of definition
+     * @param boolean $test Nothing is displayed if test fails
+     */
+    public function dl($dt, $dd, $test = true) {
+        if ($test) {
+            $this->info(" {$dt} : <fg=white>{$dd}</>");
+        }
     }
 
 }

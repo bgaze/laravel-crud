@@ -30,7 +30,6 @@ class ServiceProvider extends Base {
                 Console\ViewsMakeCommand::class,
                 Console\FactoryMakeCommand::class,
                 Console\CrudMakeCommand::class,
-                    //Console\RelationMakeCommand::class,
             ]);
         }
     }
@@ -41,9 +40,14 @@ class ServiceProvider extends Base {
      * @return void
      */
     public function register() {
-        // Merge configuration.
+        // Merge definitions.
         $this->mergeConfigFrom(__DIR__ . '/config/definitions.php', 'crud-definitions');
+
+        // Merge package configuration.
         $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
+
+        // Register helpers file.
+        require __DIR__ . '/helpers.php';
 
         // Validate configuration.
         $dir = config('crud.models-directory', false);
@@ -52,8 +56,8 @@ class ServiceProvider extends Base {
         }
 
         // Register default theme class.
-        $this->app->bind(Crud::name(), function ($app, $parameters) {
-            return new Crud($app->make('Illuminate\Filesystem\Filesystem'), $parameters['model'], $parameters['plural'] ?: null);
+        $this->app->singleton(Crud::name(), function ($app) {
+            return new Crud($app->make('Illuminate\Filesystem\Filesystem'));
         });
     }
 

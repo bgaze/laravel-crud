@@ -2,12 +2,10 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
-use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class ControllerMakeCommand extends Command {
-
-    use ConsoleHelpersTrait;
+class ControllerMakeCommand extends GeneratorCommand {
 
     /**
      * The console command signature.
@@ -27,50 +25,64 @@ class ControllerMakeCommand extends Command {
     protected $description = 'Create a new CRUD controller class related to a Model';
 
     /**
-     * Execute the console command.
-     *
-     * @return bool|null
+     * TODO
+     * 
+     * @return string
      */
-    public function handle() {
-        // Get CRUD theme.
-        $theme = $this->getTheme();
+    protected function welcome() {
+        return "Welcome to CRUD Controller generator";
+    }
 
+    /**
+     * TODO
+     */
+    protected function files() {
+        return ['controllerPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    protected function summary() {
+        return " <fg=green>Routes will be added to :</> "
+                . str_replace(base_path() . '/', '', $this->crud->routesPath())
+                . "\n" . parent::summary();
+    }
+
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write controller file.
-        $this->writeController($theme);
+        $this->writeController();
 
         // Write routes.
-        $this->writeRoutes($theme);
+        $this->writeRoutes();
     }
 
     /**
      * TODO
      * 
-     * @param \Bgaze\Crud\Theme\Crud $theme
      */
-    public function writeController($theme) {
-        $path = $theme->generatePhpFile('controller', $theme->controllerPath());
-        $this->info("Controller class created : <fg=white>{$path}</>");
+    public function writeController() {
+        $path = $this->crud->generatePhpFile('controller', $this->crud->controllerPath());
+        $this->dl('Controller class created', $path);
     }
 
     /**
      * TODO
      * 
-     * @param \Bgaze\Crud\Theme\Crud $theme
      */
-    public function writeRoutes($theme) {
-        $stub = $theme->stub('routes');
-        $path = $theme->routesPath();
+    public function writeRoutes() {
+        $stub = $this->crud->populateStub('routes');
 
-        $theme
-                ->replace($stub, 'ModelWithParents')
-                ->replace($stub, 'ModelCamel')
-                ->replace($stub, 'PluralWithParentsKebabDot')
-                ->replace($stub, 'PluralWithParentsKebabSlash')
-        ;
+        $path = $this->crud->routesPath();
+        $this->crud->files->append($path, $stub);
 
-        $theme->files->append($path, $stub);
-
-        $this->info("Routes added to <fg=white>{$path}</>");
+        $this->info(" Routes added to :<fg=white> " . str_replace(base_path() . '/', '', $path) . "</>");
     }
 
 }

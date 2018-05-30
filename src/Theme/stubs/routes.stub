@@ -1,16 +1,16 @@
 
 /*
- * ModelWithParents
+ * Routes for ControllerFullName
  *
- * Here is the compact version if you prefer : 
- * Route::resource('PluralWithParentsKebabSlash', 'ModelWithParents');
+ * You can also use the resource syntax : 
+ * Route::resource('PluralsKebabSlash', 'ControllerFullName');
  */
-Route::prefix('PluralWithParentsKebabSlash')->group(function () {
-    Route::get('/', 'ModelWithParents@index')->name('PluralWithParentsKebabDot.index');
-    Route::get('/create', 'ModelWithParents@create')->name('PluralWithParentsKebabDot.create');
-    Route::post('/', 'ModelWithParents@store')->name('PluralWithParentsKebabDot.store');
-    Route::get('/{ModelCamel}', 'ModelWithParents@show')->where(['ModelCamel' => '\d+'])->name('PluralWithParentsKebabDot.show');
-    Route::get('/{ModelCamel}/edit', 'ModelWithParents@edit')->where(['ModelCamel' => '\d+'])->name('PluralWithParentsKebabDot.edit');
-    Route::put('/{ModelCamel}', 'ModelWithParents@update')->where(['ModelCamel' => '\d+'])->name('PluralWithParentsKebabDot.update');
-    Route::delete('/{ModelCamel}', 'ModelWithParents@destroy')->where(['ModelCamel' => '\d+'])->name('PluralWithParentsKebabDot.destroy');
+Route::prefix('/PluralsKebabSlash')->group(function () {
+    Route::get('/', 'ControllerFullName@index')->name('PluralsKebabDot.index');
+    Route::get('/create', 'ControllerFullName@create')->name('PluralsKebabDot.create');
+    Route::post('/', 'ControllerFullName@store')->name('PluralsKebabDot.store');
+    Route::get('/{ModelCamel}', 'ControllerFullName@show')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.show');
+    Route::get('/{ModelCamel}/edit', 'ControllerFullName@edit')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.edit');
+    Route::put('/{ModelCamel}', 'ControllerFullName@update')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.update');
+    Route::delete('/{ModelCamel}', 'ControllerFullName@destroy')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.destroy');
 });

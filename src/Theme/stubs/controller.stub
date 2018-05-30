@@ -16,7 +16,7 @@ class ControllerClass extends Controller
     {
         $PluralCamel = ModelStudly::all();
         
-        return view('PluralWithParentsKebabDot.index', [
+        return view('PluralsKebabDot.index', [
             'PluralCamel' => $PluralCamel
         ]);
     }
@@ -28,7 +28,7 @@ class ControllerClass extends Controller
      */
     public function create()
     {
-        return view('PluralWithParentsKebabDot.create', [
+        return view('PluralsKebabDot.create', [
             'ModelCamel' => new ModelStudly()
         ]);
     }
@@ -43,7 +43,7 @@ class ControllerClass extends Controller
     {
         ModelStudly::create($request->all());
 
-        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModelStudly was successfully created.");
+        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly was successfully created.");
     }
 
     /**
@@ -54,7 +54,7 @@ class ControllerClass extends Controller
      */
     public function show(ModelStudly $ModelCamel)
     {
-        return view('PluralWithParentsKebabDot.show', [
+        return view('PluralsKebabDot.show', [
             'ModelCamel' => $ModelCamel
         ]);
     }
@@ -67,7 +67,7 @@ class ControllerClass extends Controller
      */
     public function edit(ModelStudly $ModelCamel)
     {
-        return view('PluralWithParentsKebabDot.edit', [
+        return view('PluralsKebabDot.edit', [
             'ModelCamel' => $ModelCamel
         ]);
     }
@@ -85,7 +85,7 @@ class ControllerClass extends Controller
         
         $ModelCamel->save();
 
-        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModelStudly was successfully updated.");
+        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly was successfully updated.");
     }
 
     /**
@@ -97,6 +97,6 @@ class ControllerClass extends Controller
     public function destroy(ModelStudly $ModelCamel)
     {
         $ModelCamel->delete();
-        return redirect()->route('PluralWithParentsKebabDot.index')->with('success', "ModelStudly was successfully deleted.");
+        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly was successfully deleted.");
     }
 }

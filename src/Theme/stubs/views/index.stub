@@ -1,23 +1,36 @@
 @extends('ViewsLayout')
 
-@section('title', 'PluralWithParents')
+@section('title', 'PluralFullName')
 
 @section('content')
     @if(session('success'))
         <p>{{ session('success') }}</p>
     @endif
 
-    <h1>PluralWithParents</h1>
+    <h1>PluralFullName</h1>
 
-    <p><a href="{{ route('PluralWithParentsKebabDot.create') }}">Create a new ModelWithParents</a></p>
+    <p><a href="{{ route('PluralsKebabDot.create') }}">Create a new ModelFullName</a></p>
 
     <table>
         <thead>
-            #THEAD
+            <tr>
+                <th>#</th>
+#THEAD
+            </tr>
         </thead>
         <tbody>
             @foreach($PluralCamel as $ModelCamel)
-                #TBODY
+                <tr>
+                    <td>{{ $ModelCamel->id }}</td>
+#TBODY
+                    <td>
+                        <a href="{{ route('PluralsKebabDot.show', ['ModelCamel' => $ModelCamel->id]) }}">Show</a>
+                        <a href="{{ route('PluralsKebabDot.edit', ['ModelCamel' => $ModelCamel->id]) }}">Edit</a>
+                        {!! Form::open($test, ['route' => ['PluralsKebabDot.destroy', $ModelCamel->id], 'method' => 'delete']) !!}
+                            <input type="submit" value="Delete"/>
+                        {!! Form::close() !!}
+                    <td>
+                </tr>
             @endforeach
         </tbody>
     </table>

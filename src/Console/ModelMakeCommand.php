@@ -2,14 +2,10 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
-use Bgaze\Crud\Support\CrudHelpersTrait;
-use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class ModelMakeCommand extends Command {
-
-    use CrudHelpersTrait;
-    use ConsoleHelpersTrait;
+class ModelMakeCommand extends GeneratorCommand {
 
     /**
      * The console command signature.
@@ -19,11 +15,10 @@ class ModelMakeCommand extends Command {
     protected $signature = 'crud:model 
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
-        {--theme= : The theme to use to generate CRUD.}
         {--t|timestamps : Add timestamps directives}
-        {--s|soft-delete : Add soft delete directives}
-        {--f|fillables=* : The list of Model\'s fillable fields}
-        {--d|dates=* : The list of Model\'s date fields}';
+        {--s|soft-deletes : Add soft delete directives}
+        {--c|content=* : The list of Model\'s fields (signature syntax).}
+        {--theme= : The theme to use to generate CRUD.}';
 
     /**
      * The console command description.
@@ -31,69 +26,41 @@ class ModelMakeCommand extends Command {
      * @var string
      */
     protected $description = 'Create a new CRUD Eloquent model class';
+    /**
+     * TODO
+     * 
+     * @return string
+     */
+    protected function welcome() {
+        return "Welcome to CRUD Model generator";
+    }
 
     /**
-     * Execute the console command.
-     *
-     * @return bool|null
+     * TODO
      */
-    public function handle() {
-        // Get CRUD theme.
-        $theme = $this->getTheme();
+    protected function files() {
+        return ['modelPath'];
+    }
 
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write model file.
-        $path = $theme->generatePhpFile('model', $theme->modelPath(), function($theme, $stub) {
-            $theme
-                    ->replace($stub, '#TIMESTAMPS', $this->option('timestamps') ? 'public $timestamps = true;' : '')
-                    ->replace($stub, '#SOFTDELETE', $this->option('soft-delete') ? 'use Illuminate\Database\Eloquent\SoftDeletes;' : '')
-                    ->replace($stub, '#FILLABLES', $this->getFillables())
-                    ->replace($stub, '#DATES', $this->getDates())
+        $path = $this->crud->generatePhpFile('model', $this->crud->modelPath(), function(Crud $crud, $stub) {
+            $crud
+                    ->replace($stub, '#TIMESTAMPS', $crud->content->timestamps ? 'public $timestamps = true;' : '')
+                    ->replace($stub, '#SOFTDELETE', $crud->content->softDeletes ? 'use \Illuminate\Database\Eloquent\SoftDeletes;' : '')
+                    ->replace($stub, '#FILLABLES', $crud->content->toModeleFillables())
+                    ->replace($stub, '#DATES', $crud->content->toModeleDates())
             ;
 
             return $stub;
         });
 
         // Show success message.
-        $this->info("Model class created : <fg=white>$path</>");
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    public function getFillables() {
-        $fillables = collect($this->option('fillables'))
-                ->map(function($v) {
-                    $v = trim($v);
-                    return empty($v) ? null : $this->compileValueForPhp($v);
-                })
-                ->filter()
-                ->implode(', ');
-
-        return "protected \$fillable = [{$fillables}];";
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    public function getDates() {
-        $dates = collect($this->option('dates'));
-
-        if ($this->option('soft-delete') && !$dates->contains('deleted_at')) {
-            $dates->prepend('deleted_at');
-        }
-
-        $dates = $dates->map(function($v) {
-                    $v = trim($v);
-                    return empty($v) ? null : $this->compileValueForPhp($v);
-                })
-                ->filter()
-                ->implode(', ');
-
-        return "protected \$dates = [{$dates}];";
+        $this->dl('Model class created', $path);
     }
 
 }

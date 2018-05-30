@@ -2,13 +2,11 @@
 
 namespace Bgaze\Crud\Console;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Support\GeneratorCommand;
+use Bgaze\Crud\Theme\Crud;
 
-class MigrateMakeCommand extends Command {
-
-    use ConsoleHelpersTrait;
+class MigrateMakeCommand extends GeneratorCommand {
 
     /**
      * The console command signature.
@@ -18,7 +16,9 @@ class MigrateMakeCommand extends Command {
     protected $signature = 'crud:migration 
         {model : The name of the Model.}
         {--p|plural= : The plural version of the Model\'s name.}
-        {--c|content=* : The PHP lines of your migration body (one line by row).}
+        {--t|timestamps : Add timestamps directives}
+        {--s|soft-deletes : Add soft delete directives}
+        {--c|content=* : The list of Model\'s fields (signature syntax).}
         {--theme= : The theme to use to generate CRUD.}';
 
     /**
@@ -47,18 +47,29 @@ class MigrateMakeCommand extends Command {
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return void
+     * TODO
+     * 
+     * @return string
      */
-    public function handle() {
-        // Get CRUD theme.
-        $theme = $this->getTheme();
+    protected function welcome() {
+        return "Welcome to CRUD Migration generator";
+    }
 
+    /**
+     * TODO
+     */
+    protected function files() {
+        return ['migrationPath'];
+    }
+
+    /**
+     * TODO
+     * 
+     */
+    protected function build() {
         // Write migration file.
-        $path = $theme->generatePhpFile('migration', $theme->migrationPath(), function($theme, $stub) {
-            $theme->replace($stub, '#CONTENT', implode("\n", $this->option('content')));
-
+        $path = $this->crud->generatePhpFile('migration', $this->crud->migrationPath(), function(Crud $crud, $stub) {
+            $crud->replace($stub, '#CONTENT', $crud->content->toMigration());
             return $stub;
         });
 
@@ -66,7 +77,7 @@ class MigrateMakeCommand extends Command {
         $this->composer->dumpAutoloads();
 
         // Show success message.
-        $this->info("Migration class created : <fg=white>$path</>");
+        $this->dl('Migration class created', $path);
     }
 
 }
