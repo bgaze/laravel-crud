@@ -307,6 +307,40 @@ abstract class Crud {
     }
 
     /**
+     * Prepare value for PHP generation depending on it's type.
+     * 
+     * This function export a PHP value to a string that can be inserted into generated stuff.
+     * 
+     * @param mixed $value
+     * @return string
+     */
+    public function compileValueForPhp($value) {
+        if (is_array($value)) {
+            return '[' . collect($value)->map(function($v) {
+                        return $this->compileValueForPhp($v);
+                    })->implode(', ') . ']';
+        }
+
+        if ($value === true || $value === 'true') {
+            return 'true';
+        }
+
+        if ($value === false || $value === 'false') {
+            return 'false';
+        }
+
+        if ($value === null || $value === 'null') {
+            return 'null';
+        }
+
+        if (!is_numeric($value)) {
+            return "'" . addslashes($value) . "'";
+        }
+
+        return $value;
+    }
+
+    /**
      * Replace a variable name in a stub string.
      * 
      * @param string $stub The stub content string

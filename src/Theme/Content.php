@@ -54,7 +54,7 @@ class Content extends Base {
                     return !$field->isIndex();
                 })->keys();
 
-        return 'protected $fillable = ' . compile_value_for_php($fillables->toArray()) . ';';
+        return 'protected $fillable = ' . $this->crud->compileValueForPhp($fillables->toArray()) . ';';
     }
 
     /**
@@ -71,7 +71,7 @@ class Content extends Base {
             $dates->prepend('deleted_at');
         }
 
-        return 'protected $dates = ' . compile_value_for_php($dates->toArray()) . ';';
+        return 'protected $dates = ' . $this->crud->compileValueForPhp($dates->toArray()) . ';';
     }
 
     /**

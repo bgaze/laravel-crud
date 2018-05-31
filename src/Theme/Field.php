@@ -35,12 +35,12 @@ class Field extends Base {
         $tmp = $this->config('template');
 
         foreach ($this->input->getArguments() as $k => $v) {
-            $tmp = str_replace("%$k", compile_value_for_php($v), $tmp);
+            $tmp = str_replace("%$k", $this->crud->compileValueForPhp($v), $tmp);
         }
 
         foreach ($this->input->getOptions() as $k => $v) {
             if ($v) {
-                $tmp .= str_replace('%value', compile_value_for_php($v), config("crud-definitions.modifiers.{$k}"));
+                $tmp .= str_replace('%value', $this->crud->compileValueForPhp($v), config("crud-definitions.modifiers.{$k}"));
             }
         }
 
@@ -82,7 +82,7 @@ class Field extends Base {
             case 'date':
                 return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
             case 'array':
-                return 'array_random(' . compile_value_for_php($this->input->getArgument('allowed')) . ')';
+                return 'array_random(' . $this->crud->compileValueForPhp($this->input->getArgument('allowed')) . ')';
             default:
                 return "\$faker->sentence()";
         }
@@ -202,7 +202,7 @@ class Field extends Base {
             case 'boolean':
                 return "Form::checkbox('FieldName', '1')";
             case 'array':
-                return "Form::select('FieldName', " . compile_value_for_php($this->input->getArgument('allowed')) . ")";
+                return "Form::select('FieldName', " . $this->crud->compileValueForPhp($this->input->getArgument('allowed')) . ")";
             default:
                 return "Form::text('FieldName')";
         }

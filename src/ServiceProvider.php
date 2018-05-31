@@ -46,9 +46,6 @@ class ServiceProvider extends Base {
         // Merge package configuration.
         $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
 
-        // Register helpers file.
-        require __DIR__ . '/helpers.php';
-
         // Validate configuration.
         $dir = config('crud.models-directory', false);
         if ($dir && !empty($dir) && $dir !== true && !preg_match('/^([A-Z][a-z]+)+$/', $dir)) {
