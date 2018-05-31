@@ -55,9 +55,9 @@ class ServiceProvider extends Base {
             throw new \Exception("Your configuration for 'crud.models-directory' is invalid.\nSpecified value must match /^([A-Z][a-z]+)+$/.");
         }
 
-        // Register default theme class.
-        $this->app->singleton(Crud::name(), function ($app) {
-            return new Crud($app->make('Illuminate\Filesystem\Filesystem'));
+        // Register default theme.
+        $this->app->bind(Crud::name(), function ($app, $parameters) {
+            return new Crud($app->make('Illuminate\Filesystem\Filesystem'), $parameters[0]);
         });
     }
 

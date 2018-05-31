@@ -15,6 +15,15 @@ use Bgaze\Crud\Theme\Field;
 class Content extends Base {
 
     /**
+     * 
+     * @param type $field
+     * @param type $question
+     */
+    protected function instantiateField($field, $question) {
+        return new Field($this->crud, $field, $question);
+    }
+
+    /**
      * TODO
      * 
      * @return type

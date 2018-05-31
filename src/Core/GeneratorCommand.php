@@ -4,6 +4,7 @@ namespace Bgaze\Crud\Core;
 
 use Illuminate\Console\Command;
 use Bgaze\Crud\Support\ConsoleHelpersTrait;
+use Bgaze\Crud\Core\Crud;
 
 /**
  * GeneratorCommand
@@ -64,12 +65,14 @@ abstract class GeneratorCommand extends Command {
      */
     public function handle() {
         try {
-            // Show title when direct call.
-            $this->h1($this->welcome(), !$this->subcommand);
-            $this->h2('Configuration', !$this->subcommand);
+            if (!$this->subcommand) {
+                // Show title when direct call.
+                $this->h1($this->welcome());
+                $this->h2('Configuration');
 
-            // Instantiate CRUD based on theme and model inputs.
-            $summary = $this->getCrud();
+                // Instantiate CRUD based on theme and model inputs.
+                $this->initCrud();
+            }
 
             // Build.
             $this->nl(!$this->subcommand && $this->option('no-interaction'));
@@ -87,6 +90,7 @@ abstract class GeneratorCommand extends Command {
         } catch (\Exception $e) {
             $this->error($e->getMessage());
             $this->nl();
+            $this->line($e->getTraceAsString());
         }
     }
 
@@ -106,7 +110,7 @@ abstract class GeneratorCommand extends Command {
         $command = $this->getApplication()->find($command);
 
         if ($command instanceof \Bgaze\Crud\Core\GeneratorCommand) {
-            $command->setAsSubcommand();
+            $command->initAsSubCommand($this->crud);
         }
 
         return $command->run($this->createInputFromArguments($arguments), $this->output);
@@ -117,8 +121,9 @@ abstract class GeneratorCommand extends Command {
      * 
      * This will prevent any interaction and minimize the console output.
      */
-    public function setAsSubcommand() {
+    public function initAsSubCommand(Crud $crud) {
         $this->subcommand = true;
+        $this->crud = $crud;
     }
 
     /**
@@ -129,20 +134,12 @@ abstract class GeneratorCommand extends Command {
      * 
      * @return void
      */
-    protected function getCrud() {
+    protected function initCrud() {
         // Get required theme.
         $theme = $this->option('theme') ? $this->option('theme') : config('crud.theme');
 
         // Resolve CRUD instance.
-        $this->crud = $this->laravel->make($theme);
-
-        // Quit if subcommand, as CRUD is already initialized.
-        if ($this->subcommand) {
-            return;
-        }
-
-        // Initialize CRUD.
-        $this->crud->init($this->argument('model'));
+        $this->crud = $this->laravel->make($theme, [$this->argument('model')]);
 
         // Get Layout.
         if ($this->optionExists('layout')) {
@@ -376,6 +373,7 @@ abstract class GeneratorCommand extends Command {
             $this->dl('Field added', $question);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
+            $this->line($e->getTraceAsString());
         }
 
         // Continue.

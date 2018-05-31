@@ -29,20 +29,6 @@ use Bgaze\Crud\Theme\Content;
 class Crud extends Base {
 
     /**
-     * The name of the content manager class to use.
-     * 
-     * @var string 
-     */
-    static protected $contentClass = Content::class;
-
-    /**
-     * The name of the field class to use.
-     * 
-     * @var type 
-     */
-    static protected $fieldClass = Field::class;
-
-    /**
      * The unique name of the CRUD theme.
      * 
      * It is used to register Theme's singleton.
@@ -65,6 +51,13 @@ class Crud extends Base {
      */
     public function stub($name) {
         return $this->stubInDir(__DIR__ . '/stubs', $name);
+    }
+
+    /**
+     * TODO
+     */
+    protected function instantiateContent() {
+        return new Content($this);
     }
 
     ############################################################################

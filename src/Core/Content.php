@@ -48,16 +48,9 @@ abstract class Content {
      * TODO
      * 
      */
-    public function __construct() {
-        $this->reset();
-    }
-
-    public function setCrud(Crud $crud) {
+    public function __construct(Crud $crud) {
         $this->crud = $crud;
-    }
-
-    public function reset() {
-        $this->fields = collect([]);
+        $this->fields = collect();
     }
 
     /**
@@ -121,9 +114,17 @@ abstract class Content {
      * @param string $field
      * @param string $data
      */
+    abstract protected function instantiateField($field, $data);
+
+    /**
+     * TODO
+     * 
+     * @param string $field
+     * @param string $data
+     */
     public function add($field, $data) {
         // Instanciate field.
-        $field = new static::$fieldClass($this->crud, $field, $data);
+        $field = $this->instantiateField($field, $data);
 
         // Check that it doesn't already exists.
         if ($this->has($field->name)) {

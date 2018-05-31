@@ -28,20 +28,6 @@ use Illuminate\Support\Str;
 abstract class Crud {
 
     /**
-     * The name of the content manager class to use.
-     * 
-     * @var string 
-     */
-    static protected $contentClass;
-
-    /**
-     * The name of the field class to use.
-     * 
-     * @var type 
-     */
-    static protected $fieldClass;
-
-    /**
      * The filesystem instance.
      *
      * @var \Illuminate\Filesystem\Filesystem
@@ -92,22 +78,12 @@ abstract class Crud {
      * @param  \Illuminate\Filesystem\Filesystem  $files The filesystem instance
      * @return void
      */
-    public function __construct(Filesystem $files) {
+    public function __construct(Filesystem $files, $model) {
         // Filesystem.
         $this->files = $files;
 
         // Init CRUD content.
-        $this->content = new static::$contentClass($this);
-    }
-
-    /**
-     * Initialize CRUD default values.
-     * 
-     * @param string $model The full name of the Model (including parents)
-     */
-    public function init($model) {
-        // Reset CRUD content.
-        $this->content->reset();
+        $this->content = $this->instantiateContent();
 
         // Parse model input to get model full name.
         $this->model = $this->parseModel($model);
@@ -124,6 +100,11 @@ abstract class Crud {
         // Init layout.
         $this->setLayout();
     }
+
+    /**
+     * TODO
+     */
+    abstract protected function instantiateContent();
 
     ############################################################################
     # THEME IDENTITY
