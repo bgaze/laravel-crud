@@ -7,9 +7,24 @@ use Illuminate\Support\Str;
 use Bgaze\Crud\Theme\Content;
 
 /**
- * TODO
+ * The core class of the CRUD package
+ * 
+ * It manages variables and stub to use to generate files.
+ * 
+ * It can be extended to create custom Crud theme.
+ * 
+ * <b>Important :</b> 
+ * 
+ * In this class, getXXX method name pattern is reserved for CRUD variables.<br/>
+ * Any method starting with 'get' MUST NOT have any required argument, MUST return a stringable value, 
+ * and WILL be used as replacement into stubs.
+ * 
+ * Exemple :
+ * 
+ * If the method 'getMyVariableName' exists, then it's return value will be used 
+ * to replace any occurence of 'MyVariableName' into stubs.
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Crud {
 
@@ -21,44 +36,47 @@ class Crud {
     public $files;
 
     /**
-     * TODO
+     * The Model parents and name.<br/>
+     * Example : ['MyGrandParent', 'MyParent', 'MyModel']
      *
      * @var \Illuminate\Support\Collection 
      */
     protected $model;
 
     /**
-     * TODO
+     * The Model's parents and the plural version of its name.<br/>
+     * Example : ['MyGrandParent', 'MyParent', 'MyModels']
      *
      * @var \Illuminate\Support\Collection 
      */
     protected $plural;
 
     /**
-     * TODO
+     * The plural version of Model's parents and name.<br/>
+     * Example : ['MyGrandParents', 'MyParents', 'MyModels']
      *
      * @var \Illuminate\Support\Collection 
      */
     protected $plurals;
 
     /**
-     * TODO
+     * The layout to extend in generated views.
      *
      * @var string
      */
     protected $layout;
 
     /**
-     * TODO
+     * Model's content manager.
      *
      * @var \Bgaze\Crud\Theme\Content 
      */
     public $content;
 
     /**
-     * TODO
+     * The constructor of the class.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
+     * @param  \Illuminate\Filesystem\Filesystem  $files The filesystem instance
      * @return void
      */
     public function __construct(Filesystem $files) {
@@ -67,9 +85,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Initialize CRUD default values.
      * 
-     * @param type $model
+     * @param string $model The full name of the Model (including parents)
      */
     public function init($model) {
         // Init CRUD content.
@@ -95,7 +113,9 @@ class Crud {
     # THEME IDENTITY
 
     /**
-     * TODO
+     * The unique name of the CRUD theme.
+     * 
+     * It is used to register Theme's singleton.
      * 
      * @return string
      */
@@ -104,16 +124,20 @@ class Crud {
     }
 
     /**
-     * TODO
+     * The views namespace.
      * 
-     * @return type
+     * It is used to publish and register Theme's views.
+     * 
+     * @return string
      */
     static public function views() {
         return Str::kebab(self::name());
     }
 
     /**
-     * TODO
+     * The Theme base layout.
+     * 
+     * The default layout to extend in views.
      * 
      * @return string
      */
@@ -125,7 +149,7 @@ class Crud {
     # NAMES MANAGEMENT
 
     /**
-     * TODO
+     * Models sub-directory, based on global configuration.
      * 
      * @return string
      */
@@ -144,9 +168,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Parse and validate Model's name and parents.
      * 
-     * @param type $model
+     * @param string $model
      * @return \Illuminate\Support\Collection
      * @throws \Exception
      */
@@ -161,9 +185,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Parse and validate plurals versions of Model's name and parents.<br/>
+     * Compute and set default value if empty.
      * 
-     * @param type $plurals
+     * @param string $value
      * @return \Illuminate\Support\Collection
      * @throws \Exception
      */
@@ -195,10 +220,11 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Validate timestamps option, set default value if empty.
      * 
      * @param type $value
      * @throws \Exception
+     * @return void
      */
     public function setTimestamps($value = false) {
         $timestamps = array_keys(config('crud-definitions.timestamps'));
@@ -214,10 +240,11 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Validate soft deletes option, set default value if empty.
      * 
      * @param type $value
      * @throws \Exception
+     * @return void
      */
     public function setSoftDeletes($value = false) {
         $softDeletes = array_keys(config('crud-definitions.softDeletes'));
@@ -233,9 +260,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Set default layout for CRUD's views.
      * 
      * @param type $value
+     * @return void
      */
     public function setLayout($value = false) {
         if ($value) {
@@ -251,20 +279,25 @@ class Crud {
     # FILES GENERATION
 
     /**
-     * TODO
+     * Get a stub file relative to Theme's dir and return it's content.
      * 
-     * @param type $name
-     * @return type
+     * Uses a dotted syntax, exemple :
+     * 
+     * 'my-parent-dir.my-stub' => 'theme-root-directory/stubs/my-parent-dir/my-stub.stub'
+     * 
+     * @param string $name The name of the stub
+     * @return string
      */
     public function stub($name) {
         return $this->files->get(__DIR__ . '/stubs/' . str_replace('.', '/', $name) . '.stub');
     }
 
     /**
-     * TODO
+     * Replace a variable name in a stub string.
      * 
-     * @param type $stub
-     * @param type $var
+     * @param string $stub The stub content string
+     * @param string $name The variable name
+     * @param string|false $value The value to use. If false, the '$this->get{$name}()' method is called.
      * @return $this
      */
     public function replace(&$stub, $name, $value = false) {
@@ -278,11 +311,19 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Populate a stub file content and returns resulting string.
      * 
-     * @param type $stub
-     * @param \Bgaze\Crud\Theme\callable $replace
-     * @return type
+     * Any existing method starting with "get" is automatically use as replacement.
+     * 
+     * Exemple :
+     * 
+     * If the method 'getMyVariableName' exists, then it's return value will be used 
+     * to replace any occurence of 'MyVariableName' into stub.
+     * 
+     * 
+     * @param string $stub The stub file name (dotted syntax)
+     * @param callable $replace A callback to do custom replacements
+     * @return string
      */
     public function populateStub($stub, callable $replace = null) {
         // Get stub content.
@@ -302,11 +343,12 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Generate a file using a stub file.
      * 
-     * @param type $stub
-     * @param type $path
-     * @param callable $replace
+     * @param string $stub The stub file name (dotted syntax)
+     * @param string $path The path of the file relative to base_path()
+     * @param callable $replace A callback to do custom replacements
+     * @return string
      */
     public function generateFile($stub, $path, callable $replace = null) {
         // Get stub content.
@@ -328,11 +370,12 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Generate a file using a stub file then fix it using PHP-CS-Fixer.
      * 
-     * @param type $stub
-     * @param type $path
-     * @param callable $replace
+     * @param string $stub The stub file name (dotted syntax)
+     * @param string $path The path of the file relative to base_path()
+     * @param callable $replace A callback to do custom replacements
+     * @return string
      */
     public function generatePhpFile($stub, $path, callable $replace = null) {
         // Generate file.
@@ -349,19 +392,20 @@ class Crud {
     # PATHES
 
     /**
-     * TODO
+     * Remove base_path() from a path string.
      * 
-     * @param type $path
-     * @return type
+     * @param string $path The path of the file
+     * @return string The path of the file relative to base_path()
      */
     protected function stripBasePath($path) {
         return str_replace(base_path() . '/', '', $path);
     }
 
     /**
-     * TODO
+     * Get the path of the migration file to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function migrationPath() {
@@ -377,9 +421,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of the Model file to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function modelPath() {
@@ -394,9 +439,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of the Request file to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function requestPath() {
@@ -411,9 +457,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of the Controller file to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function controllerPath() {
@@ -428,19 +475,19 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of the application routes file.
      * 
-     * @return type
-     * @throws \Exception
+     * @return string
      */
     public function routesPath() {
         return base_path('routes/web.php');
     }
 
     /**
-     * TODO
+     * Get the path of the Model factory file to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function factoryPath() {
@@ -455,9 +502,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of a view file to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @param type $views
+     * @param string $views The name of the view
      * @return string
      * @throws \Exception
      */
@@ -473,9 +521,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of the index view to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function indexViewPath() {
@@ -483,9 +532,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of the show view to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function showViewPath() {
@@ -493,9 +543,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of the create view to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function createViewPath() {
@@ -503,9 +554,10 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the path of the edit view to generate for current CRUD.
+     * Throw an exception if file already exists.
      * 
-     * @return type
+     * @return string
      * @throws \Exception
      */
     public function editViewPath() {
@@ -516,9 +568,9 @@ class Crud {
     # VARIABLES
 
     /**
-     * TODO
+     * Get a list of variables present in the class (based on existing methods starting with 'get').
      *
-     * @var array 
+     * @return array
      */
     protected function variablesMap() {
         $variables = [];
@@ -537,16 +589,20 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Model full name
      * 
-     * @return type
+     * Exemple : MyGrandParent\MyParent\MyModel
+     * 
+     * @return string
      */
     public function getModelFullName() {
         return $this->model->implode('\\');
     }
 
     /**
-     * TODO
+     * Get the Model name
+     * 
+     * Exemple : MyModel
      * 
      * @return string
      */
@@ -555,7 +611,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Model camel cased name
+     * 
+     * Exemple : myModel
      * 
      * @return string
      */
@@ -564,16 +622,20 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Model plural full name
      * 
-     * @return type
+     * Exemple : MyGrandParent\MyParent\MyModels
+     * 
+     * @return string
      */
     public function getPluralFullName() {
         return $this->plural->implode('\\');
     }
 
     /**
-     * TODO
+     * Get the Model plural name camel cased
+     * 
+     * Exemple : myModels
      * 
      * @return string
      */
@@ -582,16 +644,20 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the plurals version of Model full name
      * 
-     * @return type
+     * Exemple : MyGrandParents\MyParents\MyModels
+     * 
+     * @return string
      */
     public function getPluralsFullName() {
         return $this->plurals->implode('\\');
     }
 
     /**
-     * TODO
+     * Get the plurals version of Model full name kebab cased and separated with dots
+     * 
+     * Exemple : my-grand-parents.my-parents.my-models
      * 
      * @return string
      */
@@ -604,7 +670,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the plurals version of Model full name kebab cased and separated with slashes
+     * 
+     * Exemple : my-grand-parents/my-parents/my-models
      * 
      * @return string
      */
@@ -617,7 +685,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Model's table name
+     * 
+     * Exemple : my_grand_parents_my_parents_my_models
      * 
      * @return string
      */
@@ -626,7 +696,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the migration class name
+     * 
+     * Exemple : CreateMyGrandParentsMyParentsMyModelTable
      * 
      * @return string
      */
@@ -641,7 +713,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Model namespace
+     * 
+     * Exemple : App\MyGrandParent\MyParent
      * 
      * @return string
      */
@@ -652,7 +726,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Model full name with namespace
+     * 
+     * Exemple : App\MyGrandParent\MyParent\MyModel
      * 
      * @return string
      */
@@ -661,7 +737,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Request class name
+     * 
+     * Exemple : MyModelFormRequest
      * 
      * @return string
      */
@@ -670,7 +748,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Request class namespace
+     * 
+     * Exemple : Http\Requests\MyGrandParent\MyParent
      * 
      * @return string
      */
@@ -681,7 +761,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Controller class name
+     * 
+     * Exemple : MyModelController
      * 
      * @return string
      */
@@ -690,7 +772,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Controller class name with parents
+     * 
+     * Exemple : MyGrandParent\MyParent\MyModelController
      * 
      * @return string
      */
@@ -699,7 +783,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the Controller class namespace
+     * 
+     * Exemple : Http\Controllers\MyGrandParent\MyParent
      * 
      * @return string
      */
@@ -710,7 +796,9 @@ class Crud {
     }
 
     /**
-     * TODO
+     * Get the layout to extend in views
+     * 
+     * @return string
      */
     public function getViewsLayout() {
         return $this->layout;
