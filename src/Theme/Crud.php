@@ -50,7 +50,7 @@ class Crud extends Base {
      * @return string
      */
     static public function name() {
-        return 'CrudDefault';
+        return 'crud-default';
     }
 
     /**

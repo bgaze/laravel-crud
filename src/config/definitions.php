@@ -1,14 +1,14 @@
 <?php
 
 /*
-  |---------------------------------------------------------------------------
-  | CRUD Definitions
-  |---------------------------------------------------------------------------
-  |
-  | This is a dictionnary for CRUD internal use.
-  | This file should not be published or modified.
-  |
- */
+|---------------------------------------------------------------------------
+| CRUD Definitions
+|---------------------------------------------------------------------------
+|
+| This is a dictionnary for CRUD internal use.
+| This file should not be published or modified.
+|
+*/
 
 return [
     'validation' => [
