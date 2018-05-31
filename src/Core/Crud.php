@@ -316,7 +316,13 @@ abstract class Crud {
      * @return string
      */
     public function stubInDir($dir, $name) {
-        return $this->files->get(rtrim($dir, '/') . '/' . str_replace('.', '/', $name) . '.stub');
+        $path = rtrim($dir, '/') . '/' . str_replace('.', '/', $name) . '.stub';
+
+        if (!$this->files->exists($path)) {
+            return '';
+        }
+
+        return $this->files->get($path);
     }
 
     /**
