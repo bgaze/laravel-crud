@@ -1,10 +1,9 @@
 <?php
 
-namespace Bgaze\Crud\Support;
+namespace Bgaze\Crud\Core;
 
 use Illuminate\Console\Command;
 use Bgaze\Crud\Support\ConsoleHelpersTrait;
-use Bgaze\Crud\Theme\Crud;
 
 /**
  * GeneratorCommand
@@ -28,14 +27,35 @@ abstract class GeneratorCommand extends Command {
      * 
      * @var boolean 
      */
-    protected $isSubCommand = false;
+    protected $subcommand = false;
 
     /**
      * The CRUD instance.
      *
-     * @var \Bgaze\Crud\Support\Theme\Crud
+     * @var \Bgaze\Crud\Core\Crud
      */
     protected $crud;
+
+    /**
+     * The message to display when the command is ran.
+     * 
+     * @return string
+     */
+    abstract protected function welcome();
+
+    /**
+     * Build the files that the generator must produce.
+     * 
+     * @return void
+     */
+    abstract protected function build();
+
+    /**
+     * An array of CRUD method to execute in order to check that no file to generate already exists.
+     * 
+     * @return array
+     */
+    abstract protected function files();
 
     /**
      * Execute the console command.
@@ -45,15 +65,15 @@ abstract class GeneratorCommand extends Command {
     public function handle() {
         try {
             // Show title when direct call.
-            $this->h1($this->welcome(), !$this->isSubCommand);
-            $this->h2('Configuration', !$this->isSubCommand);
+            $this->h1($this->welcome(), !$this->subcommand);
+            $this->h2('Configuration', !$this->subcommand);
 
             // Instantiate CRUD based on theme and model inputs.
             $summary = $this->getCrud();
 
             // Build.
-            $this->nl(!$this->isSubCommand && $this->option('no-interaction'));
-            $this->h2('Generation', !$this->isSubCommand);
+            $this->nl(!$this->subcommand && $this->option('no-interaction'));
+            $this->h2('Generation', !$this->subcommand);
 
             if (!$this->option('no-interaction')) {
                 $this->line($this->summary());
@@ -62,13 +82,43 @@ abstract class GeneratorCommand extends Command {
 
             if ($this->option('no-interaction') || $this->confirm('Continue?', true)) {
                 $this->build();
-                $this->nl(!$this->isSubCommand);
+                $this->nl(!$this->subcommand);
             }
         } catch (\Exception $e) {
             $this->error($e->getMessage());
             $this->nl();
-            $this->line($e->getTraceAsString());
         }
+    }
+
+    /**
+     * Call another console command.
+     * 
+     * If the command is an instance of \Bgaze\Crud\Core\GeneratorCommand, it
+     * subcommand status is set to true.
+     *
+     * @param  string  $command The command name
+     * @param  array   $arguments The command arguments
+     * 
+     * @return int The command exit code
+     */
+    public function call($command, array $arguments = []) {
+        $arguments['command'] = $command;
+        $command = $this->getApplication()->find($command);
+
+        if ($command instanceof \Bgaze\Crud\Core\GeneratorCommand) {
+            $command->setAsSubcommand();
+        }
+
+        return $command->run($this->createInputFromArguments($arguments), $this->output);
+    }
+
+    /**
+     * Flag the command as a sub command.
+     * 
+     * This will prevent any interaction and minimize the console output.
+     */
+    public function setAsSubcommand() {
+        $this->subcommand = true;
     }
 
     /**
@@ -87,7 +137,7 @@ abstract class GeneratorCommand extends Command {
         $this->crud = $this->laravel->make($theme);
 
         // Quit if subcommand, as CRUD is already initialized.
-        if ($this->isSubCommand) {
+        if ($this->subcommand) {
             return;
         }
 
@@ -125,27 +175,6 @@ abstract class GeneratorCommand extends Command {
             $this->getFieldsInput();
         }
     }
-
-    /**
-     * The message to display when the command is ran.
-     * 
-     * @return string
-     */
-    abstract protected function welcome();
-
-    /**
-     * Build the files that the generator must produce.
-     * 
-     * @return void
-     */
-    abstract protected function build();
-
-    /**
-     * An array of CRUD method to execute in order to check that no file to generate already exists.
-     * 
-     * @return array
-     */
-    abstract protected function files();
 
     /**
      * Generate a summary of generator's actions.
@@ -190,28 +219,6 @@ abstract class GeneratorCommand extends Command {
         return preg_match("/--([a-zA-Z]\\|)?{$option}/", $this->signature);
     }
 
-    /**
-     * Call another console command.
-     * 
-     * If the command is an instance of \Bgaze\Crud\Support\GeneratorCommand, it
-     * isSubCommand status is set to true.
-     *
-     * @param  string  $command The command name
-     * @param  array   $arguments The command arguments
-     * 
-     * @return int The command exit code
-     */
-    public function call($command, array $arguments = []) {
-        $arguments['command'] = $command;
-        $command = $this->getApplication()->find($command);
-
-        if ($command instanceof \Bgaze\Crud\Support\GeneratorCommand) {
-            $command->isSubCommand = true;
-        }
-
-        return $command->run($this->createInputFromArguments($arguments), $this->output);
-    }
-
     ############################################################################
     # MANAGE INPUTS
 
@@ -233,7 +240,7 @@ abstract class GeneratorCommand extends Command {
 
         $this->crud->setPlurals($value);
 
-        if (!$ask && !$this->isSubCommand) {
+        if (!$ask && !$this->subcommand) {
             $this->dl('Plurals', $this->crud->getPluralsFullName());
         }
     }
@@ -258,7 +265,7 @@ abstract class GeneratorCommand extends Command {
 
         $this->crud->setTimestamps(($value === 'none') ? false : $value);
 
-        if (!$ask && !$this->isSubCommand) {
+        if (!$ask && !$this->subcommand) {
             $this->dl('Timsestamps', $this->crud->content->timestamps ? $this->crud->content->timestamps : 'none');
         }
     }
@@ -283,7 +290,7 @@ abstract class GeneratorCommand extends Command {
 
         $this->crud->setSoftDeletes(($value === 'none') ? false : $value);
 
-        if (!$ask && !$this->isSubCommand) {
+        if (!$ask && !$this->subcommand) {
             $this->dl('Soft deletes', $this->crud->content->softDeletes ? $this->crud->content->softDeletes : 'none');
         }
     }
@@ -302,7 +309,7 @@ abstract class GeneratorCommand extends Command {
             foreach ($this->option('content') as $question) {
                 list($field, $data) = $this->parseSignedInput($question);
                 $this->crud->content->add($field, $data);
-                $this->dl('Field added', $question, !$this->isSubCommand);
+                $this->dl('Field added', $question, !$this->subcommand);
             }
         }
 

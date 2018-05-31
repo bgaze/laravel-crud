@@ -3,8 +3,8 @@
 namespace Bgaze\Crud\Console;
 
 use Bgaze\Crud\Support\ConsoleHelpersTrait;
-use Bgaze\Crud\Support\GeneratorCommand;
-use Bgaze\Crud\Theme\Crud;
+use Bgaze\Crud\Core\GeneratorCommand;
+use Bgaze\Crud\Core\Crud;
 
 class CrudMakeCommand extends GeneratorCommand {
 

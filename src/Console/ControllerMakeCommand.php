@@ -2,8 +2,8 @@
 
 namespace Bgaze\Crud\Console;
 
-use Bgaze\Crud\Support\GeneratorCommand;
-use Bgaze\Crud\Theme\Crud;
+use Bgaze\Crud\Core\GeneratorCommand;
+use Bgaze\Crud\Core\Crud;
 
 class ControllerMakeCommand extends GeneratorCommand {
 
@@ -80,6 +80,7 @@ class ControllerMakeCommand extends GeneratorCommand {
         $stub = $this->crud->populateStub('routes');
 
         $path = $this->crud->routesPath();
+        
         $this->crud->files->append($path, $stub);
 
         $this->info(" Routes added to :<fg=white> " . str_replace(base_path() . '/', '', $path) . "</>");
