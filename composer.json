@@ -1,6 +1,6 @@
 {
     "name": "bgaze/laravel-crud",
-    "description": "A CRUD/BREAD generator for Laravel 5.5+",
+    "description": "A CRUD generator for Laravel 5.5+",
     "require": {
         "laravel/framework": ">=5.5.0",
         "laravelcollective/html": ">=5.5.4",
