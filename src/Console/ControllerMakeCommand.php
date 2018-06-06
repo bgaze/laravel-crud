@@ -3,7 +3,6 @@
 namespace Bgaze\Crud\Console;
 
 use Bgaze\Crud\Core\GeneratorCommand;
-use Bgaze\Crud\Core\Crud;
 
 class ControllerMakeCommand extends GeneratorCommand {
 
@@ -25,7 +24,7 @@ class ControllerMakeCommand extends GeneratorCommand {
     protected $description = 'Create a new CRUD controller class related to a Model';
 
     /**
-     * TODO
+     * The message to display when the command is ran.
      * 
      * @return string
      */
@@ -34,16 +33,22 @@ class ControllerMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * An array of CRUD method to execute in order to check that no file to generate already exists.
+     * 
+     * @return array
      */
     protected function files() {
         return ['controllerPath'];
     }
 
     /**
-     * TODO
+     * Generate a summary of generator's actions.
      * 
-     * @return type
+     * If some files to generate already exists, an eroor is raised, 
+     * otherwise a formatted summary of generated files is returned.
+     * 
+     * @return string
+     * @throws \Exception
      */
     protected function summary() {
         return " <fg=green>Routes will be added to :</> "
@@ -52,8 +57,9 @@ class ControllerMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * Build the files.
      * 
+     * @return void
      */
     protected function build() {
         // Write controller file.
@@ -64,7 +70,7 @@ class ControllerMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * Build the Controller file.
      * 
      */
     public function writeController() {
@@ -73,14 +79,14 @@ class ControllerMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * Append routes to routes file.
      * 
      */
     public function writeRoutes() {
         $stub = $this->crud->populateStub('routes');
 
         $path = $this->crud->routesPath();
-        
+
         $this->crud->files->append($path, $stub);
 
         $this->info(" Routes added to :<fg=white> " . str_replace(base_path() . '/', '', $path) . "</>");

@@ -45,7 +45,7 @@ abstract class GeneratorCommand extends Command {
     abstract protected function welcome();
 
     /**
-     * Build the files that the generator must produce.
+     * Build the files.
      * 
      * @return void
      */

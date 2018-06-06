@@ -29,7 +29,7 @@ class ViewsMakeCommand extends GeneratorCommand {
     protected $description = 'Create CRUD views';
 
     /**
-     * TODO
+     * The message to display when the command is ran.
      * 
      * @return string
      */
@@ -38,15 +38,18 @@ class ViewsMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * An array of CRUD method to execute in order to check that no file to generate already exists.
+     * 
+     * @return array
      */
     protected function files() {
         return ['indexViewPath', 'showViewPath', 'createViewPath', 'editViewPath'];
     }
 
     /**
-     * TODO
+     * Build the files.
      * 
+     * @return void
      */
     protected function build() {
         // Write index view.
@@ -63,9 +66,9 @@ class ViewsMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * Build the index view.
      * 
-     * @param string $layout
+     * @return void
      */
     protected function writeIndexView() {
         $path = $this->crud->generatePhpFile('views.index', $this->crud->indexViewPath(), function(Crud $crud, $stub) {
@@ -81,9 +84,9 @@ class ViewsMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * Build the show view.
      * 
-     * @param string $layout
+     * @return void
      */
     protected function writeShowView() {
         $path = $this->crud->generatePhpFile('views.show', $this->crud->showViewPath(), function(Crud $crud, $stub) {
@@ -96,9 +99,9 @@ class ViewsMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * Build the create view.
      * 
-     * @param string $layout
+     * @return void
      */
     protected function writeCreateView() {
         $path = $this->crud->generatePhpFile('views.create', $this->crud->createViewPath(), function(Crud $crud, $stub) {
@@ -111,9 +114,9 @@ class ViewsMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * Build the edit view.
      * 
-     * @param string $layout
+     * @return void
      */
     protected function writeEditView() {
         $path = $this->crud->generatePhpFile('views.edit', $this->crud->editViewPath(), function(Crud $crud, $stub) {

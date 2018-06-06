@@ -26,8 +26,9 @@ class ModelMakeCommand extends GeneratorCommand {
      * @var string
      */
     protected $description = 'Create a new CRUD Eloquent model class';
+
     /**
-     * TODO
+     * The message to display when the command is ran.
      * 
      * @return string
      */
@@ -36,15 +37,18 @@ class ModelMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * An array of CRUD method to execute in order to check that no file to generate already exists.
+     * 
+     * @return array
      */
     protected function files() {
         return ['modelPath'];
     }
 
     /**
-     * TODO
+     * Build the files.
      * 
+     * @return void
      */
     protected function build() {
         // Write model file.

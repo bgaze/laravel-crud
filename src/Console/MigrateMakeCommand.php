@@ -47,7 +47,7 @@ class MigrateMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * The message to display when the command is ran.
      * 
      * @return string
      */
@@ -56,15 +56,18 @@ class MigrateMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * An array of CRUD method to execute in order to check that no file to generate already exists.
+     * 
+     * @return array
      */
     protected function files() {
         return ['migrationPath'];
     }
 
     /**
-     * TODO
+     * Build the files.
      * 
+     * @return void
      */
     protected function build() {
         // Write migration file.

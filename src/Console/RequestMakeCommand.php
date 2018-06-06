@@ -26,7 +26,7 @@ class RequestMakeCommand extends GeneratorCommand {
     protected $description = 'Create a new CRUD form request class';
 
     /**
-     * TODO
+     * The message to display when the command is ran.
      * 
      * @return string
      */
@@ -35,15 +35,18 @@ class RequestMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * An array of CRUD method to execute in order to check that no file to generate already exists.
+     * 
+     * @return array
      */
     protected function files() {
         return ['requestPath'];
     }
 
     /**
-     * TODO
+     * Build the files.
      * 
+     * @return void
      */
     protected function build() {
         // Write request file.

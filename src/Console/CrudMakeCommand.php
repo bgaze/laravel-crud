@@ -4,7 +4,6 @@ namespace Bgaze\Crud\Console;
 
 use Bgaze\Crud\Support\ConsoleHelpersTrait;
 use Bgaze\Crud\Core\GeneratorCommand;
-use Bgaze\Crud\Core\Crud;
 
 class CrudMakeCommand extends GeneratorCommand {
 
@@ -32,14 +31,7 @@ class CrudMakeCommand extends GeneratorCommand {
     protected $description = 'Create a new CRUD';
 
     /**
-     * The CRUD instance.
-     *
-     * @var \Bgaze\Crud\Support\Theme\Crud
-     */
-    protected $crud;
-
-    /**
-     * TODO
+     * The message to display when the command is ran.
      * 
      * @return string
      */
@@ -48,16 +40,22 @@ class CrudMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * An array of CRUD method to execute in order to check that no file to generate already exists.
+     * 
+     * @return array
      */
     protected function files() {
         return ['migrationPath', 'modelPath', 'factoryPath', 'requestPath', 'controllerPath', 'indexViewPath', 'showViewPath', 'createViewPath', 'editViewPath'];
     }
 
     /**
-     * TODO
+     * Generate a summary of generator's actions.
      * 
-     * @return type
+     * If some files to generate already exists, an eroor is raised, 
+     * otherwise a formatted summary of generated files is returned.
+     * 
+     * @return string
+     * @throws \Exception
      */
     protected function summary() {
         return " <fg=green>Routes will be added to :</> "
@@ -66,9 +64,9 @@ class CrudMakeCommand extends GeneratorCommand {
     }
 
     /**
-     * TODO
+     * Build the files.
      * 
-     * @param Crud $crud
+     * @return void
      */
     protected function build() {
         $config = collect([
