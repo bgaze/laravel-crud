@@ -102,7 +102,9 @@ abstract class Crud {
     }
 
     /**
-     * TODO
+     * Initialize CRUD content.
+     * 
+     * @return \Bgaze\Crud\Core\Content
      */
     abstract protected function instantiateContent();
 
