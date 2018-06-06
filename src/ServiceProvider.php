@@ -5,6 +5,11 @@ namespace Bgaze\Crud;
 use Illuminate\Support\ServiceProvider as Base;
 use Bgaze\Crud\Theme\Crud;
 
+/**
+ * The package service provider
+ *
+ * @author bgaze <benjamin@bgaze.fr>
+ */
 class ServiceProvider extends Base {
 
     /**

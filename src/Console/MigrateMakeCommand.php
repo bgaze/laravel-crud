@@ -6,6 +6,11 @@ use Illuminate\Support\Composer;
 use Bgaze\Crud\Core\GeneratorCommand;
 use Bgaze\Crud\Core\Crud;
 
+/**
+ * Generate a CRUD migration class.
+ * 
+ * @author bgaze <benjamin@bgaze.fr>
+ */
 class MigrateMakeCommand extends GeneratorCommand {
 
     /**

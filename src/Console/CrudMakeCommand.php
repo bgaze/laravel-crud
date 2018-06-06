@@ -5,6 +5,11 @@ namespace Bgaze\Crud\Console;
 use Bgaze\Crud\Support\ConsoleHelpersTrait;
 use Bgaze\Crud\Core\GeneratorCommand;
 
+/**
+ * Generate a complete Model CRUD
+ * 
+ * @author bgaze <benjamin@bgaze.fr>
+ */
 class CrudMakeCommand extends GeneratorCommand {
 
     use ConsoleHelpersTrait;

@@ -6,27 +6,28 @@ use Bgaze\Crud\Core\Content as Base;
 use Bgaze\Crud\Theme\Field;
 
 /**
- * TODO
+ * The manager for CRUD content (fields & indexes).
  *
- * Test test
- * 
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Content extends Base {
 
     /**
+     * Instanciate a new CRUD content.
      * 
-     * @param type $field
-     * @param type $question
+     * @param string $field The type of the content
+     * @param string $data The user parameters (signed input)
+     * 
+     * @return \Bgaze\Crud\Core\Field The new content instance
      */
     protected function instantiateField($field, $question) {
         return new Field($this->crud, $field, $question);
     }
 
     /**
-     * TODO
+     * Compile CRUD content to migration class body.
      * 
-     * @return type
+     * @return string
      */
     public function toMigration() {
         $content = $this->fields->map(function(Field $field) {
@@ -45,9 +46,9 @@ class Content extends Base {
     }
 
     /**
-     * TODO
+     * Compile CRUD content to Model fillables array.
      * 
-     * @return type
+     * @return string
      */
     public function toModeleFillables() {
         $fillables = $this->fields->filter(function(Field $field) {
@@ -58,9 +59,9 @@ class Content extends Base {
     }
 
     /**
-     * TODO
+     * Compile CRUD content to Model dates array.
      * 
-     * @return type
+     * @return string
      */
     public function toModeleDates() {
         $dates = $this->fields->filter(function(Field $field) {
@@ -75,7 +76,7 @@ class Content extends Base {
     }
 
     /**
-     * TODO
+     * Compile CRUD content to request class body.
      * 
      * @return string
      */
@@ -84,7 +85,7 @@ class Content extends Base {
     }
 
     /**
-     * TODO
+     * Compile CRUD content to factory class body.
      * 
      * @return string
      */
@@ -93,7 +94,7 @@ class Content extends Base {
     }
 
     /**
-     * TODO
+     * Compile CRUD content to index view table head.
      * 
      * @return string
      */
@@ -102,7 +103,7 @@ class Content extends Base {
     }
 
     /**
-     * TODO
+     * Compile CRUD content to index view table body.
      * 
      * @return string
      */
@@ -111,8 +112,9 @@ class Content extends Base {
     }
 
     /**
-     * TODO
+     * Compile CRUD content to form body.
      * 
+     * @param boolean $create Is the form a create form rather than an edit form
      * @return string
      */
     public function toForm($create) {
@@ -120,7 +122,7 @@ class Content extends Base {
     }
 
     /**
-     * TODO
+     * Compile CRUD content to request show view body.
      * 
      * @return string
      */

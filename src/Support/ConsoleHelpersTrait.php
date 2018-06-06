@@ -2,6 +2,11 @@
 
 namespace Bgaze\Crud\Support;
 
+/**
+ * A collection of display helpers for console applications.
+ *
+ * @author bgaze <benjamin@bgaze.fr>
+ */
 trait ConsoleHelpersTrait {
 
     /**

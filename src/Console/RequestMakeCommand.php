@@ -5,6 +5,11 @@ namespace Bgaze\Crud\Console;
 use Bgaze\Crud\Core\GeneratorCommand;
 use Bgaze\Crud\Core\Crud;
 
+/**
+ * Generate a CRUD request class
+ * 
+ * @author bgaze <benjamin@bgaze.fr>
+ */
 class RequestMakeCommand extends GeneratorCommand {
 
     /**

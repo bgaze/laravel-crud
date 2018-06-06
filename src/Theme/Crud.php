@@ -54,7 +54,9 @@ class Crud extends Base {
     }
 
     /**
-     * TODO
+     * Initialize CRUD content.
+     * 
+     * @return \Bgaze\Crud\Core\Content
      */
     protected function instantiateContent() {
         return new Content($this);

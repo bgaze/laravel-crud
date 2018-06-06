@@ -7,14 +7,16 @@ use Bgaze\Crud\Theme\Crud;
 use Bgaze\Crud\Core\Field as Base;
 
 /**
- * TODO
+ * A CRUD content (field or index) 
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Field extends Base {
 
     /**
-     * TODO
+     * Generate the label of the content.
+     * 
+     * @return string
      */
     public function getLabel() {
         $label = Str::studly($this->name);
@@ -27,7 +29,7 @@ class Field extends Base {
     }
 
     /**
-     * Compile field to migration PHP sentence.
+     * Compile content to migration class body line.
      * 
      * @return string
      */
@@ -48,7 +50,7 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Compile content to factory class body line.
      * 
      * @return string
      */
@@ -67,7 +69,7 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Get factory template based on field type.
      * 
      * @return string
      */
@@ -89,7 +91,7 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Compile content to request class body line.
      * 
      * @return string
      */
@@ -118,7 +120,7 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Get rules template based on field type.
      * 
      * @param type $type
      * @return string|null
@@ -141,7 +143,7 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Compile content to index view table head cell.
      * 
      * @return string
      */
@@ -156,7 +158,7 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Compile content to index view table body cell.
      * 
      * @return string
      */
@@ -174,8 +176,9 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Compile content to form group.
      * 
+     * @param boolean $create Is the form a create form rather than an edit form
      * @return string
      */
     public function toForm($create) {
@@ -193,7 +196,7 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Get form template based on field type.
      * 
      * @return string
      */
@@ -209,7 +212,7 @@ class Field extends Base {
     }
 
     /**
-     * TODO
+     * Compile content to request show view group.
      * 
      * @return string
      */

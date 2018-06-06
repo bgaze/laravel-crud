@@ -9,74 +9,74 @@ use Validator;
 use Bgaze\Crud\Core\Crud;
 
 /**
- * TODO
+ * A CRUD content (field or index) 
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 abstract class Field {
 
     /**
-     * TODO
+     * The CRUD instance.
      * 
      * @var \Bgaze\Crud\Core\Crud 
      */
     protected $crud;
 
     /**
-     * TODO
+     * The content type
      * 
      * @var string 
      */
     public $type;
 
     /**
-     * TODO
+     * The unique name of the content.
      * 
      * @var string 
      */
     public $name;
 
     /**
-     * TODO
+     * The label to use for this content.
      * 
      * @var string 
      */
     public $label;
 
     /**
-     * TODO
+     * The original user input.
      * 
      * @var string 
      */
     public $question;
 
     /**
-     * TODO
+     * The content StringInput instance.
      *
      * @var \Symfony\Component\Console\Input\StringInput
      */
     public $input;
 
     /**
-     * TODO
+     * The content arguments provided by user.
      * 
      * @var \Illuminate\Support\Collection 
      */
     protected $arguments;
 
     /**
-     * TODO
+     * The content options provided by user.
      * 
      * @var \Illuminate\Support\Collection 
      */
     protected $options;
 
     /**
-     * TODO
+     * Class constructor
      * 
-     * @param \Bgaze\Crud\Core\Crud  $crud
-     * @param type $field
-     * @param type $question
+     * @param \Bgaze\Crud\Core\Crud  $crud The CRUD instance
+     * @param type $field The field type
+     * @param type $question The user signed input
      */
     public function __construct(Crud $crud, $field, $question) {
         // Link to CRUD instance.
@@ -106,9 +106,11 @@ abstract class Field {
     }
 
     /**
-     * TODO
+     * Parse user input based on a signature.
      * 
-     * @param type $data
+     * @param type $signature The signature to use
+     * @param type $question User input
+     * @return void
      */
     protected function parse($signature, $question) {
         // Parse signature.
@@ -131,7 +133,10 @@ abstract class Field {
     }
 
     /**
-     * TODO
+     * Validate user input.
+     * 
+     * @throws \Exception
+     * @return void
      */
     protected function validate() {
         // Check that input matches signature format.
@@ -145,26 +150,29 @@ abstract class Field {
     }
 
     /**
-     * TODO
+     * Get content's configuration entry by key.
      * 
-     * @param type $key
-     * @return type
+     * @param string $key The key of the entry
+     * @param mixed $default The default value of the entry
+     * @return mixed
      */
     public function config($key, $default = false) {
         return config("crud-definitions.fields.{$this->type}.{$key}", $default);
     }
 
     /**
-     * TODO
+     * Check if the content is an index.
      * 
-     * @return type
+     * @return boolean
      */
     public function isIndex() {
         return ($this->config('type') === 'index');
     }
 
     /**
-     * TODO
+     * Generate the unique name of the content.
+     * 
+     * @return string
      */
     public function getName() {
         if ($this->isIndex()) {
@@ -175,54 +183,57 @@ abstract class Field {
     }
 
     /**
-     * TODO
+     * Generate the label of the content.
+     * 
+     * @return string
      */
     abstract public function getLabel();
 
     /**
-     * Compile field to migration PHP sentence.
+     * Compile content to migration class body line.
      * 
      * @return string
      */
     abstract public function toMigration();
 
     /**
-     * TODO
+     * Compile content to factory class body line.
      * 
      * @return string
      */
     abstract public function toFactory();
 
     /**
-     * TODO
+     * Compile content to request class body line.
      * 
      * @return string
      */
     abstract public function toRequest();
 
     /**
-     * TODO
+     * Compile content to index view table head cell.
      * 
      * @return string
      */
     abstract public function toTableHead();
 
     /**
-     * TODO
+     * Compile content to index view table body cell.
      * 
      * @return string
      */
     abstract public function toTableBody();
 
     /**
-     * TODO
+     * Compile content to form group.
      * 
+     * @param boolean $create Is the form a create form rather than an edit form
      * @return string
      */
     abstract public function toForm($create);
 
     /**
-     * TODO
+     * Compile content to request show view group.
      * 
      * @return string
      */

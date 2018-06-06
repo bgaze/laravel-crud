@@ -4,6 +4,11 @@ namespace Bgaze\Crud\Console;
 
 use Bgaze\Crud\Core\GeneratorCommand;
 
+/**
+ * Generate a CRUD controller class.
+ * 
+ * @author bgaze <benjamin@bgaze.fr>
+ */
 class ControllerMakeCommand extends GeneratorCommand {
 
     /**

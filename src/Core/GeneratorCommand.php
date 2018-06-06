@@ -15,7 +15,7 @@ use Bgaze\Crud\Core\Crud;
  * - Managing CRUD instance for the command and it's sub commands based on provided arguments.
  * - Managing user inputs, providing wizards if possible.
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 abstract class GeneratorCommand extends Command {
 
