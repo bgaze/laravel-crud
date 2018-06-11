@@ -50,11 +50,11 @@ class Crud extends Base {
      */
     static public function builders() {
         return [
-            'migration' => Builders\Migration::class,
-            'model' => Builders\Model::class,
-            'factory' => Builders\Factory::class,
-            'request' => Builders\Request::class,
-            'controller' => Builders\Controller::class,
+            'migration-class' => Builders\Migration::class,
+            'model-class' => Builders\Model::class,
+            'factory-class' => Builders\Factory::class,
+            'request-class' => Builders\Request::class,
+            'controller-class' => Builders\Controller::class,
             'index-view' => Builders\IndexView::class,
             'create-view' => Builders\CreateView::class,
             'edit-view' => Builders\EditView::class,
