@@ -5,11 +5,19 @@ namespace Bgaze\Crud\Support;
 use Bgaze\Crud\Core\Command;
 
 /**
- *
- * @author bgaze
+ * Register easily CRUD themes from service providers.
+ * 
+ * @author bgaze <benjamin@bgaze.fr>
  */
 trait ThemeProviderTrait {
 
+    /**
+     * Register a new CRUD theme
+     * 
+     * @param string $class         The CRUD class to use
+     * @param string $description   The description to display into theme's command
+     * @param false|string $views   The path of theme's views
+     */
     protected function registerTheme($class, $description, $views = false) {
         // Register & publish default theme views.
         if ($views) {
