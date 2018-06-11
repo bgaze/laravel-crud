@@ -7,37 +7,37 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\StringInput;
 
 /**
- * Description of SignedInput
+ * This class allows to use Commands signature syntax to manage user input.
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class SignedInput {
 
     /**
-     * TODO
+     * The signature of the input.
      * 
-     * @var type 
+     * @var string 
      */
     protected $signature;
 
     /**
-     * TODO
+     * The command part of the signature.
      * 
-     * @var type 
+     * @var string 
      */
     protected $command;
 
     /**
-     * The StringInput instance.
+     * The InputDefinition instance.
      *
-     * @var \Symfony\Component\Console\Input\StringInput
+     * @var \Symfony\Component\Console\Input\InputDefinition
      */
     protected $definition;
 
     /**
-     * TODO
+     * The original input of the user.
      * 
-     * @var type 
+     * @var string 
      */
     protected $question;
 
@@ -49,9 +49,9 @@ class SignedInput {
     protected $input;
 
     /**
-     * TODO
+     * The class constructor.
      * 
-     * @param type $signature
+     * @param string $signature The signature of the input
      */
     public function __construct($signature) {
         // Store signature.
@@ -71,9 +71,9 @@ class SignedInput {
     }
 
     /**
-     * TODO
+     * Instanciate StringInput and bind to user input.
      * 
-     * @param type $question
+     * @param string $question The user signed input string
      */
     public function ask($question) {
         $this->input = new StringInput($question);
@@ -81,9 +81,9 @@ class SignedInput {
     }
 
     /**
-     * TODO
+     * Validate user question.
      * 
-     * @param array $rules
+     * @param array $rules An optionnal set of validation rules .
      * @throws \Exception
      */
     public function validate(array $rules = []) {
@@ -101,45 +101,45 @@ class SignedInput {
     }
 
     /**
-     * TODO
+     * The SignedInput signature.
      * 
-     * @return type
+     * @return string
      */
     public function signature() {
         return $this->signature;
     }
 
     /**
-     * TODO
+     * The command part of the signature.
      * 
-     * @return type
+     * @return string
      */
     public function command() {
         return $this->command;
     }
 
     /**
-     * TODO
+     * The InputDefinition instance.
      * 
-     * @return type
+     * @return \Symfony\Component\Console\Input\InputDefinition
      */
     public function definition() {
         return $this->definition;
     }
 
     /**
-     * TODO
+     * The original input of the user.
      * 
-     * @return type
+     * @return string
      */
     public function question() {
         return $this->question;
     }
 
     /**
-     * TODO
+     * The StringInput instance.
      * 
-     * @return type
+     * @return \Symfony\Component\Console\Input\StringInput
      * @throws \Exception
      */
     public function input() {
