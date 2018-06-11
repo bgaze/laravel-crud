@@ -28,9 +28,9 @@ abstract class Builder {
     }
 
     /**
-     * The path of the file that th builder generates.
+     * The file that the builder generates.
      * 
-     * @return string The absolute path of the file to generate.
+     * @return string The absolute path of the file
      */
     abstract public function file();
 
@@ -136,7 +136,7 @@ abstract class Builder {
 
         // Ensure the file doesn't already exists.
         if ($this->crud->files->exists($absolutePath)) {
-            throw new \Exception("The '{$relativePath}' file already exists.");
+            throw new \Exception("A '{$relativePath}' file already exists.");
         }
 
         // Create output dir if necessary.
@@ -189,6 +189,20 @@ abstract class Builder {
 
         // Generate file.
         return $this->generateFile($path, $tidy);
+    }
+
+    /**
+     * Check that the file to generate doesn't exists.
+     * 
+     * @return false|string The error message if file exists, false otherwise
+     */
+    public function fileExists() {
+        if ($this->crud->files->exists($this->file())) {
+            $path = $this->relativePath($this->file());
+            return "A '{$path}' file already exists.";
+        }
+
+        return false;
     }
 
 }

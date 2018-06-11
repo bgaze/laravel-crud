@@ -10,5 +10,23 @@ use Bgaze\Crud\Core\Builder;
  * @author bgaze
  */
 class Model extends Builder {
-    //put your code here
+
+    /**
+     * The file that the builder generates.
+     * 
+     * @return string The absolute path of the file
+     */
+    public function file() {
+        return app_path(trim($this->crud->modelsSubDirectory() . '/' . $this->crud->model()->implode('/') . '.php', '/'));
+    }
+
+    /**
+     * Build the file.
+     * 
+     * @return string The relative path of the generated file
+     */
+    public function build() {
+        ;
+    }
+
 }
