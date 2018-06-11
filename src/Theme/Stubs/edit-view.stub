@@ -8,7 +8,7 @@
     <h1>Edit ModelFullName #{{ $ModelCamel->id }}</h1>
 
     {!! Form::model($ModelCamel, ['route' => ['PluralsKebabDot.update', $ModelCamel->id], 'method' => 'put']) !!}
-#FORM
+    #FORM
     {!! Form::submit('Save') !!}
     {!! Form::close() !!}
 @endsection

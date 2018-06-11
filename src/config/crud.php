@@ -34,8 +34,23 @@ return [
     |
     | empty|false : No subdirectory
     | true        : Models will be stored into /app/Models
-    | string      : Models will be stored into /app/customValue
+    | string      : Models will be stored into /app/[ProvidedValue]
     |
     */
     'models-directory' => true,
+    
+    /*
+    |---------------------------------------------------------------------------
+    | Tidy configuration
+    |---------------------------------------------------------------------------
+    |
+    | This is the configuration used with Tidy PHP extension when generating HTML files.
+    |
+    */
+    'tidy' => [
+        'indent' => true,
+        'indent-spaces' => 4,
+        'show-warnings' => false,
+        'wrap' => 0
+    ],
 ];

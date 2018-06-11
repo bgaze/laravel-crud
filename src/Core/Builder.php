@@ -3,10 +3,10 @@
 namespace Bgaze\Crud\Core;
 
 /**
- * Description of Crud
+ * Description of Builder
  *
  * @author bgaze
  */
-class Crud {
+class Builder {
     //put your code here
 }

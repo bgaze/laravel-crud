@@ -7,5 +7,5 @@
 
     <h1>ModelFullName #{{ $ModelCamel->id }}</h1>
 
-#CONTENT
+    #CONTENT
 @endsection

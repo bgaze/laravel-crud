@@ -15,14 +15,14 @@
         <thead>
             <tr>
                 <th>#</th>
-#THEAD
+                #THEAD
             </tr>
         </thead>
         <tbody>
             @foreach($PluralCamel as $ModelCamel)
                 <tr>
                     <td>{{ $ModelCamel->id }}</td>
-#TBODY
+                    #TBODY
                     <td>
                         <a href="{{ route('PluralsKebabDot.show', ['ModelCamel' => $ModelCamel->id]) }}">Show</a>
                         <a href="{{ route('PluralsKebabDot.edit', ['ModelCamel' => $ModelCamel->id]) }}">Edit</a>
