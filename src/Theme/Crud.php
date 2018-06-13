@@ -2,6 +2,7 @@
 
 namespace Bgaze\Crud\Theme;
 
+use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Crud as Base;
 use Bgaze\Crud\Theme\Builders;
 

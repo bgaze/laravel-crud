@@ -27,9 +27,9 @@ class Factory extends Builder {
      */
     public function build() {
         $stub = $this->stub('factory');
-        
-        $this->replace($stub, '#CONTENT', $this->content());
-        
+
+        $this->replace($stub, '#RULES', $this->rules());
+
         return $this->generatePhpFile($this->file(), $stub);
     }
 
@@ -38,9 +38,14 @@ class Factory extends Builder {
      * 
      * @return type
      */
-    protected function content() {
-        return $this->crud
-                        ->content(false)
+    protected function rules() {
+        $content = $this->crud->content(false);
+
+        if ($content->isEmpty()) {
+            return '// TODO';
+        }
+
+        return $content
                         ->map(function(Field $field) {
                             $group = $field->config('factory');
 

@@ -2,6 +2,7 @@
 
 namespace Bgaze\Crud\Core;
 
+use Illuminate\Support\Collection;
 use Illuminate\Console\Command as Base;
 use Bgaze\Crud\Support\ConsoleHelpersTrait;
 use Bgaze\Crud\Core\Builder;
@@ -134,7 +135,7 @@ class Command extends Base {
         $this->getSoftDeletesInput();
 
         // Add content.
-        $this->getFieldsInput();
+        $this->getContentInput();
     }
 
     /**
@@ -149,8 +150,8 @@ class Command extends Base {
 
         $filesystem = resolve('Illuminate\Filesystem\Filesystem');
 
-        $this->builders = collect(static::builders())->map(function($class) use(&$filesystem) {
-            return new $class($filesystem, $this);
+        $this->builders = collect($builders)->map(function($class) use(&$filesystem) {
+            return new $class($filesystem, $this->crud);
         });
     }
 
@@ -178,13 +179,13 @@ class Command extends Base {
     /**
      * Set CRUD's plurals names based on command inputs.
      * 
-     * If plural wasn't provided and interraction are allowed, user is
+     * If plurals wasn't provided and interraction are allowed, user is
      * ask to confirm default value based on Model's name, or to provide his own.
      * 
      * @return void 
      */
     protected function getPluralsInput() {
-        $value = $this->option('plural');
+        $value = $this->option('plurals');
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
         if ($ask) {
@@ -234,7 +235,7 @@ class Command extends Base {
         $this->crud->setTimestamps(($value === 'none') ? false : $value);
 
         if (!$ask) {
-            $this->dl('Timsestamps', $this->crud->content->timestamps ? $this->crud->content->timestamps : 'none');
+            $this->dl('Timsestamps', $this->crud->timestamps() ? $this->crud->timestamps() : 'none');
         }
     }
 
@@ -257,7 +258,7 @@ class Command extends Base {
         $this->crud->setSoftDeletes(($value === 'none') ? false : $value);
 
         if (!$ask) {
-            $this->dl('Soft deletes', $this->crud->content->softDeletes ? $this->crud->content->softDeletes : 'none');
+            $this->dl('Soft deletes', $this->crud->softDeletes() ? $this->crud->softDeletes() : 'none');
         }
     }
 
@@ -269,12 +270,14 @@ class Command extends Base {
      * 
      * @return void 
      */
-    protected function getFieldsInput() {
+    protected function getContentInput() {
+        $fields = collect(config('crud-definitions.fields'))->keys();
+
         // If fields where provided through option, add them.
-        if ($this->hasOption('content')) {
+        if ($this->option('content')) {
             foreach ($this->option('content') as $question) {
-                list($field, $data) = $this->parseSignedInput($question);
-                $this->crud->content->add($field, $data);
+                list($field, $data) = $this->parseContentInput($fields, $question);
+                $this->crud->add($field, $data);
                 $this->dl('Field added', $question);
             }
         }
@@ -290,15 +293,15 @@ class Command extends Base {
         $this->line(" For a type detailed syntax, <fg=cyan>omit arguments and options.</>");
 
         // Commands list for autocomplete.
-        $fields = collect(config('crud-definitions.fields'))->keys()->merge(['list', 'no'])->toArray();
+        $fields->push('list')->push('no');
 
         // Loop and ask for fields while no explicit break.
         while (true) {
             // Ask user for input.
-            $continue = $this->askForFieldInput($fields);
+            $continue = $this->askForContentInput($fields);
 
             // Manage wizard exit.
-            if (!$continue && (!$this->crud->content->isEmpty() || $this->confirm("You haven't added any field. Continue?", true))) {
+            if (!$continue && (!$this->crud->isEmpty() || $this->confirm("You haven't added any field. Continue?", true))) {
                 break;
             }
         }
@@ -311,7 +314,7 @@ class Command extends Base {
      * 
      * @return boolean Wether to continue or not to add fields to Model.
      */
-    protected function askForFieldInput(array $fields) {
+    protected function askForContentInput(array $fields) {
         // User input.
         $question = trim($this->anticipate('Add a field', $fields, 'no'));
 
@@ -329,16 +332,16 @@ class Command extends Base {
         // Catch any error to prevent unwanted wizard exit.
         try {
             // Parse user input.
-            list($name, $input) = $this->parseSignedInput($question);
+            list($name, $data) = $this->parseContentInput($fields, $question);
 
             // If empty arguments, show help.
-            if (empty($input)) {
+            if (empty($data)) {
                 $this->line($this->showFieldHelp($name));
                 return true;
             }
 
             // Add to content.
-            $this->crud->content->add($name, $input);
+            $this->crud->add($name, $data);
             $this->dl('Field added', $question);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -359,8 +362,8 @@ class Command extends Base {
      * @return array 
      * @throws \Exception The asked field wasn't recognized
      */
-    protected function parseSignedInput($question) {
-        $reg = '/^(' . collect(config('crud-definitions.fields'))->keys()->implode('|') . ')(\s.*)?$/';
+    protected function parseContentInput(Collection $fields, $question) {
+        $reg = '/^(' . $fields->implode('|') . ')(\s.*)?$/';
 
         if (!preg_match($reg, $question, $matches)) {
             throw new \Exception("Invalid input '$question'.");
@@ -434,7 +437,7 @@ class Command extends Base {
 
         if ($this->option('no-interaction') || $this->confirm('Continue?', true)) {
             $this->builders->each(function(Builder $builder, $name) {
-                $this->dl(ucfirst(str_replace('-', ' ', $name)), $builder->build());
+                $this->dl('Created ' . ucfirst(str_replace('-', ' ', $name)), $builder->build());
             });
             $this->nl();
         }

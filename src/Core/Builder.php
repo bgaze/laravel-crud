@@ -103,7 +103,7 @@ abstract class Builder {
      */
     protected function replace(&$stub, $name, $value = false) {
         if ($value === false) {
-            $value = $this->{'get' . $name}();
+            $value = $this->crud->{'get' . $name}();
         }
 
         $stub = str_replace($name, $value, $stub);
@@ -181,28 +181,6 @@ abstract class Builder {
 
         // Return file path.
         return $relativePath;
-    }
-
-    /**
-     * Fix HTML content using Tidy, then generate the file.
-     * 
-     * @param string $path      The path of the file relative to base_path()
-     * @param string $content   The content of the file
-     * @return string           The relative path of the file
-     */
-    protected function generateHtmlFile($path, $content) {
-        // Fix HTML.
-        $tidy = new Tidy();
-        $tidy->parseString($content, config('crud.tidy'));
-        $tidy->cleanRepair();
-
-        // Report Tidy errors.
-        if ($tidy->errorBuffer) {
-            throw new \Exception("Tidy fails to process HTML : \n" . explode("\n", $tidy->errorBuffer));
-        }
-
-        // Generate file.
-        return $this->generateFile($path, $tidy);
     }
 
     /**

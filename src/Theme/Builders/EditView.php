@@ -30,7 +30,7 @@ class EditView extends CreateView {
 
         $this->replace($stub, '#CONTENT', $this->content());
 
-        return $this->generatePhpFile($this->file(), $stub);
+        return $this->generateFile($this->file(), $stub);
     }
 
 }

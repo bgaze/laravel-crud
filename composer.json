@@ -4,8 +4,7 @@
     "require": {
         "laravel/framework": ">=5.5.0",
         "laravelcollective/html": ">=5.5.4",
-        "bgaze/laravel-php-cs-fixer": "~1",
-        "ext-imagick": "*"
+        "bgaze/laravel-php-cs-fixer": "~1"
     },
     "license": "MIT",
     "authors": [

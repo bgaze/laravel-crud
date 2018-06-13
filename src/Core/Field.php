@@ -37,9 +37,9 @@ class Field extends SignedInput {
      * The class constructor.
      * 
      * @param string $type      The field type. 
-     * @param string $question  The user signed input
+     * @param string $data      Options and arguments
      */
-    public function __construct($type, $question) {
+    public function __construct($type, $data) {
         // Get fields configuration.
         $this->config = (object) config("crud-definitions.fields.{$type}");
 
@@ -47,7 +47,7 @@ class Field extends SignedInput {
         parent::__construct($type . ' ' . $this->config('signature'));
 
         // Set & validate user input.
-        $this->ask($question);
+        $this->ask($data);
         $this->validate(config('crud-definitions.validation'));
 
         // Set field name.

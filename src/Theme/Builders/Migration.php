@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Theme\Builders;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Crud;
 use Bgaze\Crud\Core\Builder;
 
@@ -40,7 +41,7 @@ class Migration extends Builder {
      */
     public function file() {
         if (empty($this->file)) {
-            $file = Str::snake($this->getMigrationClass());
+            $file = Str::snake($this->crud->getMigrationClass());
             $prefix = date('Y_m_d_His');
             $this->file = database_path("migrations/{$prefix}_{$file}.php");
         }
@@ -54,7 +55,7 @@ class Migration extends Builder {
      * @return false|string The error message if file exists, false otherwise
      */
     public function fileExists() {
-        $file = Str::snake($this->getMigrationClass());
+        $file = Str::snake($this->crud->getMigrationClass());
 
         if (count($this->files->glob(database_path("migrations/*_{$file}.php")))) {
             return "A '*_{$file}.php' migration file already exists.";
@@ -92,11 +93,11 @@ class Migration extends Builder {
         });
 
         if ($this->crud->softDeletes()) {
-            $content->prepend(config('crud-definitions.softDeletes.' . $this->softDeletes()));
+            $content->prepend(config('crud-definitions.softDeletes.' . $this->crud->softDeletes()));
         }
 
         if ($this->crud->timestamps()) {
-            $content->prepend(config('crud-definitions.timestamps.' . $this->timestamps()));
+            $content->prepend(config('crud-definitions.timestamps.' . $this->crud->timestamps()));
         }
 
         return $content->implode("\n");

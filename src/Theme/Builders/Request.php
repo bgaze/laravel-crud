@@ -39,8 +39,13 @@ class Request extends Builder {
      * @return type
      */
     protected function content() {
-        return $this->crud
-                        ->content(false)
+        $content = $this->crud->content(false);
+
+        if ($content->isEmpty()) {
+            return '// TODO';
+        }
+
+        return $content
                         ->map(function(Field $field) {
                             return $this->requestGroup($field);
                         })

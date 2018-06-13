@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Theme\Builders;
 
 use Bgaze\Crud\Core\Builder;
+use Bgaze\Crud\Core\Field;
 
 /**
  * Description of CreateView
@@ -30,7 +31,7 @@ class CreateView extends Builder {
 
         $this->replace($stub, '#CONTENT', $this->content());
 
-        return $this->generatePhpFile($this->file(), $stub);
+        return $this->generateFile($this->file(), $stub);
     }
 
     /**
@@ -39,11 +40,14 @@ class CreateView extends Builder {
      * @return type
      */
     protected function content() {
-        $stub = $this->stub('form-group');
+        $content = $this->crud->content(false);
 
-        return $this->crud
-                        ->content(false)
-                        ->map(function(Field $field) use($stub) {
+        if ($content->isEmpty()) {
+            return '    <!-- TODO -->';
+        }
+
+        return $content
+                        ->map(function(Field $field) {
                             return $this->formGroup($field);
                         })
                         ->implode("\n");

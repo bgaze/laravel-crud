@@ -2,6 +2,7 @@
 
 namespace Bgaze\Crud\Core;
 
+use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Field;
 
 /**
@@ -151,25 +152,6 @@ abstract class Crud {
 
     ############################################################################
     # CONFIGURATION
-
-    /**
-     * Models sub-directory, based on global configuration.
-     * 
-     * @return string
-     */
-    protected function modelsSubDirectory() {
-        $dir = config('crud.models-directory', false);
-
-        if ($dir === true) {
-            return 'Models';
-        }
-
-        if ($dir && !empty($dir)) {
-            return $dir;
-        }
-
-        return '';
-    }
 
     /**
      * Parse and validate Model's name and parents.
@@ -351,6 +333,25 @@ abstract class Crud {
         rsort($variables);
 
         return $variables;
+    }
+
+    /**
+     * Models sub-directory, based on global configuration.
+     * 
+     * @return string
+     */
+    public function modelsSubDirectory() {
+        $dir = config('crud.models-directory', false);
+
+        if ($dir === true) {
+            return 'Models';
+        }
+
+        if ($dir && !empty($dir)) {
+            return $dir;
+        }
+
+        return '';
     }
 
     /**

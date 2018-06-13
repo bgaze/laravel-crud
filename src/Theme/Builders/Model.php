@@ -26,7 +26,7 @@ class Model extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        $stub = $this->stub('migration');
+        $stub = $this->stub('model');
 
         $this
                 ->replace($stub, '#TIMESTAMPS', $this->timestamps())

@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Theme\Builders;
 
 use Bgaze\Crud\Core\Builder;
+use Bgaze\Crud\Core\Field;
 
 /**
  * Description of ShowView
@@ -28,7 +29,7 @@ class ShowView extends Builder {
     public function build() {
         $stub = $this->stub('show-view');
         $this->replace($stub, '#CONTENT', $this->content());
-        return $this->generatePhpFile($this->file(), $stub);
+        return $this->generateFile($this->file(), $stub);
     }
 
     /**
@@ -37,8 +38,13 @@ class ShowView extends Builder {
      * @return type
      */
     protected function content() {
-        return $this->crud
-                        ->content(false)
+        $content = $this->crud->content(false);
+
+        if ($content->isEmpty()) {
+            return '    <!-- TODO -->';
+        }
+
+        return $content
                         ->map(function(Field $field) {
                             return $this->showGroup($field);
                         })

@@ -3,7 +3,7 @@
 namespace Bgaze\Crud\Theme\Builders;
 
 use Bgaze\Crud\Core\Builder;
-
+use Bgaze\Crud\Core\Field;
 /**
  * Description of IndexView
  *
@@ -27,13 +27,13 @@ class IndexView extends Builder {
      */
     public function build() {
         $stub = $this->stub('index-view');
-        
+
         $this
                 ->replace($stub, '#THEAD', $this->tableHead())
                 ->replace($stub, '#TBODY', $this->tableBody())
         ;
-        
-        return $this->generatePhpFile($this->file(), $stub);
+
+        return $this->generateFile($this->file(), $stub);
     }
 
     /**
@@ -42,9 +42,17 @@ class IndexView extends Builder {
      * @return string
      */
     protected function tableHead() {
-        return $this->crud->content(false)->map(function(Field $field) {
-                    return sprintf('<th>%s</th>', $field->label());
-                })->implode("\n");
+        $content = $this->crud->content(false);
+
+        if ($content->isEmpty()) {
+            return '<!-- TODO -->';
+        }
+
+        return $content
+                        ->map(function(Field $field) {
+                            return sprintf('<th>%s</th>', $field->label());
+                        })
+                        ->implode("\n                ");
     }
 
     /**
@@ -53,11 +61,19 @@ class IndexView extends Builder {
      * @return string
      */
     protected function tableBody() {
-        return $this->crud->content(false)->map(function(Field $field) {
-                    $stub = '<td>{{ $ModelCamel->FieldName }}</td>';
-                    $this->replace($stub, 'ModelCamel')->replace($stub, 'FieldName', $field->label());
-                    return $stub;
-                })->implode("\n");
+        $content = $this->crud->content(false);
+
+        if ($content->isEmpty()) {
+            return '<!-- TODO -->';
+        }
+
+        return $content
+                        ->map(function(Field $field) {
+                            $stub = '<td>{{ $ModelCamel->FieldName }}</td>';
+                            $this->replace($stub, 'ModelCamel')->replace($stub, 'FieldName', $field->label());
+                            return $stub;
+                        })
+                        ->implode("\n                    ");
     }
 
 }
