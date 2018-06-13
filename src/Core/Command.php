@@ -57,15 +57,9 @@ class Command extends Base {
 
         $only = implode('|', array_keys(call_user_func("{$class}::builders")));
 
-        $timestamps = array_keys(config('crud-definitions.timestamps'));
-        $timestamps[0] = '[' . $timestamps[0] . ']';
-        $timestamps[] = 'false';
-        $timestamps = implode('|', $timestamps);
+        $timestamps = $this->getDatesModifiersChoices('timestamps', true);
 
-        $softDeletes = array_keys(config('crud-definitions.softDeletes'));
-        $softDeletes[0] = '[' . $softDeletes[0] . ']';
-        $softDeletes[] = 'false';
-        $softDeletes = implode('|', $softDeletes);
+        $softDeletes = $this->getDatesModifiersChoices('softDeletes', true);
 
         return "crud:{$this->theme} 
             {model : The name of the Model.}
@@ -88,7 +82,7 @@ class Command extends Base {
 
             // Configure  CRUD based on theme and model inputs.
             $this->h2('Configuration');
-            $this->configure();
+            $this->getConfiguration();
 
             // Build.
             $this->nl($this->option('no-interaction'));
@@ -112,7 +106,7 @@ class Command extends Base {
      * 
      * @return void
      */
-    protected function configure() {
+    protected function getConfiguration() {
         // Resolve CRUD instance.
         $this->crud = $this->laravel->make("crud.theme.{$this->theme}.class", [$this->argument('model')]);
 
@@ -153,8 +147,10 @@ class Command extends Base {
             $builders = array_intersect_key($builders, array_flip($this->option('only')));
         }
 
-        $this->builders = collect(static::builders())->map(function($class) {
-            return new $class($this);
+        $filesystem = resolve('Illuminate\Filesystem\Filesystem');
+
+        $this->builders = collect(static::builders())->map(function($class) use(&$filesystem) {
+            return new $class($filesystem, $this);
         });
     }
 
@@ -203,6 +199,23 @@ class Command extends Base {
     }
 
     /**
+     * TODO
+     * 
+     * @return string
+     */
+    protected function getDatesModifiersChoices($key, $toString = false) {
+        $list = array_keys(config("crud-definitions.{$key}"));
+        $list[] = 'none';
+
+        if ($toString) {
+            $list[0] = '[' . $list[0] . ']';
+            return implode('|', $list);
+        }
+
+        return $list;
+    }
+
+    /**
      * Set Models's Timestamps type based on command inputs.
      * 
      * If option wasn't provided and interraction are allowed, user is
@@ -215,9 +228,7 @@ class Command extends Base {
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
         if ($ask) {
-            $timestamps = array_keys(config('crud-definitions.timestamps'));
-            $timestamps[] = 'none';
-            $value = $this->choice('Do you wish to add timestamps?', $timestamps, 0);
+            $value = $this->choice('Do you wish to add timestamps?', $this->getDatesModifiersChoices('timestamps'), 0);
         }
 
         $this->crud->setTimestamps(($value === 'none') ? false : $value);
@@ -240,9 +251,7 @@ class Command extends Base {
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
         if ($ask) {
-            $softDeletes = array_keys(config('crud-definitions.softDeletes'));
-            $softDeletes[] = 'none';
-            $value = $this->choice('Do you wish to add SoftDeletes?', $softDeletes, 0);
+            $value = $this->choice('Do you wish to add SoftDeletes?', $this->getDatesModifiersChoices('softDeletes'), 0);
         }
 
         $this->crud->setSoftDeletes(($value === 'none') ? false : $value);

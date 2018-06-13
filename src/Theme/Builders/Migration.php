@@ -2,6 +2,8 @@
 
 namespace Bgaze\Crud\Theme\Builders;
 
+use Illuminate\Filesystem\Filesystem;
+use Bgaze\Crud\Core\Crud;
 use Bgaze\Crud\Core\Builder;
 
 /**
@@ -12,11 +14,24 @@ use Bgaze\Crud\Core\Builder;
 class Migration extends Builder {
 
     /**
-     * As it is timestamped, we store the file name when generated.
+     * The Composer instance.
+     *
+     * @var \Illuminate\Support\Composer
+     */
+    protected $composer;
+
+    /**
+     * As it contains a timestamp, we store the file name when generated.
      * 
      * @var string 
      */
     protected $file;
+
+    public function __construct(Filesystem $files, Crud $crud) {
+        parent::__construct($files, $crud);
+
+        $this->composer = resolve('Illuminate\Support\Composer');
+    }
 
     /**
      * The file that the builder generates.
@@ -41,10 +56,10 @@ class Migration extends Builder {
     public function fileExists() {
         $file = Str::snake($this->getMigrationClass());
 
-        if (count($this->crud->files->glob(database_path("migrations/*_{$file}.php")))) {
+        if (count($this->files->glob(database_path("migrations/*_{$file}.php")))) {
             return "A '*_{$file}.php' migration file already exists.";
         }
-        
+
         return false;
     }
 
@@ -54,7 +69,58 @@ class Migration extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        ;
+        // Write migration file.
+        $stub = $this->stub('migration');
+        $this->replace($stub, '#CONTENT', $this->content());
+        $path = $this->generatePhpFile($this->file(), $stub);
+
+        // Update autoload.
+        $this->composer->dumpAutoloads();
+
+        // Return relative path.
+        return $path;
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    protected function content() {
+        $content = $this->crud->content()->map(function(Field $field) {
+            return $this->migrationGroup($field);
+        });
+
+        if ($this->crud->softDeletes()) {
+            $content->prepend(config('crud-definitions.softDeletes.' . $this->softDeletes()));
+        }
+
+        if ($this->crud->timestamps()) {
+            $content->prepend(config('crud-definitions.timestamps.' . $this->timestamps()));
+        }
+
+        return $content->implode("\n");
+    }
+
+    /**
+     * Compile content to migration class body line.
+     * 
+     * @return string
+     */
+    protected function migrationGroup(Field $field) {
+        $tmp = $field->config('template');
+
+        foreach ($field->input()->getArguments() as $k => $v) {
+            $tmp = str_replace("%$k", $this->compileValueForPhp($v), $tmp);
+        }
+
+        foreach ($field->input()->getOptions() as $k => $v) {
+            if ($v) {
+                $tmp .= str_replace('%value', $this->compileValueForPhp($v), config("crud-definitions.modifiers.{$k}"));
+            }
+        }
+
+        return $tmp . ';';
     }
 
 }

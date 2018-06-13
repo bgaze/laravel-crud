@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Core;
 
 use Bgaze\Crud\Core\Crud;
+use Illuminate\Filesystem\Filesystem;
 
 /**
  * Builds a file using a CRUD instance
@@ -10,6 +11,13 @@ use Bgaze\Crud\Core\Crud;
  * @author bgaze <benjamin@bgaze.fr>
  */
 abstract class Builder {
+
+    /**
+     * The filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected $files;
 
     /**
      * The CRUD instance.
@@ -21,9 +29,11 @@ abstract class Builder {
     /**
      * The class constructor
      * 
+     * @param  \Illuminate\Filesystem\Filesystem  $files The filesystem instance
      * @param Crud $crud
      */
-    function __construct(Crud $crud) {
+    function __construct(Filesystem $files, Crud $crud) {
+        $this->files = $files;
         $this->crud = $crud;
     }
 
@@ -102,17 +112,21 @@ abstract class Builder {
     }
 
     /**
-     * Populate a stub file content and returns resulting string.
+     * Get the content of a stub file and populate it with CRUD variables.
      * 
-     * Any Crud method starting with "get" is automatically use as replacement.
-     * 
-     * @param string $stub          The stub file name (dotted syntax)
-     * @param callable $replace     A callback to do custom replacements
-     * @return string
+     * @param string $name  The name of the stub
+     * @return string       The content of stub file
      */
-    protected function populateStub($name) {
+    public function stub($name) {
+        $stubs = $this->crud::stubs();
+
+        // Check that stub exists.
+        if (!isset($stubs[$name])) {
+            throw new \Exception("Undefined stub '{$stubs}'.");
+        }
+
         // Get stub content.
-        $stub = $this->crud->stub($name);
+        $stub = $this->files->get($stubs[$name]);
 
         // Replace common variables.
         foreach ($this->crud->variables() as $var) {
@@ -135,17 +149,17 @@ abstract class Builder {
         $absolutePath = base_path($relativePath);
 
         // Ensure the file doesn't already exists.
-        if ($this->crud->files->exists($absolutePath)) {
+        if ($this->files->exists($absolutePath)) {
             throw new \Exception("A '{$relativePath}' file already exists.");
         }
 
         // Create output dir if necessary.
-        if (!$this->crud->files->isDirectory(dirname($absolutePath))) {
+        if (!$this->files->isDirectory(dirname($absolutePath))) {
             $this->files->makeDirectory(dirname($absolutePath), 0777, true, true);
         }
 
         // Create file.
-        $this->crud->files->put($absolutePath, $content);
+        $this->files->put($absolutePath, $content);
 
         // Return file path.
         return $relativePath;
@@ -197,7 +211,7 @@ abstract class Builder {
      * @return false|string The error message if file exists, false otherwise
      */
     public function fileExists() {
-        if ($this->crud->files->exists($this->file())) {
+        if ($this->files->exists($this->file())) {
             $path = $this->relativePath($this->file());
             return "A '{$path}' file already exists.";
         }

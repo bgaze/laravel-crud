@@ -27,13 +27,6 @@ use Bgaze\Crud\Core\Field;
 abstract class Crud {
 
     /**
-     * The filesystem instance.
-     *
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    public $files;
-
-    /**
      * The Model parents and name.<br/>
      * Example : ['MyGrandParent', 'MyParent', 'MyModel']
      *
@@ -88,13 +81,9 @@ abstract class Crud {
     /**
      * The constructor of the class.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files The filesystem instance
      * @return void
      */
-    public function __construct(Filesystem $files, $model) {
-        // Filesystem.
-        $this->files = $files;
-
+    public function __construct($model) {
         // Init CRUD content.
         $this->content = collect();
 
@@ -346,22 +335,6 @@ abstract class Crud {
     # GETTERS
 
     /**
-     * Get the content of a stub file.
-     * 
-     * @param string $name  The name of the stub
-     * @return string       The content of stub file
-     */
-    public function stub($name) {
-        $stubs = static::stubs();
-
-        if (!isset($stubs[$name])) {
-            throw new \Exception("Undefined stub '{$stubs}'.");
-        }
-
-        return $this->files->get($stubs[$name]);
-    }
-
-    /**
      * Get a list of variables present in the class (based on existing methods starting with 'get').
      *
      * @return array
@@ -433,7 +406,13 @@ abstract class Crud {
      *
      * @var \Illuminate\Support\Collection 
      */
-    public function content() {
+    public function content($withIndexes = true) {
+        if (!$withIndexes) {
+            return $this->content->filter(function(Field $field) {
+                        return !$field->isIndex();
+                    });
+        }
+
         return $this->content;
     }
 

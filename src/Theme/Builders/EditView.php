@@ -2,14 +2,14 @@
 
 namespace Bgaze\Crud\Theme\Builders;
 
-use Bgaze\Crud\Core\Builder;
+use Bgaze\Crud\Theme\Builders\CreateView;
 
 /**
  * Description of EditView
  *
  * @author bgaze
  */
-class EditView extends Builder {
+class EditView extends CreateView {
 
     /**
      * The file that the builder generates.
@@ -26,7 +26,11 @@ class EditView extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        ;
+        $stub = $this->stub('edit-view');
+
+        $this->replace($stub, '#CONTENT', $this->content());
+
+        return $this->generatePhpFile($this->file(), $stub);
     }
 
 }

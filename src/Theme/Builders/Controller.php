@@ -26,7 +26,21 @@ class Controller extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        // base_path('routes/web.php');
+        // Write controller file.
+        $path = $this->generatePhpFile($this->file(), $this->stub('controller'));
+
+        // Write routes.
+        $this->files->append($this->routesPath(), $this->stub('routes'));
+
+        // Return relative path.
+        return $path;
+    }
+
+    /**
+     * TODO
+     */
+    protected function routesPath() {
+        return base_path('routes/web.php');
     }
 
 }

@@ -32,7 +32,7 @@ trait ThemeProviderTrait {
 
             // Register theme class.
             $this->app->bind("crud.theme.{$name}.class", function ($app, $parameters) use ($class) {
-                return new $class($app->make('Illuminate\Filesystem\Filesystem'), $parameters[0]);
+                return new $class($parameters[0]);
             });
 
             // Register theme command.

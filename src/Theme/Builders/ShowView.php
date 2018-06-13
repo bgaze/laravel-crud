@@ -26,7 +26,39 @@ class ShowView extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
+        $stub = $this->stub('show-view');
+        $this->replace($stub, '#CONTENT', $this->content());
+        return $this->generatePhpFile($this->file(), $stub);
+    }
+
+    /**
+     * TODO
+     * 
+     * @return type
+     */
+    protected function content() {
+        return $this->crud
+                        ->content(false)
+                        ->map(function(Field $field) {
+                            return $this->showGroup($field);
+                        })
+                        ->implode("\n");
+    }
+
+    /**
+     * Compile content to request show view group.
+     * 
+     * @return string
+     */
+    protected function showGroup(Field $field) {
+        $stub = $this->stub('show-group');
+
+        $this
+                ->replace($stub, 'FieldLabel', $field->label())
+                ->replace($stub, 'FieldName', $field->name())
         ;
+
+        return $stub;
     }
 
 }

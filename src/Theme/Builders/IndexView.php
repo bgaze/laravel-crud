@@ -26,7 +26,38 @@ class IndexView extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
+        $stub = $this->stub('index-view');
+        
+        $this
+                ->replace($stub, '#THEAD', $this->tableHead())
+                ->replace($stub, '#TBODY', $this->tableBody())
         ;
+        
+        return $this->generatePhpFile($this->file(), $stub);
+    }
+
+    /**
+     * Compile content to index view table head cell.
+     * 
+     * @return string
+     */
+    protected function tableHead() {
+        return $this->crud->content(false)->map(function(Field $field) {
+                    return sprintf('<th>%s</th>', $field->label());
+                })->implode("\n");
+    }
+
+    /**
+     * Compile content to index view table body cell.
+     * 
+     * @return string
+     */
+    protected function tableBody() {
+        return $this->crud->content(false)->map(function(Field $field) {
+                    $stub = '<td>{{ $ModelCamel->FieldName }}</td>';
+                    $this->replace($stub, 'ModelCamel')->replace($stub, 'FieldName', $field->label());
+                    return $stub;
+                })->implode("\n");
     }
 
 }

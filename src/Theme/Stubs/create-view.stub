@@ -8,7 +8,7 @@
     <h1>Create a new ModelFullName</h1>
 
     {!! Form::model($ModelCamel, ['route' => 'PluralsKebabDot.store']) !!}
-    #FORM
+    #CONTENT
     {!! Form::submit('Save') !!}
     {!! Form::close() !!}
 @endsection
