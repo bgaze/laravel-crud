@@ -295,7 +295,7 @@ class Command extends Base {
             $continue = $this->askForContentInput($fields);
 
             // Manage wizard exit.
-            if (!$continue && (!$this->crud->isEmpty() || $this->confirm("You haven't added any field. Continue?", true))) {
+            if (!$continue && (!$this->crud->content()->isEmpty() || $this->confirm("You haven't added any field. Continue?", true))) {
                 break;
             }
         }
@@ -308,9 +308,9 @@ class Command extends Base {
      * 
      * @return boolean Wether to continue or not to add fields to Model.
      */
-    protected function askForContentInput(array $fields) {
+    protected function askForContentInput( $fields) {
         // User input.
-        $question = trim($this->anticipate('Add a field', $fields, 'no'));
+        $question = trim($this->anticipate('Add a field', $fields->all(), 'no'));
 
         // Manage wizard exit.
         if ($question === 'no') {
@@ -339,7 +339,6 @@ class Command extends Base {
             $this->dl('Field added', $question);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
-            $this->line($e->getTraceAsString());
         }
 
         // Continue.
