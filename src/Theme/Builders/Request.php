@@ -61,7 +61,9 @@ class Request extends Builder {
     protected function requestGroup(Field $field) {
         $rules = [];
 
-        if (in_array('nullable', $field->definition()->getOptions())) {
+        $definition = $field->definition();
+
+        if ($definition->hasOption('nullable')) {
             $rules[] = $field->input()->getOption('nullable') ? 'nullable' : 'required';
         } elseif (preg_match('/^nullable/', $field->config('type'))) {
             $rules[] = 'nullable';
@@ -71,7 +73,7 @@ class Request extends Builder {
 
         $rules[] = $this->getTypeRules($field);
 
-        if (in_array('unique', $field->definition()->getOptions()) && $field->input()->getOption('unique')) {
+        if (in_array('unique', $definition->getOptions()) && $definition->getOption('unique')) {
             $rules[] = 'unique:' . $this->crud->getTableName() . ',' . $field->name();
         }
 
