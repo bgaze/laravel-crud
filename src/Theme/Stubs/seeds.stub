@@ -12,6 +12,10 @@ class PluralFullStudlyTableSeeder extends Seeder
      */
     public function run()
     {
+        $this->command->info("<comment>Seeding:</comment> PluralFullStudlyTableSeeder");
+        
         factory(ModelStudly::class, 50)->create();
+        
+        $this->command->info("<info>Seeded:</info> PluralFullStudlyTableSeeder");
     }
 }
