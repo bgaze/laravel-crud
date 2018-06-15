@@ -53,7 +53,9 @@ class Index extends Builder {
 
         return $content
                         ->map(function(Field $field) use($stub) {
-                            $this->replace($stub, 'FieldName', $field->name());
+                            $this
+                            ->replace($stub, 'FieldLabel', $field->label())
+                            ->replace($stub, 'FieldName', $field->name());
                             return $stub;
                         })
                         ->implode("\n");
@@ -75,7 +77,9 @@ class Index extends Builder {
 
         return $content
                         ->map(function(Field $field) use($stub) {
-                            $this->replace($stub, 'FieldName', $field->name());
+                            $this
+                            ->replace($stub, 'FieldLabel', $field->label())
+                            ->replace($stub, 'FieldName', $field->name());
                             return $stub;
                         })
                         ->implode("\n");

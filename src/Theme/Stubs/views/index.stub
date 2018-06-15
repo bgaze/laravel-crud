@@ -16,6 +16,7 @@
             <tr>
                 <th>#</th>
                 #THEAD
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -29,7 +30,7 @@
                         {!! Form::model($ModelCamel, ['route' => ['PluralsKebabDot.destroy', $ModelCamel->id], 'method' => 'delete']) !!}
                         {!! Form::submit('Delete') !!}
                         {!! Form::close() !!}
-                    <td>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
