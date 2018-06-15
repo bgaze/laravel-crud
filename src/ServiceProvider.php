@@ -25,7 +25,7 @@ class ServiceProvider extends Base {
         $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud');
 
         // Register & publish default theme.
-        $this->registerTheme(Crud::class, 'The default theme for CRUD generator', __DIR__ . '/Theme/Views');
+        $this->registerTheme(Crud::class, 'Generate a CRUD using default theme', __DIR__ . '/Theme/Views');
     }
 
     /**
