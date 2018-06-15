@@ -2,12 +2,22 @@
 
 namespace Bgaze\Crud\Support;
 
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+
 /**
  * A collection of display helpers for console applications.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
 trait ConsoleHelpersTrait {
+
+    /**
+     * TODO
+     */
+    protected function setCustomStyles() {
+        $this->output->getFormatter()->setStyle('h1', new OutputFormatterStyle('white', 'blue'));
+        $this->output->getFormatter()->setStyle('h2', new OutputFormatterStyle('blue', null, array('bold')));
+    }
 
     /**
      * Display a level 1 title.
@@ -18,9 +28,9 @@ trait ConsoleHelpersTrait {
     public function h1($text, $test = true) {
         if ($test) {
             $this->nl();
-            $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
-            $this->line("<fg=white;bg=blue>" . str_pad(strtoupper(" $text"), 80) . "</>");
-            $this->line("<fg=white;bg=blue>" . str_repeat(" ", 80) . "</>");
+            $this->line("<h1>" . str_repeat(" ", 80) . "</h1>");
+            $this->line("<h1>" . str_pad(strtoupper(" $text"), 80) . "</h1>");
+            $this->line("<h1>" . str_repeat(" ", 80) . "</h1>");
             $this->nl();
         }
     }
@@ -33,7 +43,7 @@ trait ConsoleHelpersTrait {
      */
     public function h2($text, $test = true) {
         if ($test) {
-            $this->line(" <fg=blue>" . strtoupper($text) . "</>");
+            $this->line(" <h2>" . strtoupper($text) . "</h2>");
             $this->nl();
         }
     }
@@ -59,7 +69,7 @@ trait ConsoleHelpersTrait {
      */
     public function dl($dt, $dd, $test = true) {
         if ($test) {
-            $this->info(" {$dt} : <fg=white>{$dd}</>");
+            $this->line(" <info>{$dt}:</info> {$dd}");
         }
     }
 

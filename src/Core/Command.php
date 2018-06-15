@@ -65,11 +65,11 @@ class Command extends Base {
         return "crud:{$this->theme} 
             {model : The name of the Model.}
             {--p|plurals= : The plurals versions of the Model\'s names.}
-            {--t|timestamps : Add timestamps directives : <fg=cyan>{$timestamps}</>}
-            {--s|soft-deletes : Add soft delete directives : <fg=cyan>{$softDeletes}</>}
+            {--t|timestamps : Add timestamps directives: <fg=cyan>{$timestamps}</>}
+            {--s|soft-deletes : Add soft delete directives: <fg=cyan>{$softDeletes}</>}
             {--c|content=* : The list of Model\'s fields (signature syntax).}
-            {--o|only=* : Generate only selected files : <fg=cyan>{$only}</>}
-            {--layout= : The layout to extend into generated views : <fg=cyan>[{$layout}]</>}";
+            {--o|only=* : Generate only selected files: <fg=cyan>{$only}</>}
+            {--layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
     }
 
     /**
@@ -78,6 +78,7 @@ class Command extends Base {
      * @return void
      */
     public function handle() {
+        $this->setCustomStyles();
         $this->h1('Welcome to CRUD generator');
 
         // Configure  CRUD based on theme and model inputs.
@@ -164,9 +165,9 @@ class Command extends Base {
                 })->filter();
 
         if ($errors->count() === 1) {
-            throw new \Exception("Following file already exists : " . $errors->first());
+            throw new \Exception("Following file already exists: " . $errors->first());
         } elseif ($errors->count() > 1) {
-            throw new \Exception("Following files already exist :\n- " . $errors->implode("\n- "));
+            throw new \Exception("Following files already exist:\n- " . $errors->implode("\n- "));
         }
     }
 
@@ -183,7 +184,7 @@ class Command extends Base {
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
         if ($ask) {
-            $value = $this->ask('Please confirm plurals version of Model name :', $this->crud->getPluralsFullName());
+            $value = $this->ask('Please confirm plurals version of Model name:', $this->crud->getPluralsFullName());
         }
 
         $this->crud->setPlurals($value);
@@ -282,7 +283,7 @@ class Command extends Base {
         }
 
         // Intro.
-        $this->info(" We are now going to define model's data.");
+        $this->info(" You are now going to define model's data.");
         $this->line(" For available types, enter <fg=cyan>list</>.");
         $this->line(" For a type detailed syntax, <fg=cyan>omit arguments and options.</>");
 
@@ -308,7 +309,7 @@ class Command extends Base {
      * 
      * @return boolean Wether to continue or not to add fields to Model.
      */
-    protected function askForContentInput( $fields) {
+    protected function askForContentInput($fields) {
         // User input.
         $question = trim($this->anticipate('Add a field', $fields->all(), 'no'));
 
@@ -346,9 +347,9 @@ class Command extends Base {
     }
 
     /**
-     * Parse the user input and return an array conatining two values :
-     * - First : the name of the field type to add.
-     * - Second : arguments and options to generate the field.
+     * Parse the user input and return an array conatining two values:
+     * - First: the name of the field type to add.
+     * - Second: arguments and options to generate the field.
      * 
      * @param string $question The user input
      * 
@@ -375,7 +376,7 @@ class Command extends Base {
      */
     protected function showFieldHelp($name) {
         $config = config("crud-definitions.fields.{$name}");
-        $this->line("   <fg=green>{$config['description']}</>\n   Signature :   <fg=cyan>{$name} {$config['signature']}</>\n");
+        $this->line("   <info>{$config['description']}</info>\n   Signature:   <fg=cyan>{$name} {$config['signature']}</>\n");
     }
 
     /**
@@ -413,10 +414,10 @@ class Command extends Base {
         });
 
         if ($files->count() === 1) {
-            return " <fg=green>Following file will be generated :</> " . $files->first();
+            return " <info>Following file will be generated:</info> " . $files->first();
         }
 
-        return " <fg=green>Following files will be generated :</>\n  " . $files->implode("\n  ");
+        return " <info>Following files will be generated:</info>\n  " . $files->implode("\n  ");
     }
 
     /**
@@ -428,10 +429,12 @@ class Command extends Base {
             $this->nl();
         }
 
-        if ($this->option('no-interaction') || $this->confirm('Continue?', true)) {
+        if ($this->option('no-interaction') || $this->confirm('Proceed?', true)) {
             $this->builders->each(function(Builder $builder, $name) {
                 $this->dl('Created ' . ucfirst(str_replace('-', ' ', $name)), $builder->build());
             });
+            $this->nl();
+            $this->comment(' CRUD generated successfully.');
             $this->nl();
         }
     }
