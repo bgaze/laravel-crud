@@ -3,7 +3,7 @@
 namespace Bgaze\Crud\Theme\Builders;
 
 use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Core\Field;
+use Bgaze\Crud\Theme\FormBuilderTrait;
 
 /**
  * Description of CreateView
@@ -11,6 +11,8 @@ use Bgaze\Crud\Core\Field;
  * @author bgaze
  */
 class CreateView extends Builder {
+
+    use FormBuilderTrait;
 
     /**
      * The file that the builder generates.
@@ -32,59 +34,6 @@ class CreateView extends Builder {
         $this->replace($stub, '#CONTENT', $this->content());
 
         return $this->generateFile($this->file(), $stub);
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    protected function content() {
-        $content = $this->crud->content(false);
-
-        if ($content->isEmpty()) {
-            return '    <!-- TODO -->';
-        }
-
-        return $content
-                        ->map(function(Field $field) {
-                            return $this->formGroup($field);
-                        })
-                        ->implode("\n");
-    }
-
-    /**
-     * TODO
-     * 
-     * @return type
-     */
-    protected function formGroup(Field $field) {
-        $stub = $this->stub('form-group');
-
-        switch ($field->config('type')) {
-            case 'boolean':
-                $template = "Form::checkbox('FieldName', '1')";
-                break;
-            case 'array':
-                $choices = $field->input()->getArgument('allowed');
-                if ($field->input()->getOption('nullable')) {
-                    array_unshift($choices, '');
-                }
-                $choices = array_combine($choices, $choices);
-                $template = sprintf("Form::select('FieldName', %s)", $this->compileArrayForPhp($choices, true));
-                break;
-            default:
-                $template = "Form::text('FieldName')";
-                break;
-        }
-
-        $this
-                ->replace($stub, '#FIELD', $template)
-                ->replace($stub, 'FieldLabel', $field->label())
-                ->replace($stub, 'FieldName', $field->name())
-        ;
-
-        return $stub;
     }
 
 }

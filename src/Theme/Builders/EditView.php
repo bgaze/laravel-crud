@@ -2,14 +2,17 @@
 
 namespace Bgaze\Crud\Theme\Builders;
 
-use Bgaze\Crud\Theme\Builders\CreateView;
+use Bgaze\Crud\Core\Builder;
+use Bgaze\Crud\Theme\FormBuilderTrait;
 
 /**
  * Description of EditView
  *
  * @author bgaze
  */
-class EditView extends CreateView {
+class EditView extends Builder {
+
+    use FormBuilderTrait;
 
     /**
      * The file that the builder generates.
