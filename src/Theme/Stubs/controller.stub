@@ -15,7 +15,7 @@ class ControllerClass extends Controller
      */
     public function index()
     {
-        $PluralCamel = ModelStudly::all();
+        $PluralCamel = ModelStudly::paginate(20);
         
         return view('PluralsKebabDot.index', [
             'PluralCamel' => $PluralCamel
