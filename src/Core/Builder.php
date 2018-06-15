@@ -138,7 +138,7 @@ abstract class Builder {
 
         // Check that stub exists.
         if (!isset($stubs[$name])) {
-            throw new \Exception("Undefined stub '{$stubs}'.");
+            throw new \Exception("Undefined stub '{$stubs[$name]}'.");
         }
 
         // Get stub content.

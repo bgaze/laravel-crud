@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Theme\Builders;
+namespace Bgaze\Crud\Theme\Builders\Views;
 
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
@@ -10,7 +10,7 @@ use Bgaze\Crud\Core\Field;
  *
  * @author bgaze
  */
-class IndexView extends Builder {
+class Index extends Builder {
 
     /**
      * The file that the builder generates.
@@ -27,7 +27,7 @@ class IndexView extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        $stub = $this->stub('index-view');
+        $stub = $this->stub('views.index');
 
         $this
                 ->replace($stub, '#THEAD', $this->tableHead())
@@ -49,11 +49,14 @@ class IndexView extends Builder {
             return '<!-- TODO -->';
         }
 
+        $stub = $this->stub('partials.index-head');
+
         return $content
-                        ->map(function(Field $field) {
-                            return sprintf('<th>%s</th>', $field->label());
+                        ->map(function(Field $field) use($stub) {
+                            $this->replace($stub, 'FieldName', $field->name());
+                            return $stub;
                         })
-                        ->implode("\n                ");
+                        ->implode("\n");
     }
 
     /**
@@ -68,13 +71,14 @@ class IndexView extends Builder {
             return '<!-- TODO -->';
         }
 
+        $stub = $this->stub('partials.index-body');
+
         return $content
-                        ->map(function(Field $field) {
-                            $stub = '<td>{{ $ModelCamel->FieldName }}</td>';
-                            $this->replace($stub, 'ModelCamel')->replace($stub, 'FieldName', $field->name());
+                        ->map(function(Field $field) use($stub) {
+                            $this->replace($stub, 'FieldName', $field->name());
                             return $stub;
                         })
-                        ->implode("\n                    ");
+                        ->implode("\n");
     }
 
 }

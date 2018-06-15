@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Theme\Builders;
+namespace Bgaze\Crud\Theme\Builders\Views;
 
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
@@ -10,7 +10,7 @@ use Bgaze\Crud\Core\Field;
  *
  * @author bgaze
  */
-class ShowView extends Builder {
+class Show extends Builder {
 
     /**
      * The file that the builder generates.
@@ -27,7 +27,7 @@ class ShowView extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        $stub = $this->stub('show-view');
+        $stub = $this->stub('views.show');
         $this->replace($stub, '#CONTENT', $this->content());
         return $this->generateFile($this->file(), $stub);
     }
@@ -57,7 +57,7 @@ class ShowView extends Builder {
      * @return string
      */
     protected function showGroup(Field $field) {
-        $stub = $this->stub('show-group');
+        $stub = $this->stub('partials.show-group');
 
         $this
                 ->replace($stub, 'FieldLabel', $field->label())

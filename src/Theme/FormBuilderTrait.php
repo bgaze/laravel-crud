@@ -56,7 +56,7 @@ trait FormBuilderTrait {
      * @return type
      */
     protected function formGroup(Field $field) {
-        $stub = $this->stub('form-group');
+        $stub = $this->stub('partials.form-group');
 
         $this
                 ->replace($stub, '#FIELD', $this->formField($field))

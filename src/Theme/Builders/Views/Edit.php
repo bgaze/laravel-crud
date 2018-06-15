@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Theme\Builders;
+namespace Bgaze\Crud\Theme\Builders\Views;
 
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Theme\FormBuilderTrait;
@@ -10,7 +10,7 @@ use Bgaze\Crud\Theme\FormBuilderTrait;
  *
  * @author bgaze
  */
-class EditView extends Builder {
+class Edit extends Builder {
 
     use FormBuilderTrait;
 
@@ -29,7 +29,7 @@ class EditView extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        $stub = $this->stub('edit-view');
+        $stub = $this->stub('views.edit');
 
         $this->replace($stub, '#CONTENT', $this->content());
 
