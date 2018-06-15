@@ -32,6 +32,7 @@ class Crud extends Base {
             'migration' => __DIR__ . '/Stubs/migration.stub',
             'model' => __DIR__ . '/Stubs/model.stub',
             'factory' => __DIR__ . '/Stubs/factory.stub',
+            'seeds' => __DIR__ . '/Stubs/seeds.stub',
             'request' => __DIR__ . '/Stubs/request.stub',
             'controller' => __DIR__ . '/Stubs/controller.stub',
             'routes' => __DIR__ . '/Stubs/routes.stub',
@@ -53,7 +54,8 @@ class Crud extends Base {
         return [
             'migration-class' => Builders\Migration::class,
             'model-class' => Builders\Model::class,
-            'factory-class' => Builders\Factory::class,
+            'factory-file' => Builders\Factory::class,
+            'seeds-class' => Builders\Seeds::class,
             'request-class' => Builders\Request::class,
             'controller-class' => Builders\Controller::class,
             'index-view' => Builders\IndexView::class,
@@ -75,6 +77,17 @@ class Crud extends Base {
      */
     public function getModelFullName() {
         return $this->model->implode('\\');
+    }
+
+    /**
+     * Get the Model studly full name
+     * 
+     * Exemple : MyGrandParent\MyParent\MyModel
+     * 
+     * @return string
+     */
+    public function getModelFullStudly() {
+        return $this->model->implode('');
     }
 
     /**
@@ -108,6 +121,17 @@ class Crud extends Base {
      */
     public function getPluralFullName() {
         return $this->plural->implode('\\');
+    }
+
+    /**
+     * Get the Model plural studly full name
+     * 
+     * Exemple : MyGrandParent\MyParent\MyModel
+     * 
+     * @return string
+     */
+    public function getPluralFullStudly() {
+        return $this->plural->implode('');
     }
 
     /**

@@ -29,6 +29,12 @@ class Migration extends Builder {
      */
     protected $file;
 
+    /**
+     * TODO
+     * 
+     * @param Filesystem $files
+     * @param Crud $crud
+     */
     public function __construct(Filesystem $files, Crud $crud) {
         parent::__construct($files, $crud);
 

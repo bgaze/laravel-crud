@@ -109,7 +109,7 @@ return [
             'signature' => '{column} {total=8} {places=2} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
             'template' => '$table->float(%column, %total, %places)',
             'description' => 'Add a float field to table.',
-            'type' => 'float',
+            'type' => 'float'
         ],
         'geometry' => [
             'signature' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',

@@ -18,7 +18,7 @@ class Factory extends Builder {
      * @return string The absolute path of the file
      */
     public function file() {
-        return database_path('factories/' . $this->crud->model()->implode('') . 'Factory.php');
+        return database_path('factories/' . $this->crud->getModelFullStudly() . 'Factory.php');
     }
 
     /**
@@ -65,18 +65,20 @@ class Factory extends Builder {
      * @return string
      */
     protected function factoryGroup(Field $field) {
+        $input = $field->input();
+
         switch ($field->config('type')) {
             case 'boolean':
                 return '(mt_rand(0, 1) === 1)';
             case 'integer':
                 return 'mt_rand(0, 1000)';
             case 'float':
-                return "(mt_rand() / mt_getrandmax()) * " . str_repeat('9', $field->input()->getArgument('total'));
+                return sprintf('round(mt_rand() / mt_getrandmax() * (int) str_repeat(9, %1$d - %2$d), %2$d)', $input->getArgument('total'), $input->getArgument('places'));
             case 'date':
                 return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
             case 'array':
-                $choices = $field->input()->getArgument('allowed');
-                if ($field->input()->getOption('nullable')) {
+                $choices = $input->getArgument('allowed');
+                if ($input->getOption('nullable')) {
                     array_unshift($choices, null);
                 }
                 return 'array_random(' . $this->compileValueForPhp($choices) . ')';

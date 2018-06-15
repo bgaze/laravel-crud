@@ -1,0 +1,17 @@
+<?php
+
+use Illuminate\Database\Seeder;
+use ModelClass;
+
+class PluralFullStudlyTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        factory(ModelStudly::class, 50)->create();
+    }
+}
