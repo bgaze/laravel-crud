@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Theme\Builders;
 
 use Bgaze\Crud\Core\Builder;
+use Bgaze\Crud\Core\Field;
 
 /**
  * Description of Factory
@@ -28,7 +29,7 @@ class Factory extends Builder {
     public function build() {
         $stub = $this->stub('factory');
 
-        $this->replace($stub, '#RULES', $this->rules());
+        $this->replace($stub, '#CONTENT', $this->groups());
 
         return $this->generatePhpFile($this->file(), $stub);
     }
@@ -38,7 +39,7 @@ class Factory extends Builder {
      * 
      * @return type
      */
-    protected function rules() {
+    protected function groups() {
         $content = $this->crud->content(false);
 
         if ($content->isEmpty()) {
@@ -74,7 +75,11 @@ class Factory extends Builder {
             case 'date':
                 return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
             case 'array':
-                return 'array_random(' . $this->compileValueForPhp($field->input()->getArgument('allowed')) . ')';
+                $choices = $field->input()->getArgument('allowed');
+                if ($field->input()->getOption('nullable')) {
+                    array_unshift($choices, null);
+                }
+                return 'array_random(' . $this->compileValueForPhp($choices) . ')';
             default:
                 return "\$faker->sentence()";
         }

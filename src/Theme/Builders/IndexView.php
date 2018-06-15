@@ -4,6 +4,7 @@ namespace Bgaze\Crud\Theme\Builders;
 
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
+
 /**
  * Description of IndexView
  *
@@ -70,7 +71,7 @@ class IndexView extends Builder {
         return $content
                         ->map(function(Field $field) {
                             $stub = '<td>{{ $ModelCamel->FieldName }}</td>';
-                            $this->replace($stub, 'ModelCamel')->replace($stub, 'FieldName', $field->label());
+                            $this->replace($stub, 'ModelCamel')->replace($stub, 'FieldName', $field->name());
                             return $stub;
                         })
                         ->implode("\n                    ");

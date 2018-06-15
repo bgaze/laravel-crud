@@ -70,19 +70,19 @@ return [
             'type' => 'string',
         ],
         'date' => [
-            'signature' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+            'signature' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
             'template' => '$table->date(%column)',
             'description' => 'Add a date field to table.',
             'type' => 'date',
         ],
         'dateTime' => [
-            'signature' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+            'signature' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
             'template' => '$table->dateTime(%column)',
             'description' => 'Add a dateTime field to table.',
             'type' => 'date',
         ],
         'dateTimeTz' => [
-            'signature' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+            'signature' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
             'template' => '$table->dateTimeTz(%column)',
             'description' => 'Add a dateTimeTz field to table.',
             'type' => 'date',

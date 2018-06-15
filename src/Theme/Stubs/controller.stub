@@ -2,6 +2,7 @@
 
 namespace ControllerNamespace;
 
+use App\Http\Controllers\Controller;
 use ModelClass;
 use RequestNamespace\RequestClass as FormRequest;
 

@@ -6,6 +6,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Crud;
 use Bgaze\Crud\Core\Builder;
+use Bgaze\Crud\Core\Field;
 
 /**
  * Description of Migration

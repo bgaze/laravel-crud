@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Theme\Builders;
 
 use Bgaze\Crud\Core\Builder;
+use Bgaze\Crud\Core\Field;
 
 /**
  * Description of Request

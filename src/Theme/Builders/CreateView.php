@@ -67,6 +67,9 @@ class CreateView extends Builder {
                 break;
             case 'array':
                 $choices = $field->input()->getArgument('allowed');
+                if ($field->input()->getOption('nullable')) {
+                    array_unshift($choices, '');
+                }
                 $template = "Form::select('FieldName', " . $this->compileValueForPhp($choices) . ")";
                 break;
             default:
@@ -74,7 +77,11 @@ class CreateView extends Builder {
                 break;
         }
 
-        $this->replace($stub, '#FIELD', $template);
+        $this
+                ->replace($stub, '#FIELD', $template)
+                ->replace($stub, 'FieldLabel', $field->label())
+                ->replace($stub, 'FieldName', $field->name())
+        ;
 
         return $stub;
     }
