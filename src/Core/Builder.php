@@ -190,8 +190,7 @@ abstract class Builder {
      */
     public function fileExists() {
         if ($this->files->exists($this->file())) {
-            $path = $this->relativePath($this->file());
-            return "A '{$path}' file already exists.";
+            return $this->relativePath($this->file());
         }
 
         return false;

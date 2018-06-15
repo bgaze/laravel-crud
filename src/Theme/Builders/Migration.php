@@ -56,9 +56,14 @@ class Migration extends Builder {
      */
     public function fileExists() {
         $file = Str::snake($this->crud->getMigrationClass());
+        $files = $this->files->glob(database_path("migrations/*_{$file}.php"));
 
-        if (count($this->files->glob(database_path("migrations/*_{$file}.php")))) {
-            return "A '*_{$file}.php' migration file already exists.";
+        if (count($files) === 1) {
+            return $this->relativePath($files[0]);
+        }
+
+        if (count($files) > 1) {
+            return "migrations/*_{$file}.php (" . count($files) . ")";
         }
 
         return false;

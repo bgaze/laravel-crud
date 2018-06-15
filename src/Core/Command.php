@@ -78,22 +78,16 @@ class Command extends Base {
      * @return void
      */
     public function handle() {
-        try {
-            $this->h1('Welcome to CRUD generator');
+        $this->h1('Welcome to CRUD generator');
 
-            // Configure  CRUD based on theme and model inputs.
-            $this->h2('Configuration');
-            $this->getConfiguration();
+        // Configure  CRUD based on theme and model inputs.
+        $this->h2('Configuration');
+        $this->getConfiguration();
 
-            // Build.
-            $this->nl($this->option('no-interaction'));
-            $this->h2('Generation');
-            $this->build();
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
-            $this->nl();
-            $this->line($e->getTraceAsString());
-        }
+        // Build.
+        $this->nl($this->option('no-interaction'));
+        $this->h2('Generation');
+        $this->build();
     }
 
     ############################################################################
@@ -119,8 +113,8 @@ class Command extends Base {
 
         // Show configuration summary.
         $this->dl('Theme', $this->theme);
-        $this->dl('Model name', $this->crud->getModelFullName());
         $this->dl('Views layout', $this->crud->getViewsLayout());
+        $this->dl('Model name', $this->crud->getModelFullName());
 
         // Get plurals value.
         $this->getPluralsInput();
@@ -170,9 +164,9 @@ class Command extends Base {
                 })->filter();
 
         if ($errors->count() === 1) {
-            throw new \Exception($errors->first());
+            throw new \Exception("Following file already exists : " . $errors->first());
         } elseif ($errors->count() > 1) {
-            throw new \Exception(implode("\n "));
+            throw new \Exception("Following files already exist :\n- " . $errors->implode("\n- "));
         }
     }
 
