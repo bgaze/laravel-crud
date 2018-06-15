@@ -42,9 +42,9 @@ class ControllerClass extends Controller
      */
     public function store(FormRequest $request)
     {
-        ModelStudly::create($request->all());
+        $ModelCamel = ModelStudly::create($request->all());
 
-        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly was successfully created.");
+        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly #{$ModelCamel->id} was successfully created.");
     }
 
     /**
@@ -86,7 +86,7 @@ class ControllerClass extends Controller
         
         $ModelCamel->save();
 
-        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly was successfully updated.");
+        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly #{$ModelCamel->id} was successfully updated.");
     }
 
     /**
@@ -97,7 +97,8 @@ class ControllerClass extends Controller
      */
     public function destroy(ModelStudly $ModelCamel)
     {
+        $id = $ModelCamel->id;
         $ModelCamel->delete();
-        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly was successfully deleted.");
+        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly #{$id} was successfully deleted.");
     }
 }
