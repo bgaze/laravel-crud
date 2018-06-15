@@ -70,7 +70,8 @@ class CreateView extends Builder {
                 if ($field->input()->getOption('nullable')) {
                     array_unshift($choices, '');
                 }
-                $template = "Form::select('FieldName', " . $this->compileValueForPhp($choices) . ")";
+                $choices = array_combine($choices, $choices);
+                $template = sprintf("Form::select('FieldName', %s)", $this->compileArrayForPhp($choices, true));
                 break;
             default:
                 $template = "Form::text('FieldName')";

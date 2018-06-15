@@ -81,7 +81,7 @@ class Factory extends Builder {
                 if ($input->getOption('nullable')) {
                     array_unshift($choices, null);
                 }
-                return 'array_random(' . $this->compileValueForPhp($choices) . ')';
+                return 'array_random(' . $this->compileArrayForPhp($choices) . ')';
             default:
                 return "\$faker->sentence()";
         }

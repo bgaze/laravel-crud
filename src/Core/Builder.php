@@ -69,9 +69,7 @@ abstract class Builder {
      */
     protected function compileValueForPhp($value) {
         if (is_array($value)) {
-            return '[' . collect($value)->map(function($v) {
-                        return $this->compileValueForPhp($v);
-                    })->implode(', ') . ']';
+            return $this->compileArrayForPhp($value);
         }
 
         if ($value === true || $value === 'true') {
@@ -91,6 +89,24 @@ abstract class Builder {
         }
 
         return $value;
+    }
+
+    /**
+     * Prepare array for PHP generation depending on it's type.
+     * 
+     * @param mixed $value
+     * @return string
+     */
+    protected function compileArrayForPhp($array, $assoc = false) {
+        $entries = collect($array)->map(function($value, $key) use($assoc) {
+            if ($assoc) {
+                return $this->compileValueForPhp($key) . ' => ' . $this->compileValueForPhp($value);
+            }
+
+            return $this->compileValueForPhp($value);
+        });
+
+        return '[' . $entries->implode(', ') . ']';
     }
 
     /**

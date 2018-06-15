@@ -63,7 +63,7 @@ class Model extends Builder {
                 ->content(false)
                 ->keys()
                 ->toArray();
-        return 'protected $fillable = ' . $this->compileValueForPhp($fillables) . ';';
+        return 'protected $fillable = ' . $this->compileArrayForPhp($fillables) . ';';
     }
 
     /**
@@ -83,7 +83,7 @@ class Model extends Builder {
             $dates->prepend('deleted_at');
         }
 
-        return 'protected $dates = ' . $this->compileValueForPhp($dates->toArray()) . ';';
+        return 'protected $dates = ' . $this->compileArrayForPhp($dates->toArray()) . ';';
     }
 
 }
