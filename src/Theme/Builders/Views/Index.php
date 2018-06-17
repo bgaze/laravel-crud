@@ -8,7 +8,7 @@ use Bgaze\Crud\Core\Field;
 /**
  * Description of IndexView
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Index extends Builder {
 

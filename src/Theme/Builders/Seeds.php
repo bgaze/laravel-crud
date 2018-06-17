@@ -9,7 +9,7 @@ use Bgaze\Crud\Core\Builder;
 /**
  * Description of Seeds
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Seeds extends Builder {
 

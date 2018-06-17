@@ -8,18 +8,23 @@ use Bgaze\Crud\Support\ConsoleHelpersTrait;
 use Bgaze\Crud\Core\Builder;
 
 /**
- * Description of Command
+ * The CRUD generator command.
+ * 
+ * This command signature is dynamically generated based on a CRUD theme class.
+ * So multiple instances can exist simultaneously.
+ * 
+ * Please see \Bgaze\Crud\Support\ThemeProviderTrait for more details.
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Command extends Base {
 
     use ConsoleHelpersTrait;
 
     /**
-     * TODO
+     * The CRUD theme name.
      * 
-     * @var type 
+     * @var string 
      */
     protected $theme;
 
@@ -38,10 +43,11 @@ class Command extends Base {
     protected $builders;
 
     /**
-     * TODO
+     * The command constructor.
      * 
-     * @param type $class
-     * @param type $description
+     * @param string $class         The CRUD theme class
+     * @param type $description     The command description
+     * @return void
      */
     public function __construct($class, $description) {
         $this->theme = call_user_func("{$class}::name");
@@ -53,6 +59,11 @@ class Command extends Base {
         parent::__construct();
     }
 
+    /**
+     * 
+     * @param string $class     The CRUD theme class
+     * @return void
+     */
     protected function compileSignature($class) {
         $layout = config('crud.layout') ? config('crud.layout') : call_user_func("{$class}::layout");
 
@@ -95,10 +106,9 @@ class Command extends Base {
     # CONFIGURE CRUD
 
     /**
-     * Get the CRUD instance.
+     * Create the CRUD instance and configure it.
      * 
-     * If this is a sub command, the parent command CRUD instance is returned.
-     * Otherwise, a new instance is created based on command arguments and options.
+     * If interractions are allowed, choices are proposed to user for most options.
      * 
      * @return void
      */
@@ -134,7 +144,9 @@ class Command extends Base {
     }
 
     /**
-     * TODO
+     * Instanciate the required builders, based on 'only' option.
+     * 
+     * @return void
      */
     protected function getBuilders() {
         $builders = $this->crud::builders();
@@ -151,12 +163,9 @@ class Command extends Base {
     }
 
     /**
-     * Generate a summary of generator's actions.
+     * Check that no file to generate already exists.
      * 
-     * If some files to generate already exists, an eroor is raised, 
-     * otherwise a formatted summary of generated files is returned.
-     * 
-     * @return string
+     * @return void
      * @throws \Exception
      */
     protected function ensureNoFileExists() {
@@ -195,15 +204,17 @@ class Command extends Base {
     }
 
     /**
-     * TODO
+     * Get the list of options for dates modifiers (timestamps & soft deletes).
      * 
+     * @param string $key       The modifier [timestamps|softDeletes]
+     * @param type $signature   Return it in signature format
      * @return string
      */
-    protected function getDatesModifiersChoices($key, $toString = false) {
+    protected function getDatesModifiersChoices($key, $signature = false) {
         $list = array_keys(config("crud-definitions.{$key}"));
         $list[] = 'none';
 
-        if ($toString) {
+        if ($signature) {
             $list[0] = '[' . $list[0] . ']';
             return implode('|', $list);
         }
@@ -258,7 +269,7 @@ class Command extends Base {
     }
 
     /**
-     * Set Model's fields based on command inputs.
+     * Set Model's content based on command inputs.
      * 
      * If option was provided, content is prepended to model.
      * If interraction are allowed, content wizard is fired.
@@ -303,10 +314,9 @@ class Command extends Base {
     }
 
     /**
-     * Ask the user for a new Model field.
+     * Ask the user for a new Model content.
      * 
      * @param array $fields The list of available fields.
-     * 
      * @return boolean Wether to continue or not to add fields to Model.
      */
     protected function askForContentInput($fields) {
@@ -348,10 +358,11 @@ class Command extends Base {
 
     /**
      * Parse the user input and return an array conatining two values:
-     * - First: the name of the field type to add.
-     * - Second: arguments and options to generate the field.
+     * - First:     the name of the field type to add.
+     * - Second:    arguments and options to generate the field.
      * 
-     * @param string $question The user input
+     * @param \Illuminate\Support\Collection $fields    The available contents
+     * @param string $question                          The user input
      * 
      * @return array 
      * @throws \Exception The asked field wasn't recognized
@@ -372,7 +383,7 @@ class Command extends Base {
     /**
      * Display help for a field type.
      * 
-     * @param type $name The name of the field.
+     * @param type $name    The name of the field.
      */
     protected function showFieldHelp($name) {
         $config = config("crud-definitions.fields.{$name}");
@@ -402,11 +413,7 @@ class Command extends Base {
     /**
      * Generate a summary of generator's actions.
      * 
-     * If some files to generate already exists, an eroor is raised, 
-     * otherwise a formatted summary of generated files is returned.
-     * 
      * @return string
-     * @throws \Exception
      */
     protected function summarize() {
         $files = $this->builders->map(function(Builder $builder) {
@@ -421,7 +428,9 @@ class Command extends Base {
     }
 
     /**
-     * TODO
+     * Build the CRUD
+     * 
+     * @return void
      */
     protected function build() {
         if (!$this->option('no-interaction')) {

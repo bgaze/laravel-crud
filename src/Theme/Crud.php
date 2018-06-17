@@ -7,9 +7,9 @@ use Bgaze\Crud\Core\Crud as Base;
 use Bgaze\Crud\Theme\Builders;
 
 /**
- * Description of Crud
+ * The core class of the CRUD theme
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Crud extends Base {
 

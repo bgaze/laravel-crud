@@ -11,6 +11,11 @@
 */
 
 return [
+    /*
+    |---------------------------------------------------------------------------
+    | Validation rules for fields parameters and options
+    |---------------------------------------------------------------------------
+    */
     'validation' => [
         'column' => 'alpha_dash',
         'columns' => 'array|min:1',
@@ -27,15 +32,30 @@ return [
         'default' => 'nullable|string',
         'comment' => 'nullable|string'
     ],
+    /*
+    |---------------------------------------------------------------------------
+    | Timestamps templates
+    |---------------------------------------------------------------------------
+    */
     'timestamps' => [
         'timestamps' => '$table->timestamps();',
         'timestampsTz' => '$table->timestampsTz();',
         'nullableTimestamps' => '$table->timestampsTz();',
     ],
+    /*
+    |---------------------------------------------------------------------------
+    | Soft deletes templates
+    |---------------------------------------------------------------------------
+    */
     'softDeletes' => [
         'softDeletes' => '$table->softDeletes();',
         'softDeletesTz' => '$table->softDeletesTz();',
     ],
+    /*
+    |---------------------------------------------------------------------------
+    | Modifiers templates
+    |---------------------------------------------------------------------------
+    */
     'modifiers' => [
         'default' => '->default(%value)',
         'comment' => '->comment(%value)',
@@ -44,6 +64,11 @@ return [
         'index' => '->index()',
         'unique' => '->unique()'
     ],
+    /*
+    |---------------------------------------------------------------------------
+    | Validation rules for fields parameters
+    |---------------------------------------------------------------------------
+    */
     'fields' => [
         'bigInteger' => [
             'signature' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',

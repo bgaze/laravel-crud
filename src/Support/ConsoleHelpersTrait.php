@@ -12,7 +12,9 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 trait ConsoleHelpersTrait {
 
     /**
-     * TODO
+     * Register custom styles into command output.
+     * 
+     * @return void
      */
     protected function setCustomStyles() {
         $this->output->getFormatter()->setStyle('h1', new OutputFormatterStyle('white', 'blue'));

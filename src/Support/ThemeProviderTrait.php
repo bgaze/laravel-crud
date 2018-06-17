@@ -15,7 +15,7 @@ trait ThemeProviderTrait {
      * Register a new CRUD theme
      * 
      * @param string $class         The CRUD class to use
-     * @param string $description   The description to display into theme's command
+     * @param string $description   The description to display into theme's command help
      * @param false|string $views   The path of theme's views
      */
     protected function registerTheme($class, $description, $views = false) {

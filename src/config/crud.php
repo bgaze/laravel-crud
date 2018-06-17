@@ -18,6 +18,7 @@ return [
     |
     | The layout to extend into generated views.
     | Spedified layout should extend default theme layout.
+    | This is the good place to define globally your application base layout.
     | 
     | empty : use default theme layout.
     |
@@ -37,5 +38,5 @@ return [
     | string      : Models will be stored into /app/[ProvidedValue]
     |
     */
-    'models-directory' => true,
+    'models-directory' => false,
 ];

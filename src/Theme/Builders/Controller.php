@@ -7,7 +7,7 @@ use Bgaze\Crud\Core\Builder;
 /**
  * Description of Controller
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Controller extends Builder {
 

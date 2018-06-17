@@ -8,7 +8,7 @@ use Bgaze\Crud\Theme\FormBuilderTrait;
 /**
  * Description of CreateView
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Create extends Builder {
 

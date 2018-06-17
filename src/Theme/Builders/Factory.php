@@ -8,7 +8,7 @@ use Bgaze\Crud\Core\Field;
 /**
  * Description of Factory
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Factory extends Builder {
 

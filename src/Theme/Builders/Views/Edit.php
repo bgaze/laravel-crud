@@ -8,7 +8,7 @@ use Bgaze\Crud\Theme\FormBuilderTrait;
 /**
  * Description of EditView
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Edit extends Builder {
 

@@ -8,7 +8,7 @@ use Bgaze\Crud\Core\Field;
 /**
  * Description of Request
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 class Request extends Builder {
 

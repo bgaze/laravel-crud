@@ -6,14 +6,14 @@ use Bgaze\Crud\Core\Field;
 
 /**
  *
- * @author bgaze
+ * @author bgaze <benjamin@bgaze.fr>
  */
 trait FormBuilderTrait {
 
     /**
-     * TODO
+     * Build the form fields.
      * 
-     * @return type
+     * @return string
      */
     protected function content() {
         $content = $this->crud->content(false);
@@ -30,9 +30,10 @@ trait FormBuilderTrait {
     }
 
     /**
-     * TODO
+     * Build a form field
      * 
-     * @return type
+     * @param \Bgaze\Crud\Core\Field $field
+     * @return string
      */
     protected function formField(Field $field) {
         switch ($field->config('type')) {
@@ -51,9 +52,10 @@ trait FormBuilderTrait {
     }
 
     /**
-     * TODO
+     * Build a form group
      * 
-     * @return type
+     * @param \Bgaze\Crud\Core\Field $field
+     * @return string
      */
     protected function formGroup(Field $field) {
         $stub = $this->stub('partials.form-group');
