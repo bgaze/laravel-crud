@@ -7,7 +7,7 @@ use Bgaze\Crud\Core\Crud;
 use Bgaze\Crud\Core\Builder;
 
 /**
- * Description of Seeds
+ * The Seeds class builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
@@ -21,10 +21,10 @@ class Seeds extends Builder {
     protected $composer;
 
     /**
-     * TODO
+     * The class constructor.
      * 
-     * @param Filesystem $files
-     * @param Crud $crud
+     * @param \Illuminate\Filesystem\Filesystem $files
+     * @param \Bgaze\Crud\Core\Crud $crud
      */
     public function __construct(Filesystem $files, Crud $crud) {
         parent::__construct($files, $crud);

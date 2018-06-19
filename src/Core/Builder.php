@@ -155,9 +155,9 @@ abstract class Builder {
     /**
      * Generate a file using a stub file.
      * 
-     * @param string $path The path of the file relative to base_path()
-     * @param string $content The content of the file
-     * @return string The relative path of the file
+     * @param string $path      The path of the file relative to base_path()
+     * @param string $content   The content of the file
+     * @return string           The relative path of the file
      */
     protected function generateFile($path, $content) {
         // Prepare file's pathes.
@@ -202,7 +202,7 @@ abstract class Builder {
     /**
      * Check that the file to generate doesn't exists.
      * 
-     * @return false|string The error message if file exists, false otherwise
+     * @return false|string     The error message if file exists, false otherwise
      */
     public function fileExists() {
         if ($this->files->exists($this->file())) {

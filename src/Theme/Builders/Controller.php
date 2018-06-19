@@ -5,7 +5,7 @@ namespace Bgaze\Crud\Theme\Builders;
 use Bgaze\Crud\Core\Builder;
 
 /**
- * Description of Controller
+ * The Controller class builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
@@ -37,7 +37,9 @@ class Controller extends Builder {
     }
 
     /**
-     * TODO
+     * Get routes file path
+     * 
+     * @return string The absolute path of the file
      */
     protected function routesPath() {
         return base_path('routes/web.php');

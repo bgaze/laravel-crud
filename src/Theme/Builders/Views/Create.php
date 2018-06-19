@@ -6,7 +6,7 @@ use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Theme\FormBuilderTrait;
 
 /**
- * Description of CreateView
+ * The Create view builder.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */

@@ -6,7 +6,7 @@ use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
 
 /**
- * Description of ShowView
+ * The Show view builder.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
@@ -33,9 +33,9 @@ class Show extends Builder {
     }
 
     /**
-     * TODO
+     * Build the class content.
      * 
-     * @return type
+     * @return string
      */
     protected function content() {
         $content = $this->crud->content(false);
@@ -54,6 +54,7 @@ class Show extends Builder {
     /**
      * Compile content to request show view group.
      * 
+     * @param \Bgaze\Crud\Core\Field $field
      * @return string
      */
     protected function showGroup(Field $field) {

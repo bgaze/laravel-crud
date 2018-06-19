@@ -40,14 +40,18 @@ class Model extends Builder {
     }
 
     /**
-     * TODO
+     * Compile CRUD timestamps.
+     * 
+     * @return string
      */
     protected function timestamps() {
         return $this->crud->timestamps() ? 'public $timestamps = true;' : '';
     }
 
     /**
-     * TODO
+     * Compile CRUD soft deletes.
+     * 
+     * @return string
      */
     protected function softDeletes() {
         return $this->crud->softDeletes() ? 'use \Illuminate\Database\Eloquent\SoftDeletes;' : '';

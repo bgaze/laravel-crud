@@ -6,7 +6,7 @@ use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
 
 /**
- * Description of Factory
+ * The Factory builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
@@ -29,17 +29,17 @@ class Factory extends Builder {
     public function build() {
         $stub = $this->stub('factory');
 
-        $this->replace($stub, '#CONTENT', $this->groups());
+        $this->replace($stub, '#CONTENT', $this->content());
 
         return $this->generatePhpFile($this->file(), $stub);
     }
 
     /**
-     * TODO
+     * Compile the content of the class.
      * 
-     * @return type
+     * @return string
      */
-    protected function groups() {
+    protected function content() {
         $content = $this->crud->content(false);
 
         if ($content->isEmpty()) {
@@ -60,7 +60,7 @@ class Factory extends Builder {
     }
 
     /**
-     * Compile content to factory class body line.
+     * Compile content to factory class line.
      * 
      * @return string
      */

@@ -6,7 +6,7 @@ use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
 
 /**
- * Description of Request
+ * The Request class builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
@@ -35,9 +35,9 @@ class Request extends Builder {
     }
 
     /**
-     * TODO
+     * Compile the file content.
      * 
-     * @return type
+     * @return string
      */
     protected function content() {
         $content = $this->crud->content(false);
@@ -56,6 +56,7 @@ class Request extends Builder {
     /**
      * Compile content to request class body line.
      * 
+     * @param \Bgaze\Crud\Core\Field $field
      * @return string
      */
     protected function requestGroup(Field $field) {
@@ -83,7 +84,7 @@ class Request extends Builder {
     /**
      * Get rules template based on field type.
      * 
-     * @param type $type
+     * @param \Bgaze\Crud\Core\Field $field
      * @return string|null
      */
     protected function getTypeRules(Field $field) {

@@ -9,7 +9,7 @@ use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
 
 /**
- * Description of Migration
+ * The Migration class builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
@@ -30,10 +30,10 @@ class Migration extends Builder {
     protected $file;
 
     /**
-     * TODO
+     * The class constructor
      * 
-     * @param Filesystem $files
-     * @param Crud $crud
+     * @param \Illuminate\Filesystem\Filesystem $files
+     * @param \Bgaze\Crud\Core\Crud $crud
      */
     public function __construct(Filesystem $files, Crud $crud) {
         parent::__construct($files, $crud);
@@ -95,9 +95,9 @@ class Migration extends Builder {
     }
 
     /**
-     * TODO
+     * Build the migration content.
      * 
-     * @return type
+     * @return string
      */
     protected function content() {
         $content = $this->crud->content()->map(function(Field $field) {

@@ -6,7 +6,7 @@ use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
 
 /**
- * Description of IndexView
+ * The Index view builder.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */

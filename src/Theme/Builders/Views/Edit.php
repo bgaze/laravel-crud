@@ -6,7 +6,7 @@ use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Theme\FormBuilderTrait;
 
 /**
- * Description of EditView
+ * The Edit view builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */

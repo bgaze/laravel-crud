@@ -82,8 +82,8 @@ class Field extends SignedInput {
     /**
      * Get content's configuration entry by key.
      * 
-     * @param string $key The key of the entry
-     * @param mixed $default The default value of the entry
+     * @param string $key       The key of the entry
+     * @param mixed $default    The default value of the entry
      * @return mixed
      */
     public function config($key, $default = false) {
