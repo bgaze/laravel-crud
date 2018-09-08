@@ -34,11 +34,6 @@ class ServiceProvider extends Base {
      * @return void
      */
     public function register() {
-        // Check that Tidy extension is loaded.
-        if (!extension_loaded('tidy')) {
-            throw new \Exception('bgaze/laravel-crud requires Tidy extension, please enable it.');
-        }
-
         // Merge definitions.
         $this->mergeConfigFrom(__DIR__ . '/config/definitions.php', 'crud-definitions');
 
