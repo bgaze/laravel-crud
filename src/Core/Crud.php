@@ -136,7 +136,7 @@ abstract class Crud {
      * @return string
      */
     static public function views() {
-        return 'crud-' . static::name();
+        return 'crud-' . str_replace(':', '-', static::name());
     }
 
     /**

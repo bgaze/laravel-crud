@@ -9,7 +9,7 @@ return [
     | The theme to use when not specified in CRUD commands.
     |
     */
-    'theme' => 'crud-default',
+    'theme' => 'crud:default:classic',
     
     /*
     |---------------------------------------------------------------------------

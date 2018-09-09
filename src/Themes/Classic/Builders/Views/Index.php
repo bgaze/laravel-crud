@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Theme\Builders\Views;
+namespace Bgaze\Crud\Themes\Classic\Builders\Views;
 
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;

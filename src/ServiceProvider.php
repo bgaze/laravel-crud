@@ -4,7 +4,7 @@ namespace Bgaze\Crud;
 
 use Illuminate\Support\ServiceProvider as Base;
 use Bgaze\Crud\Support\ThemeProviderTrait;
-use Bgaze\Crud\Theme\Crud;
+use Bgaze\Crud\Themes;
 
 /**
  * The package service provider
@@ -24,8 +24,8 @@ class ServiceProvider extends Base {
         // Publish configuration.
         $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud');
 
-        // Register & publish default theme.
-        $this->registerTheme(Crud::class, 'Generate a CRUD using default theme', __DIR__ . '/Theme/Views');
+        // Register & publish default themes.
+        $this->registerTheme(Themes\Classic\Crud::class, 'Generate a classic CRUD using default theme', __DIR__ . '/Themes/Classic/Views');
     }
 
     /**
@@ -34,7 +34,7 @@ class ServiceProvider extends Base {
      * @return void
      */
     public function register() {
-        // Merge definitions.
+        // Merge crud definitions.
         $this->mergeConfigFrom(__DIR__ . '/config/definitions.php', 'crud-definitions');
 
         // Merge package configuration.

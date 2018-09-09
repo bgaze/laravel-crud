@@ -1,12 +1,12 @@
 clear \
 && git reset --hard \
 && git clean -fd \
-&& php artisan cr:d Article -n \
+&& php artisan crud:default:classic Article -n \
 -c "string title" \
 -c "enum category foo bar foobar -i" \
 -c "text body -n" \
 -c "integer views -u -d 0" \
-&& php artisan cr:d Article/Comment -n \
+&& php artisan crud:default:classic Article/Comment -n \
 -c "string pseudo" \
 -c "dateTime date -u" \
 -c "text comment" \

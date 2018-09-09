@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Theme\Builders;
+namespace Bgaze\Crud\Themes\Classic\Builders;
 
 use Illuminate\Filesystem\Filesystem;
 use Bgaze\Crud\Core\Crud;

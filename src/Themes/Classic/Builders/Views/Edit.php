@@ -1,16 +1,16 @@
 <?php
 
-namespace Bgaze\Crud\Theme\Builders\Views;
+namespace Bgaze\Crud\Themes\Classic\Builders\Views;
 
 use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Theme\FormBuilderTrait;
+use Bgaze\Crud\Themes\Classic\FormBuilderTrait;
 
 /**
- * The Create view builder.
+ * The Edit view builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Create extends Builder {
+class Edit extends Builder {
 
     use FormBuilderTrait;
 
@@ -20,7 +20,7 @@ class Create extends Builder {
      * @return string The absolute path of the file
      */
     public function file() {
-        return resource_path('views/' . $this->crud->getPluralsKebabSlash() . "/create.blade.php");
+        return resource_path('views/' . $this->crud->getPluralsKebabSlash() . "/edit.blade.php");
     }
 
     /**
@@ -29,7 +29,7 @@ class Create extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        $stub = $this->stub('views.create');
+        $stub = $this->stub('views.edit');
 
         $this->replace($stub, '#CONTENT', $this->content());
 

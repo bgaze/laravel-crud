@@ -1,10 +1,10 @@
 <?php
 
-namespace Bgaze\Crud\Theme;
+namespace Bgaze\Crud\Themes\Classic;
 
 use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Crud as Base;
-use Bgaze\Crud\Theme\Builders;
+use Bgaze\Crud\Themes\Classic\Builders;
 
 /**
  * The core class of the CRUD theme
@@ -19,7 +19,7 @@ class Crud extends Base {
      * @return string
      */
     static public function name() {
-        return 'default';
+        return 'default:classic';
     }
 
     /**
