@@ -69,7 +69,6 @@ class ControllerClass extends Controller
      */
     public function destroy(ModelStudly $ModelCamel)
     {
-        $id = $ModelCamel->id;
         $ModelCamel->delete();
         return response('', 204);
     }
