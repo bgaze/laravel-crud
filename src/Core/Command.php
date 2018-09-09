@@ -80,7 +80,7 @@ class Command extends Base {
             {--s|soft-deletes= : Add soft delete directives: <fg=cyan>{$softDeletes}</>}
             {--c|content=* : The list of Model\'s fields (signature syntax).}
             {--o|only=* : Generate only selected files: <fg=cyan>{$only}</>}
-            {--layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
+            {--l|layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
     }
 
     /**
@@ -443,7 +443,7 @@ class Command extends Base {
             $this->builders->each(function(Builder $builder, $name) {
                 $this->dl('Created ' . ucfirst(str_replace('-', ' ', $name)), $builder->build());
             });
-            
+
             $this->nl();
             $this->comment(' CRUD generated successfully.');
             if (method_exists($this->crud, 'indexPath')) {
