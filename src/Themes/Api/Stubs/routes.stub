@@ -1,0 +1,16 @@
+
+/*
+ * Routes for ControllerFullName
+ *
+ * You can also use the resource syntax : 
+ * Route::resource('PluralsKebabSlash', 'ControllerFullName');
+ */
+Route::prefix('/PluralsKebabSlash')->group(function () {
+    Route::get('/', 'ControllerFullName@index')->name('PluralsKebabDot.index');
+    Route::get('/create', 'ControllerFullName@create')->name('PluralsKebabDot.create');
+    Route::post('/', 'ControllerFullName@store')->name('PluralsKebabDot.store');
+    Route::get('/{ModelCamel}', 'ControllerFullName@show')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.show');
+    Route::get('/{ModelCamel}/edit', 'ControllerFullName@edit')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.edit');
+    Route::put('/{ModelCamel}', 'ControllerFullName@update')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.update');
+    Route::delete('/{ModelCamel}', 'ControllerFullName@destroy')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.destroy');
+});

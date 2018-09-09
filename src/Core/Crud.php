@@ -217,14 +217,16 @@ abstract class Crud {
     public function setTimestamps($value = false) {
         $timestamps = array_keys(config('crud-definitions.timestamps'));
 
-        if (!empty($value)) {
+        if ($value === 'none') {
+            $this->timestamps = false;
+        } else if (empty($value)) {
+            $this->timestamps = $timestamps[0];
+        } else {
             if (!in_array($value, $timestamps)) {
                 throw new \Exception("Allowed values for timestamps are : " . implode(', ', $timestamps));
             }
 
             $this->timestamps = $value;
-        } else {
-            $this->timestamps = $timestamps[0];
         }
     }
 
@@ -238,14 +240,16 @@ abstract class Crud {
     public function setSoftDeletes($value = false) {
         $softDeletes = array_keys(config('crud-definitions.softDeletes'));
 
-        if (!empty($value)) {
+        if ($value === 'none') {
+            $this->softDeletes = false;
+        } else if (empty($value)) {
+            $this->softDeletes = $softDeletes[0];
+        } else {
             if (!in_array($value, $softDeletes)) {
-                throw new \Exception("Allowed values for timestamps are : " . implode(', ', $softDeletes));
+                throw new \Exception("Allowed values for soft deletes are : " . implode(', ', $timestamps));
             }
 
             $this->softDeletes = $value;
-        } else {
-            $this->softDeletes = $softDeletes[0];
         }
     }
 
@@ -415,6 +419,26 @@ abstract class Crud {
         }
 
         return $this->content;
+    }
+
+    /**
+     * Model's table columns list.
+     *
+     * @var \Illuminate\Support\Collection 
+     */
+    public function columns() {
+        $columns = $this->content(false)->pluck('name');
+
+        if ($this->timestamps()) {
+            $columns->push('created_at');
+            $columns->push('updated_at');
+        }
+
+        if ($this->softDeletes()) {
+            $columns->push('deleted_at');
+        }
+
+        return $columns;
     }
 
     /**

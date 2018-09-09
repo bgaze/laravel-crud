@@ -31,7 +31,7 @@ class Command extends Base {
     /**
      * The CRUD instance.
      *
-     * @var \Bgaze\Crud\Bak\Core\Crud
+     * @var \Bgaze\Crud\Core\Crud
      */
     protected $crud;
 
@@ -76,8 +76,8 @@ class Command extends Base {
         return "crud:{$this->theme} 
             {model : The name of the Model.}
             {--p|plurals= : The plurals versions of the Model\'s names.}
-            {--t|timestamps : Add timestamps directives: <fg=cyan>{$timestamps}</>}
-            {--s|soft-deletes : Add soft delete directives: <fg=cyan>{$softDeletes}</>}
+            {--t|timestamps= : Add timestamps directives: <fg=cyan>{$timestamps}</>}
+            {--s|soft-deletes= : Add soft delete directives: <fg=cyan>{$softDeletes}</>}
             {--c|content=* : The list of Model\'s fields (signature syntax).}
             {--o|only=* : Generate only selected files: <fg=cyan>{$only}</>}
             {--layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
@@ -232,16 +232,17 @@ class Command extends Base {
      */
     protected function getTimestampsInput() {
         $value = $this->option('timestamps');
+
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
         if ($ask) {
             $value = $this->choice('Do you wish to add timestamps?', $this->getDatesModifiersChoices('timestamps'), 0);
         }
 
-        $this->crud->setTimestamps(($value === 'none') ? false : $value);
+        $this->crud->setTimestamps($value);
 
         if (!$ask) {
-            $this->dl('Timsestamps', $this->crud->timestamps() ? $this->crud->timestamps() : 'none');
+            $this->dl('Timestamps', $this->crud->timestamps() ? $this->crud->timestamps() : 'none');
         }
     }
 
@@ -261,7 +262,7 @@ class Command extends Base {
             $value = $this->choice('Do you wish to add SoftDeletes?', $this->getDatesModifiersChoices('softDeletes'), 0);
         }
 
-        $this->crud->setSoftDeletes(($value === 'none') ? false : $value);
+        $this->crud->setSoftDeletes($value);
 
         if (!$ask) {
             $this->dl('Soft deletes', $this->crud->softDeletes() ? $this->crud->softDeletes() : 'none');

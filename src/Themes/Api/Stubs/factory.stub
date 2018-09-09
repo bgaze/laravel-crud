@@ -1,0 +1,10 @@
+<?php
+
+use Faker\Generator as Faker;
+use Carbon\Carbon as Carbon;
+
+$factory->define(ModelClass::class, function (Faker $faker) {
+    return [
+        #CONTENT
+    ];
+});
