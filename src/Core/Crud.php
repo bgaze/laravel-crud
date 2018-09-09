@@ -464,7 +464,7 @@ abstract class Crud {
     /**
      * Get the Model studly full name
      * 
-     * Exemple : MyGrandParent\MyParent\MyModel
+     * Exemple : MyGrandParentMyParentMyModel
      * 
      * @return string
      */
@@ -508,7 +508,7 @@ abstract class Crud {
     /**
      * Get the Model plural studly full name
      * 
-     * Exemple : MyGrandParent\MyParent\MyModel
+     * Exemple : MyGrandParentMyParentMyModels
      * 
      * @return string
      */
