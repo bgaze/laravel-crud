@@ -1,3 +1,25 @@
+# API
+
+clear \
+&& git reset --hard \
+&& git clean -fd \
+&& php artisan crud:default:api Article -n \
+-c "string title" \
+-c "enum category foo bar foobar -i" \
+-c "text body -n" \
+-c "integer views -u -d 0" \
+&& php artisan crud:default:api Article/Comment -n \
+-c "string pseudo" \
+-c "dateTime date -u" \
+-c "text comment" \
+-c "enum humor happy unhappy -n" \
+-c "float note 2 1 -n" \
+&& php artisan mi:fr \
+&& php artisan db:seed --class=ArticlesTableSeeder \
+&& php artisan db:seed --class=ArticleCommentsTableSeeder
+
+# CLASSIC
+
 clear \
 && git reset --hard \
 && git clean -fd \

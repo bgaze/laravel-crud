@@ -1,9 +1,7 @@
 <?php
 
-namespace Bgaze\Crud\Themes\Classic\Builders;
+namespace Bgaze\Crud\Themes\Api\Builders;
 
-use Illuminate\Filesystem\Filesystem;
-use Bgaze\Crud\Core\Crud;
 use Bgaze\Crud\Core\Builder;
 
 /**
@@ -11,26 +9,7 @@ use Bgaze\Crud\Core\Builder;
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Seeds extends Builder {
-
-    /**
-     * The Composer instance.
-     *
-     * @var \Illuminate\Support\Composer
-     */
-    protected $composer;
-
-    /**
-     * The class constructor.
-     * 
-     * @param \Illuminate\Filesystem\Filesystem $files
-     * @param \Bgaze\Crud\Core\Crud $crud
-     */
-    public function __construct(Filesystem $files, Crud $crud) {
-        parent::__construct($files, $crud);
-
-        $this->composer = resolve('Illuminate\Support\Composer');
-    }
+class Resource extends Builder {
 
     /**
      * The file that the builder generates.
@@ -38,7 +17,7 @@ class Seeds extends Builder {
      * @return string The absolute path of the file
      */
     public function file() {
-        return database_path('seeds/' . $this->crud->getPluralFullStudly() . 'TableSeeder.php');
+        return app_path('Http/Resources/' . $this->crud->model()->implode('/') . 'Resource.php');
     }
 
     /**
@@ -47,14 +26,32 @@ class Seeds extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        // Write migration file.
-        $path = $this->generatePhpFile($this->file(), $this->stub('seeds'));
+        $stub = $this->stub('resource');
 
-        // Update autoload.
-        $this->composer->dumpAutoloads();
+        $this->replace($stub, '#CONTENT', $this->content());
 
-        // Return relative path.
-        return $path;
+        return $this->generatePhpFile($this->file(), $stub);
+    }
+
+    /**
+     * Compile the file content.
+     * 
+     * @return string
+     */
+    protected function content() {
+        $columns = $this->crud->columns();
+
+        if ($columns->isEmpty()) {
+            return 'parent::toArray($request)';
+        }
+
+        $content = $columns
+                ->map(function($column) {
+                    return "'{$column}' => \$this->{$column},";
+                })
+                ->implode("\n");
+
+        return "[\n{$content}\n]";
     }
 
 }

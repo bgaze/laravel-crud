@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Themes\Classic\Builders;
+namespace Bgaze\Crud\Themes\Api\Builders;
 
 use Bgaze\Crud\Core\Builder;
 
@@ -42,7 +42,7 @@ class Controller extends Builder {
      * @return string The absolute path of the file
      */
     protected function routesPath() {
-        return base_path('routes/web.php');
+        return base_path('routes/api.php');
     }
 
 }

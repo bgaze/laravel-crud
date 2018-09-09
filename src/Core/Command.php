@@ -443,8 +443,12 @@ class Command extends Base {
             $this->builders->each(function(Builder $builder, $name) {
                 $this->dl('Created ' . ucfirst(str_replace('-', ' ', $name)), $builder->build());
             });
+            
             $this->nl();
             $this->comment(' CRUD generated successfully.');
+            if (method_exists($this->crud, 'indexPath')) {
+                $this->line(' <comment>Index path:</comment> ' . $this->crud->indexPath());
+            }
             $this->nl();
         }
     }

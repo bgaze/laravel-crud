@@ -4,7 +4,8 @@ namespace ControllerNamespace;
 
 use App\Http\Controllers\Controller;
 use ModelClass;
-use RequestNamespace\RequestClass as FormRequest;
+use RequestNamespace\RequestClass;
+use ResourceNamespace\ResourceClass;
 
 class ControllerClass extends Controller
 {
@@ -17,21 +18,7 @@ class ControllerClass extends Controller
     {
         $PluralCamel = ModelStudly::paginate(20);
         
-        return view('PluralsKebabDot.index', [
-            'PluralCamel' => $PluralCamel
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('PluralsKebabDot.create', [
-            'ModelCamel' => new ModelStudly()
-        ]);
+        return ResourceClass::collection($PluralCamel);
     }
 
     /**
@@ -40,11 +27,11 @@ class ControllerClass extends Controller
      * @param  \RequestNamespace\RequestClass  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(FormRequest $request)
+    public function store(RequestClass $request)
     {
         $ModelCamel = ModelStudly::create($request->all());
 
-        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly #{$ModelCamel->id} was successfully created.");
+        return (new ResourceClass($ModelCamel))->response()->setStatusCode(202);
     }
 
     /**
@@ -55,22 +42,7 @@ class ControllerClass extends Controller
      */
     public function show(ModelStudly $ModelCamel)
     {
-        return view('PluralsKebabDot.show', [
-            'ModelCamel' => $ModelCamel
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \ModelClass  $ModelCamel
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ModelStudly $ModelCamel)
-    {
-        return view('PluralsKebabDot.edit', [
-            'ModelCamel' => $ModelCamel
-        ]);
+        return new ResourceClass($ModelCamel);
     }
 
     /**
@@ -80,13 +52,13 @@ class ControllerClass extends Controller
      * @param  \ModelClass  $ModelCamel
      * @return \Illuminate\Http\Response
      */
-    public function update(FormRequest $request, ModelStudly $ModelCamel)
+    public function update(RequestClass $request, ModelStudly $ModelCamel)
     {
         $ModelCamel->fill($request->all());
         
         $ModelCamel->save();
 
-        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly #{$ModelCamel->id} was successfully updated.");
+        return new ResourceClass($ModelCamel);
     }
 
     /**
@@ -99,6 +71,6 @@ class ControllerClass extends Controller
     {
         $id = $ModelCamel->id;
         $ModelCamel->delete();
-        return redirect()->route('PluralsKebabDot.index')->with('success', "ModelStudly #{$id} was successfully deleted.");
+        return response('', 204);
     }
 }

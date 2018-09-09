@@ -106,6 +106,7 @@ abstract class Crud {
 
     ############################################################################
     # THEME IDENTITY
+    # Define theme identity and integrate it into Laravel.
 
     /**
      * The unique name of the CRUD theme.
@@ -152,6 +153,7 @@ abstract class Crud {
 
     ############################################################################
     # CONFIGURATION
+    # Configure theme based on user input. 
 
     /**
      * Parse and validate Model's name and parents.
@@ -319,6 +321,7 @@ abstract class Crud {
 
     ############################################################################
     # GETTERS
+    # Get CRUD related informations for internal use.
 
     /**
      * Get a list of variables present in the class (based on existing methods starting with 'get').
@@ -441,6 +444,132 @@ abstract class Crud {
         return $columns;
     }
 
+    ############################################################################
+    # NAMES VARIABLES
+    # Main CRUD names and plurals formats.
+
+    /**
+     * Get the Model full name
+     * 
+     * Exemple : MyGrandParent\MyParent\MyModel
+     * 
+     * @return string
+     */
+    public function getModelFullName() {
+        return $this->model->implode('\\');
+    }
+
+    /**
+     * Get the Model studly full name
+     * 
+     * Exemple : MyGrandParent\MyParent\MyModel
+     * 
+     * @return string
+     */
+    public function getModelFullStudly() {
+        return $this->model->implode('');
+    }
+
+    /**
+     * Get the Model name
+     * 
+     * Exemple : MyModel
+     * 
+     * @return string
+     */
+    public function getModelStudly() {
+        return $this->model->last();
+    }
+
+    /**
+     * Get the Model camel cased name
+     * 
+     * Exemple : myModel
+     * 
+     * @return string
+     */
+    public function getModelCamel() {
+        return Str::camel($this->model->last());
+    }
+
+    /**
+     * Get the Model plural full name
+     * 
+     * Exemple : MyGrandParent\MyParent\MyModels
+     * 
+     * @return string
+     */
+    public function getPluralFullName() {
+        return $this->plural->implode('\\');
+    }
+
+    /**
+     * Get the Model plural studly full name
+     * 
+     * Exemple : MyGrandParent\MyParent\MyModel
+     * 
+     * @return string
+     */
+    public function getPluralFullStudly() {
+        return $this->plural->implode('');
+    }
+
+    /**
+     * Get the Model plural name camel cased
+     * 
+     * Exemple : myModels
+     * 
+     * @return string
+     */
+    public function getPluralCamel() {
+        return Str::camel($this->plural->last());
+    }
+
+    /**
+     * Get the plurals version of Model full name
+     * 
+     * Exemple : MyGrandParents\MyParents\MyModels
+     * 
+     * @return string
+     */
+    public function getPluralsFullName() {
+        return $this->plurals->implode('\\');
+    }
+
+    /**
+     * Get the plurals version of Model full name kebab cased and separated with dots
+     * 
+     * Exemple : my-grand-parents.my-parents.my-models
+     * 
+     * @return string
+     */
+    public function getPluralsKebabDot() {
+        return $this->plurals
+                        ->map(function($v) {
+                            return Str::kebab($v);
+                        })
+                        ->implode('.');
+    }
+
+    /**
+     * Get the plurals version of Model full name kebab cased and separated with slashes
+     * 
+     * Exemple : my-grand-parents/my-parents/my-models
+     * 
+     * @return string
+     */
+    public function getPluralsKebabSlash() {
+        return $this->plurals
+                        ->map(function($v) {
+                            return Str::kebab($v);
+                        })
+                        ->implode('/');
+    }
+
+    ############################################################################
+    # RESOURCES VARIABLES
+    # Main CRUD files and resources variables.
+
     /**
      * Get the layout to extend in views
      * 
@@ -448,6 +577,141 @@ abstract class Crud {
      */
     public function getViewsLayout() {
         return $this->layout;
+    }
+
+    /**
+     * Get the Model's table name
+     * 
+     * Exemple : my_grand_parents_my_parents_my_models
+     * 
+     * @return string
+     */
+    public function getTableName() {
+        return Str::snake($this->plurals->implode(''));
+    }
+
+    /**
+     * Get the migration class name
+     * 
+     * Exemple : CreateMyGrandParentsMyParentsMyModelTable
+     * 
+     * @return string
+     */
+    public function getMigrationClass() {
+        $class = 'Create' . $this->plurals->implode('') . 'Table';
+
+        if (class_exists($class)) {
+            throw new \Exception("A '{$class}' class already exists.");
+        }
+
+        return $class;
+    }
+
+    /**
+     * Get the Model full name with namespace
+     * 
+     * Exemple : App\MyGrandParent\MyParent\MyModel
+     * 
+     * @return string
+     */
+    public function getModelClass() {
+        return app()->getNamespace() . trim($this->modelsSubDirectory() . '\\' . $this->model->implode('\\'), '\\');
+    }
+
+    /**
+     * Get the Model namespace
+     * 
+     * Exemple : App\MyGrandParent\MyParent
+     * 
+     * @return string
+     */
+    public function getModelNamespace() {
+        $parents = clone $this->model;
+        $parents->pop();
+        return app()->getNamespace() . trim($this->modelsSubDirectory() . '\\' . $parents->implode('\\'), '\\');
+    }
+
+    /**
+     * Get the Request class name
+     * 
+     * Exemple : MyModelFormRequest
+     * 
+     * @return string
+     */
+    public function getRequestClass() {
+        return $this->model->last() . 'FormRequest';
+    }
+
+    /**
+     * Get the Request class namespace
+     * 
+     * Exemple : Http\Requests\MyGrandParent\MyParent
+     * 
+     * @return string
+     */
+    public function getRequestNamespace() {
+        $parents = clone $this->model;
+        $parents->pop();
+        return app()->getNamespace() . trim('Http\\Requests\\' . $parents->implode('\\'), '\\');
+    }
+
+    /**
+     * Get the Request class name
+     * 
+     * Exemple : MyModelFormRequest
+     * 
+     * @return string
+     */
+    public function getResourceClass() {
+        return $this->model->last() . 'Resource';
+    }
+
+    /**
+     * Get the Request class namespace
+     * 
+     * Exemple : Http\Requests\MyGrandParent\MyParent
+     * 
+     * @return string
+     */
+    public function getResourceNamespace() {
+        $parents = clone $this->model;
+        $parents->pop();
+        return app()->getNamespace() . trim('Http\\Resources\\' . $parents->implode('\\'), '\\');
+    }
+
+    /**
+     * Get the Controller class name
+     * 
+     * Exemple : MyModelController
+     * 
+     * @return string
+     */
+    public function getControllerClass() {
+        return $this->model->last() . 'Controller';
+    }
+
+    /**
+     * Get the Controller class name with parents
+     * 
+     * Exemple : MyGrandParent\MyParent\MyModelController
+     * 
+     * @return string
+     */
+    public function getControllerFullName() {
+        return $this->getModelFullName() . 'Controller';
+    }
+
+    /**
+     * Get the Controller class namespace
+     * 
+     * Exemple : Http\Controllers\MyGrandParent\MyParent
+     * 
+     * @return string
+     */
+    public function getControllerNamespace() {
+        $parents = clone $this->model;
+        $parents->pop();
+        return app()->getNamespace() . trim('Http\\Controllers\\' . $parents->implode('\\'), '\\');
     }
 
 }
