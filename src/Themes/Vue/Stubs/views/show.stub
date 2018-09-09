@@ -1,0 +1,16 @@
+@extends('ViewsLayout')
+
+@section('title', 'ModelFullName #' . $ModelCamel->id)
+
+@section('content')
+    <p><a href="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</a></p>
+
+    <h1>ModelFullName #{{ $ModelCamel->id }}</h1>
+
+#CONTENT
+
+    <a href="{{ route('PluralsKebabDot.edit', ['ModelCamel' => $ModelCamel->id]) }}">Edit</a>
+    {!! Form::model($ModelCamel, ['route' => ['PluralsKebabDot.destroy', $ModelCamel->id], 'method' => 'delete']) !!}
+    {!! Form::submit('Delete') !!}
+    {!! Form::close() !!}
+@endsection

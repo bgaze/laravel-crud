@@ -1,0 +1,60 @@
+<template>
+    <div>
+        <h1>PluralFullName</h1>
+
+        <p>
+            <router-link to="{{ route('PluralsKebabDot.create') }}">Create new ModelFullName</router-link>
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    #THEAD
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="ModelCamel, index in PluralCamel">
+                    <td>{{ ModelCamel.id }}</td>
+                    #TBODY
+                    <td>
+                        <router-link to="{{ route('PluralsKebabDot.show', {ModelCamel: ModelCamel.id} }}>Show</router-link>
+                        <router-link to="{{ route('PluralsKebabDot.edit', {ModelCamel: ModelCamel.id}) }}>Edit</router-link>
+                        <a href="#" v-on:click="destroy(ModelCamel, index)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+
+<script>
+    export default {
+        data: function () {
+            return {PluralCamel: []};
+        },
+        mounted() {
+            var app = this;
+            axios.get(route('PluralsKebabDot.index')).then(function (response) {
+                app.PluralCamel = response.data;
+            }).catch(function (response) {
+                console.log(response);
+                alert("Could not load PluralFullName");
+            });
+        },
+        methods: {
+            destroy(ModelCamel, index) {
+                if (confirm("Do you really want to delete it?")) {
+                    var app = this;
+                    axios.delete(route('PluralsKebabDot.destroy', {ModelCamel: ModelCamel.id})).then(function (response) {
+                        app.companies.splice(index, 1);
+                    }).catch(function (response) {
+                        console.log(response);
+                        alert("Could not delete ModelFullName");
+                    });
+                }
+            }
+        }
+    }
+</script>
