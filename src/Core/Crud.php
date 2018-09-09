@@ -432,6 +432,8 @@ abstract class Crud {
     public function columns() {
         $columns = $this->content(false)->pluck('name');
 
+        $columns->prepend('id');
+
         if ($this->timestamps()) {
             $columns->push('created_at');
             $columns->push('updated_at');

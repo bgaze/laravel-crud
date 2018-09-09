@@ -41,10 +41,6 @@ class Resource extends Builder {
     protected function content() {
         $columns = $this->crud->columns();
 
-        if ($columns->isEmpty()) {
-            return 'parent::toArray($request)';
-        }
-
         $content = $columns
                 ->map(function($column) {
                     return "'{$column}' => \$this->{$column},";
