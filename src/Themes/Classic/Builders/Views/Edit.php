@@ -2,17 +2,14 @@
 
 namespace Bgaze\Crud\Themes\Classic\Builders\Views;
 
-use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Themes\Classic\FormBuilderTrait;
+use Bgaze\Crud\Themes\Classic\FormBuilder;
 
 /**
  * The Edit view builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Edit extends Builder {
-
-    use FormBuilderTrait;
+class Edit extends FormBuilder {
 
     /**
      * The file that the builder generates.
@@ -29,11 +26,7 @@ class Edit extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        $stub = $this->stub('views.edit');
-
-        $this->replace($stub, '#CONTENT', $this->content());
-
-        return $this->generateFile($this->file(), $stub);
+        return $this->buildForm('views.edit', 'partials.form-group');
     }
 
 }

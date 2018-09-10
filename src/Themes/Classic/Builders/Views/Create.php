@@ -2,17 +2,14 @@
 
 namespace Bgaze\Crud\Themes\Classic\Builders\Views;
 
-use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Themes\Classic\FormBuilderTrait;
+use Bgaze\Crud\Themes\Classic\FormBuilder;
 
 /**
  * The Create view builder.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Create extends Builder {
-
-    use FormBuilderTrait;
+class Create extends FormBuilder {
 
     /**
      * The file that the builder generates.
@@ -29,11 +26,7 @@ class Create extends Builder {
      * @return string The relative path of the generated file
      */
     public function build() {
-        $stub = $this->stub('views.create');
-
-        $this->replace($stub, '#CONTENT', $this->content());
-
-        return $this->generateFile($this->file(), $stub);
+        return $this->buildForm('views.create', 'partials.form-group');
     }
 
 }
