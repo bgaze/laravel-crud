@@ -7,7 +7,8 @@ clear \
 -c "string title" \
 -c "enum category foo bar foobar -i" \
 -c "text body -n" \
--c "integer views -u -d 0" \
+-c "unsignedInteger views -d 0" \
+-c "boolean active -d 1" \
 && php artisan crud:default:api Article/Comment -n \
 -c "string pseudo" \
 -c "dateTime date -u" \
@@ -27,7 +28,8 @@ clear \
 -c "string title" \
 -c "enum category foo bar foobar -i" \
 -c "text body -n" \
--c "integer views -u -d 0" \
+-c "unsignedInteger views -d 0" \
+-c "boolean active -d 1" \
 && php artisan crud:default:classic Article/Comment -n \
 -c "string pseudo" \
 -c "dateTime date -u" \

@@ -283,15 +283,17 @@ abstract class Crud {
         $field = new Field($type, $data);
 
         // Check that it doesn't already exists.
-        if ($this->content()->has($field->name())) {
-            $type = $field->isIndex() ? 'index' : 'field';
-            throw new \Exception("'{$field->name()}' {$type} already exists.");
+        if ($field->isIndex() && $this->content()->has($field->name())) {
+            throw new \Exception("'{$field->name()}' index already exists.");
+        }
+        if ($this->columns()->contains($field->name())) {
+            throw new \Exception("'{$field->name()}' column already exists.");
         }
 
         // If field is an index, check that all selected columns exists.
-        if ($field->config('type') === 'index') {
+        if ($field->isIndex()) {
             foreach ($field->input()->getArgument('columns') as $column) {
-                if (!$this->has($column)) {
+                if (!$this->columns()->contains($field->name())) {
                     throw new \Exception("'$column' doesn't exists in fields list.");
                 }
             }
@@ -299,24 +301,6 @@ abstract class Crud {
 
         // Add to fields list.
         $this->content()->put($field->name(), $field);
-    }
-
-    /**
-     * Check if a content already exists into CRUD.
-     * 
-     * @param string $id The unique name of the content
-     * @return boolean
-     */
-    protected function has($id) {
-        if (($id === 'created_at' || $id === 'updated_at') && $this->timestamps()) {
-            return true;
-        }
-
-        if ($id === 'deleted_at' && $this->softDeletes()) {
-            return true;
-        }
-
-        return $this->content()->has($id);
     }
 
     ############################################################################
@@ -430,7 +414,13 @@ abstract class Crud {
      * @var \Illuminate\Support\Collection 
      */
     public function columns() {
-        $columns = $this->content(false)->pluck('name');
+        $columns = $this->content(false)->map(function(Field $field) {
+                    if ($field->command() === 'morphs' || $field->command() === 'nullableMorphs') {
+                        return[$field->name() . '_id', $field->name() . '_type'];
+                    }
+
+                    return $field->name();
+                })->flatten();
 
         $columns->prepend('id');
 

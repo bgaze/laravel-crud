@@ -13,13 +13,6 @@ use Bgaze\Crud\Support\SignedInput;
 class Field extends SignedInput {
 
     /**
-     * The configuration of the field.
-     * 
-     * @var \stdClass 
-     */
-    public $config;
-
-    /**
      * The unique name of the field.
      * 
      * @var string 
@@ -40,11 +33,8 @@ class Field extends SignedInput {
      * @param string $data      Options and arguments
      */
     public function __construct($type, $data) {
-        // Get fields configuration.
-        $this->config = (object) config("crud-definitions.fields.{$type}");
-
         // Instanciate field.
-        parent::__construct($type . ' ' . $this->config('signature'));
+        parent::__construct($type . ' ' . config("crud-definitions.fields.{$type}"));
 
         // Set & validate user input.
         $this->ask($data);
@@ -73,7 +63,9 @@ class Field extends SignedInput {
      */
     protected function setName() {
         if ($this->isIndex()) {
-            $this->name = 'index:' . implode('_', $this->input()->getArgument('columns'));
+            $columns = $this->input()->getArgument('columns');
+            sort($columns);
+            $this->name = 'index:' . implode('_', $columns);
         } else {
             $this->name = $this->input()->getArgument('column');
         }
@@ -100,7 +92,16 @@ class Field extends SignedInput {
      * @return boolean
      */
     public function isIndex() {
-        return ($this->config('type') === 'index');
+        return in_array($this->command(), ['index', 'primaryIndex', 'uniqueIndex', 'spatialIndex']);
+    }
+
+    /**
+     * Check if the field is an index.
+     * 
+     * @return boolean
+     */
+    public function isDate() {
+        return in_array($this->command(), ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz', 'year']);
     }
 
     /**

@@ -1,6 +1,6 @@
     <div id="FieldName-group">
         {!! Form::label('FieldName', 'FieldLabel') !!}
-        {!! #FIELD !!}
+        #FIELD
         @if($errors->has('FieldName'))
             <p>{{ $errors->first('FieldName') }}</p>
         @endif
