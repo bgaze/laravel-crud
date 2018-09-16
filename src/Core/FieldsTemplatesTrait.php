@@ -1,66 +1,28 @@
 <?php
 
-namespace Bgaze\Crud\Themes\Api\Builders;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Core\Field;
-use Bgaze\Crud\Core\FieldsTemplatesTrait;
+namespace Bgaze\Crud\Core;
 
 /**
- * The Factory builder
  *
- * @author bgaze <benjamin@bgaze.fr>
+ * @author bgaze
  */
-class Factory extends Builder {
-
-    use FieldsTemplatesTrait;
+trait FieldsTemplatesTrait {
 
     /**
-     * The file that the builder generates.
+     * Get a template for a field.
      * 
-     * @return string The absolute path of the file
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
      */
-    public function file() {
-        return database_path('factories/' . $this->crud->getModelFullStudly() . 'Factory.php');
-    }
-
-    /**
-     * Build the file.
-     * 
-     * @return string The relative path of the generated file
-     */
-    public function build() {
-        $stub = $this->stub('factory');
-
-        $this->replace($stub, '#CONTENT', $this->content());
-
-        return $this->generatePhpFile($this->file(), $stub);
-    }
-
-    /**
-     * Compile the content of the class.
-     * 
-     * @return string
-     */
-    protected function content() {
-        $content = $this->crud->content(false);
-
-        if ($content->isEmpty()) {
-            return '// TODO';
-        }
-
-        return $content
-                        ->map(function(Field $field) {
-                            $faker = $this->fieldTemplate($field);
-
-                            if (empty($faker)) {
-                                return "// TODO : '{$field->name()}' => '...',";
-                            }
-
-                            return "'{$field->name()}' => {$faker},";
-                        })
-                        ->filter()
-                        ->implode("\n");
+    protected function fieldTemplate(Field $field) {
+        $method = $field->command() . 'Template';
+        return $this->{$method}($field);
     }
 
     /**
@@ -69,9 +31,7 @@ class Factory extends Builder {
      * @param Bgaze\Crud\Core\Field $field The field 
      * @return string The template for the field
      */
-    public function defaultTemplate(Field $field) {
-        return "\$faker->sentence()";
-    }
+    abstract public function defaultTemplate(Field $field);
 
     /**
      * Get the template for a bigInteger field.
@@ -80,7 +40,17 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function bigIntegerTemplate(Field $field) {
-        return 'mt_rand(-2 ** 63, 2 ** 63 - 1)';
+        return $this->defaultTemplate($field);
+    }
+
+    /**
+     * Get the template for a binary field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function binaryTemplate(Field $field) {
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -90,7 +60,17 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function booleanTemplate(Field $field) {
-        return '(mt_rand(0, 1) === 1)';
+        return $this->defaultTemplate($field);
+    }
+
+    /**
+     * Get the template for a char field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function charTemplate(Field $field) {
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -100,7 +80,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function dateTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -110,7 +90,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function dateTimeTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -120,7 +100,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function dateTimeTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -130,7 +110,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function decimalTemplate(Field $field) {
-        return $this->floatTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -140,7 +120,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function doubleTemplate(Field $field) {
-        return $this->floatTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -150,12 +130,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function enumTemplate(Field $field) {
-        $input = $field->input();
-        $choices = $input->getArgument('allowed');
-        if ($input->getOption('nullable')) {
-            array_unshift($choices, null);
-        }
-        return 'array_random(' . $this->compileArrayForPhp($choices) . ')';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -165,9 +140,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function floatTemplate(Field $field) {
-        $input = $field->input();
-        $total = str_repeat(9, $input->getArgument('total') - $input->getArgument('places'));
-        return sprintf('round(mt_rand() / mt_getrandmax() * %d, %d)', $total, $input->getArgument('places'));
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -177,7 +150,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function geometryTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -187,7 +160,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function geometryCollectionTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -197,7 +170,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function integerTemplate(Field $field) {
-        return 'mt_rand(-2147483648, 2147483647)';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -207,7 +180,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function ipAddressTemplate(Field $field) {
-        return "\$faker->ipv4";
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -217,7 +190,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function jsonTemplate(Field $field) {
-        return "\$faker->sentences(5)";
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -227,7 +200,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function jsonbTemplate(Field $field) {
-        return "\$faker->sentences(5)";
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -237,7 +210,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function lineStringTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -247,7 +220,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function longTextTemplate(Field $field) {
-        return $this->textTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -257,7 +230,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function macAddressTemplate(Field $field) {
-        return "\$faker->macAddress";
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -267,7 +240,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function mediumIntegerTemplate(Field $field) {
-        return 'mt_rand(-8388608, 8388607)';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -277,7 +250,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function mediumTextTemplate(Field $field) {
-        return $this->textTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -287,7 +260,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function morphsTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -297,7 +270,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function multiLineStringTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -307,7 +280,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function multiPointTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -317,7 +290,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function multiPolygonTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -327,7 +300,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function nullableMorphsTemplate(Field $field) {
-        return $this->morphsTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -337,7 +310,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function pointTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -347,7 +320,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function polygonTemplate(Field $field) {
-        return null;
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -357,7 +330,17 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function smallIntegerTemplate(Field $field) {
-        return 'mt_rand(-32768, 32767)';
+        return $this->defaultTemplate($field);
+    }
+
+    /**
+     * Get the template for a string field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function stringTemplate(Field $field) {
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -367,7 +350,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function textTemplate(Field $field) {
-        return "\$faker->text(1000)";
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -377,7 +360,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function timeTemplate(Field $field) {
-        return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -387,7 +370,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function timeTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -397,7 +380,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function timestampTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -407,7 +390,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function timestampTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -417,7 +400,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function tinyIntegerTemplate(Field $field) {
-        return 'mt_rand(-128, 127)';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -427,7 +410,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedBigIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 2 ** 64 -1)';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -437,7 +420,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedDecimalTemplate(Field $field) {
-        return $this->floatTemplate($field);
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -447,7 +430,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 4294967295)';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -457,7 +440,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedMediumIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 16777215)';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -467,7 +450,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedSmallIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 65535)';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -477,7 +460,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedTinyIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 255)';
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -487,7 +470,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function uuidTemplate(Field $field) {
-        return "\$faker->uuid";
+        return $this->defaultTemplate($field);
     }
 
     /**
@@ -497,7 +480,47 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function yearTemplate(Field $field) {
-        return 'mt_rand(1900, 2100)';
+        return $this->defaultTemplate($field);
+    }
+
+    /**
+     * Get the template for a index field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function indexTemplate(Field $field) {
+        return $this->defaultTemplate($field);
+    }
+
+    /**
+     * Get the template for a primaryIndex field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function primaryIndexTemplate(Field $field) {
+        return $this->defaultTemplate($field);
+    }
+
+    /**
+     * Get the template for a uniqueIndex field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function uniqueIndexTemplate(Field $field) {
+        return $this->defaultTemplate($field);
+    }
+
+    /**
+     * Get the template for a spatialIndex field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function spatialIndexTemplate(Field $field) {
+        return $this->defaultTemplate($field);
     }
 
 }

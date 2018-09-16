@@ -387,22 +387,22 @@ class Command extends Base {
      * @param type $name    The name of the field.
      */
     protected function showFieldHelp($name) {
-        $config = config("crud-definitions.fields.{$name}");
-        $this->line("   <info>{$config['description']}</info>\n   Signature:   <fg=cyan>{$name} {$config['signature']}</>\n");
+        $signature = config("crud-definitions.fields.{$name}");
+        $this->line("   <info>Add a {$name} field to table.</info>\n   Signature:   <fg=cyan>{$signature}</>\n");
     }
 
     /**
      * Display a help tablefor all availables fields type.
      */
     protected function showFieldsHelp() {
-        $rows = collect(config('crud-definitions.fields'))->map(function ($config, $name) {
-            $pos = strpos($config['signature'], '--');
+        $rows = collect(config('crud-definitions.fields'))->map(function ($signature, $name) {
+            $pos = strpos($signature, '--');
 
             if ($pos) {
-                return [$name, substr($config['signature'], 0, $pos - 2), substr($config['signature'], $pos - 1)];
+                return [$name, substr($signature, 0, $pos - 2), substr($signature, $pos - 1)];
             }
 
-            return [$name, $config['signature'], ''];
+            return [$name, $signature, ''];
         });
 
         $this->table(['Command', 'Arguments', 'Options'], $rows);

@@ -79,7 +79,7 @@ class Model extends Builder {
         $dates = $this->crud
                 ->content(false)
                 ->filter(function(Field $field) {
-                    return ($field->config('type') === 'date');
+                    return $field->isDate();
                 })
                 ->keys();
 

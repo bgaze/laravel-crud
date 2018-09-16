@@ -2,14 +2,12 @@
 
 namespace Bgaze\Crud\Themes\Classic\Builders\Views;
 
-use Bgaze\Crud\Themes\Classic\FormBuilder;
-
 /**
  * The Edit view builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Edit extends FormBuilder {
+class Edit extends Create {
 
     /**
      * The file that the builder generates.

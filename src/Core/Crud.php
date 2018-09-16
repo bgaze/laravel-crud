@@ -289,7 +289,7 @@ abstract class Crud {
         }
 
         // If field is an index, check that all selected columns exists.
-        if ($field->config('type') === 'index') {
+        if ($field->isIndex()) {
             foreach ($field->input()->getArgument('columns') as $column) {
                 if (!$this->has($column)) {
                     throw new \Exception("'$column' doesn't exists in fields list.");
