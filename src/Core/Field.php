@@ -63,7 +63,9 @@ class Field extends SignedInput {
      */
     protected function setName() {
         if ($this->isIndex()) {
-            $this->name = 'index:' . implode('_', $this->input()->getArgument('columns'));
+            $columns = $this->input()->getArgument('columns');
+            sort($columns);
+            $this->name = 'index:' . implode('_', $columns);
         } else {
             $this->name = $this->input()->getArgument('column');
         }
