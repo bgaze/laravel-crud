@@ -20,4 +20,20 @@ class IndexComponent extends Index {
         return resource_path('assets/js/components/' . $this->crud->getPluralsKebabSlash() . "/index.blade.php");
     }
 
+    /**
+     * Build the file.
+     * 
+     * @return string The relative path of the generated file
+     */
+    public function build() {
+        $stub = $this->stub('components.index');
+
+        $this
+                ->replace($stub, '#THEAD', $this->tableHead())
+                ->replace($stub, '#TBODY', $this->tableBody())
+        ;
+
+        return $this->generateFile($this->file(), $stub);
+    }
+
 }

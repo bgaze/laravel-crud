@@ -21,30 +21,52 @@ class CreateComponent extends Create {
     }
 
     /**
-     * Build a form field
+     * Build the file.
      * 
-     * @param \Bgaze\Crud\Core\Field $field
-     * @return string
+     * @return string The relative path of the generated file
      */
-    protected function formField(Field $field) {
-        switch ($field->config('type')) {
-            case 'boolean':
-                return '<input type="checkbox" id="FieldName" v-model="ModelCamel.FieldName"/>';
-            case 'array':
-                $choices = $field->input()->getArgument('allowed');
+    public function build() {
+        return $this->buildForm('components.create', 'partials.form-group');
+    }
 
-                if ($field->input()->getOption('nullable')) {
-                    array_unshift($choices, '');
-                }
+    /**
+     * Get the default template for a field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function defaultTemplate(Field $field) {
+        return '<input type="text" id="FieldName" v-model="ModelCamel.FieldName"/>';
+    }
 
-                $field = '<select id="FieldName" v-model="ModelCamel.FieldName">';
-                foreach ($choices as $choice) {
-                    $field .= sprintf("\n%s<option value=\"%s\">%s</option>", str_repeat(' ', 12), $choice, $choice);
-                }
-                return $field . str_repeat(' ', 8) . '</select>';
-            default:
-                return '<input type="text" id="FieldName" v-model="ModelCamel.FieldName"/>';
+    /**
+     * Get the template for a boolean field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function booleanTemplate(Field $field) {
+        return '<input type="checkbox" id="FieldName" v-model="ModelCamel.FieldName"/>';
+    }
+
+    /**
+     * Get the template for a enum field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function enumTemplate(Field $field) {
+        $choices = $field->input()->getArgument('allowed');
+
+        if ($field->input()->getOption('nullable')) {
+            array_unshift($choices, '');
         }
+
+        $options = array_map(function ($choice) {
+            return sprintf("%s<option value=\"%s\">%s</option>", str_repeat(' ', 12), $choice, $choice);
+        }, $choices);
+
+        return sprintf("<select id=\"FieldName\" v-model=\"ModelCamel.FieldName\">\n%s\n%s</select>", implode("\n", $options), str_repeat(' ', 8));
     }
 
 }

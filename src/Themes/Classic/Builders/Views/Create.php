@@ -107,7 +107,6 @@ class Create extends Builder {
      * @return string The template for the field
      */
     public function booleanTemplate(Field $field) {
-
         return "<label for=\"FieldName0\">{!! Form::radio('FieldName', 0, !\$ModelCamel->FieldName, ['id' => 'FieldName0']) !!} No</label>"
                 . "\n        <label for=\"FieldName1\">{!! Form::radio('FieldName', 1, \$ModelCamel->FieldName, ['id' => 'FieldName1']) !!} Yes</label>";
     }

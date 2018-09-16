@@ -20,4 +20,15 @@ class ShowComponent extends Show {
         return resource_path('assets/js/components/' . $this->crud->getPluralsKebabSlash() . "/show.blade.php");
     }
 
+    /**
+     * Build the file.
+     * 
+     * @return string The relative path of the generated file
+     */
+    public function build() {
+        $stub = $this->stub('components.show');
+        $this->replace($stub, '#CONTENT', $this->content());
+        return $this->generateFile($this->file(), $stub);
+    }
+
 }
