@@ -1,13 +1,13 @@
 <?php
 
-namespace Bgaze\Crud\Themes\Classic\Builders\Views;
+namespace Bgaze\Crud\Themes\Classic\Builders;
 
 /**
  * The Edit view builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Edit extends Create {
+class EditView extends CreateView {
 
     /**
      * The file that the builder generates.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Themes\Classic\Builders\Views;
+namespace Bgaze\Crud\Themes\Classic\Builders;
 
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
@@ -10,7 +10,7 @@ use Bgaze\Crud\Core\Field;
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Index extends Builder {
+class IndexView extends Builder {
 
     /**
      * The file that the builder generates.

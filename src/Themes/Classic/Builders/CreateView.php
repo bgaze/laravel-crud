@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Themes\Classic\Builders\Views;
+namespace Bgaze\Crud\Themes\Classic\Builders;
 
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
@@ -11,7 +11,7 @@ use Bgaze\Crud\Core\FieldsTemplatesTrait;
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Create extends Builder {
+class CreateView extends Builder {
 
     use FieldsTemplatesTrait;
 
