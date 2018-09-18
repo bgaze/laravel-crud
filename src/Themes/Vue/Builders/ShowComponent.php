@@ -2,14 +2,14 @@
 
 namespace Bgaze\Crud\Themes\Vue\Builders;
 
-use Bgaze\Crud\Themes\Classic\Builders\Views\Show;
+use Bgaze\Crud\Themes\Classic\Builders\ShowView;
 
 /**
  * The Show view builder.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class ShowComponent extends Show {
+class ShowComponent extends ShowView {
 
     /**
      * The file that the builder generates.

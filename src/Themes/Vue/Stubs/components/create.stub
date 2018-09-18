@@ -6,8 +6,7 @@
     <h1>Create a new ModelFullName</h1>
 
     <form v-on:submit="submitForm()">
-        #CONTENT
-        
+#CONTENT
         <input type="submit" value="Save">
     </form>
 </template>

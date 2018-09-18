@@ -2,14 +2,15 @@
 
 namespace Bgaze\Crud\Themes\Vue\Builders;
 
-use Bgaze\Crud\Themes\Classic\Builders\Views\Create;
+use Bgaze\Crud\Themes\Classic\Builders\CreateView;
+use Bgaze\Crud\Core\Field;
 
 /**
  * The Create view builder.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class CreateComponent extends Create {
+class CreateComponent extends CreateView {
 
     /**
      * The file that the builder generates.
@@ -63,10 +64,20 @@ class CreateComponent extends Create {
         }
 
         $options = array_map(function ($choice) {
-            return sprintf("%s<option value=\"%s\">%s</option>", str_repeat(' ', 12), $choice, $choice);
+            return sprintf("%s<option value=\"%s\">%s</option>", str_repeat(' ', 16), $choice, $choice);
         }, $choices);
 
-        return sprintf("<select id=\"FieldName\" v-model=\"ModelCamel.FieldName\">\n%s\n%s</select>", implode("\n", $options), str_repeat(' ', 8));
+        return sprintf("<select id=\"FieldName\" v-model=\"ModelCamel.FieldName\">\n%s\n%s</select>", implode("\n", $options), str_repeat(' ', 12));
+    }
+
+    /**
+     * Get the template for a text field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function textTemplate(Field $field) {
+        return '<textarea id="FieldName" v-model="ModelCamel.FieldName"></textarea>';
     }
 
 }

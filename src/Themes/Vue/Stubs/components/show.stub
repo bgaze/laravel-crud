@@ -1,16 +1,44 @@
-@extends('ViewsLayout')
-
-@section('title', 'ModelFullName #' . $ModelCamel->id)
-
-@section('content')
-    <p><a href="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</a></p>
-
-    <h1>ModelFullName #{{ $ModelCamel->id }}</h1>
+<template>
+    <p>
+        <router-link to="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</router-link>
+    </p>
+    
+    <h1>ModelFullName #{{ ModelCamel.id }}</h1>
 
 #CONTENT
 
-    <a href="{{ route('PluralsKebabDot.edit', ['ModelCamel' => $ModelCamel->id]) }}">Edit</a>
-    {!! Form::model($ModelCamel, ['route' => ['PluralsKebabDot.destroy', $ModelCamel->id], 'method' => 'delete']) !!}
-    {!! Form::submit('Delete') !!}
-    {!! Form::close() !!}
-@endsection
+    <router-link to="{{ route('PluralsKebabDot.edit', {ModelCamel: ModelCamel.id}) }}">Edit</router-link>
+    <a href="#" v-on:click="destroy()">Delete</a>
+</template>
+
+<script>
+    export default {
+        mounted() {
+            var app = this;
+            axios
+                .get(route('PluralsKebabDot.index', {ModelCamel: this.$route.params.id}))
+                .then(function (response) {
+                    app.ModelCamel = response.data;
+                })
+                .catch(function () {
+                    alert("Could not load ModelFullName")
+                });
+        },
+        methods: {
+            destroy() {
+                if (confirm("Do you really want to delete it?")) {
+                    var app = this;
+                    axios
+                        .delete(route('PluralsKebabDot.destroy', {ModelCamel: app.ModelCamel.id}))
+                        .then(function (response) {
+                            app.$router.replace(route('PluralsKebabDot.index'));
+                        })
+                        .catch(function (response) {
+                            console.log(response);
+                            alert("Could not delete ModelFullName");
+                        });
+                }
+            }
+        }
+    }
+</script>

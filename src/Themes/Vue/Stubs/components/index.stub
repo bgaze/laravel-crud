@@ -10,17 +10,17 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    #THEAD
+#THEAD
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="ModelCamel, index in PluralCamel">
                     <td>{{ ModelCamel.id }}</td>
-                    #TBODY
+#TBODY
                     <td>
-                        <router-link to="{{ route('PluralsKebabDot.show', {ModelCamel: ModelCamel.id} }}>Show</router-link>
-                        <router-link to="{{ route('PluralsKebabDot.edit', {ModelCamel: ModelCamel.id}) }}>Edit</router-link>
+                        <router-link to="{{ route('PluralsKebabDot.show', {ModelCamel: ModelCamel.id}) }}">Show</router-link>
+                        <router-link to="{{ route('PluralsKebabDot.edit', {ModelCamel: ModelCamel.id}) }}">Edit</router-link>
                         <a href="#" v-on:click="destroy(ModelCamel, index)">Delete</a>
                     </td>
                 </tr>
@@ -36,23 +36,27 @@
         },
         mounted() {
             var app = this;
-            axios.get(route('PluralsKebabDot.index')).then(function (response) {
-                app.PluralCamel = response.data;
-            }).catch(function (response) {
-                console.log(response);
-                alert("Could not load PluralFullName");
-            });
+            axios
+                .get(route('PluralsKebabDot.index')).then(function (response) {
+                    app.PluralCamel = response.data;
+                })
+                .catch(function (response) {
+                    console.log(response);
+                    alert("Could not load PluralFullName");
+                });
         },
         methods: {
             destroy(ModelCamel, index) {
                 if (confirm("Do you really want to delete it?")) {
                     var app = this;
-                    axios.delete(route('PluralsKebabDot.destroy', {ModelCamel: ModelCamel.id})).then(function (response) {
-                        app.companies.splice(index, 1);
-                    }).catch(function (response) {
-                        console.log(response);
-                        alert("Could not delete ModelFullName");
-                    });
+                    axios
+                        .delete(route('PluralsKebabDot.destroy', {ModelCamel: ModelCamel.id})).then(function (response) {
+                            app.companies.splice(index, 1);
+                        })
+                        .catch(function (response) {
+                            console.log(response);
+                            alert("Could not delete ModelFullName");
+                        });
                 }
             }
         }

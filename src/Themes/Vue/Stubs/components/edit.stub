@@ -1,16 +1,49 @@
-@extends('ViewsLayout')
-
-@section('title')
-    ModelFullName #{{ $ModelCamel->id }} - Edit
-@endsection
-
-@section('content')
-    <p><a href="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</a></p>
+<template>
+    <p>
+        <router-link to="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</router-link>
+    </p>
     
-    <h1>Edit ModelFullName #{{ $ModelCamel->id }}</h1>
+    <h1>ModelFullName #{{ ModelCamel.id }} - Edit</h1>
 
-    {!! Form::model($ModelCamel, ['route' => ['PluralsKebabDot.update', $ModelCamel->id], 'method' => 'put']) !!}
+    <form v-on:submit="submitForm()">
 #CONTENT
-    {!! Form::submit('Save') !!}
-    {!! Form::close() !!}
-@endsection
+        <input type="submit" value="Save">
+    </form>
+</template>
+
+<script>
+    export default {
+        mounted() {
+            var app = this;
+            axios
+                .get(route('PluralsKebabDot.index', {ModelCamel: this.$route.params.id}))
+                .then(function (response) {
+                    app.ModelCamel = response.data;
+                })
+                .catch(function () {
+                    alert("Could not load ModelFullName")
+                });
+        },
+        data: function () {
+            return {
+                ModelCamel: {
+                    //BLANK_VALUES
+                }
+            };
+        },
+        methods: {
+            submitForm() {
+                var app = this;
+                axios
+                    .patch(route('PluralsKebabDot.update', {ModelCamel: app.ModelCamel.id}), app.ModelCamel)
+                    .then(function (response) {
+                        app.$router.replace(route('PluralsKebabDot.index'));
+                    })
+                    .catch(function (response) {
+                        console.log(response);
+                        alert("Could not create ModelFullName");
+                    });
+            }
+        }
+    }
+</script>

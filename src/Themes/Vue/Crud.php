@@ -34,10 +34,10 @@ class Crud extends Base {
             'partials.index-body' => __DIR__ . '/Stubs/partials/index-body.stub',
             'partials.show-group' => __DIR__ . '/Stubs/partials/show-group.stub',
             'partials.form-group' => __DIR__ . '/Stubs/partials/form-group.stub',
-            'views.index' => __DIR__ . '/Stubs/views/index.stub',
-            'views.show' => __DIR__ . '/Stubs/views/show.stub',
-            'views.create' => __DIR__ . '/Stubs/views/create.stub',
-            'views.edit' => __DIR__ . '/Stubs/views/edit.stub',
+            'components.index' => __DIR__ . '/Stubs/components/index.stub',
+            'components.show' => __DIR__ . '/Stubs/components/show.stub',
+            'components.create' => __DIR__ . '/Stubs/components/create.stub',
+            'components.edit' => __DIR__ . '/Stubs/components/edit.stub',
         ]);
     }
 

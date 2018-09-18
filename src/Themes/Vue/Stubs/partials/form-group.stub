@@ -1,5 +1,5 @@
-    <div id="FieldName-group">
-        <label for="FieldName">FieldLabel</label>
-        #FIELD
-        <p class="errors"></p>
-    </div>
+        <div id="FieldName-group">
+            <label for="FieldName">FieldLabel</label>
+            #FIELD
+            <p class="errors"></p>
+        </div>

@@ -39,3 +39,24 @@ clear \
 && php artisan mi:fr \
 && php artisan db:seed --class=ArticlesTableSeeder \
 && php artisan db:seed --class=ArticleCommentsTableSeeder
+
+# VUE
+
+clear \
+&& git reset --hard \
+&& git clean -fd \
+&& php artisan crud:default:vue Article -n \
+-c "string title" \
+-c "enum category foo bar foobar -i" \
+-c "text body -n" \
+-c "unsignedInteger views -d 0" \
+-c "boolean active -d 1" \
+&& php artisan crud:default:vue Article/Comment -n \
+-c "string pseudo" \
+-c "dateTime date -u" \
+-c "text comment" \
+-c "enum humor happy unhappy -n" \
+-c "float note 2 1 -n" \
+&& php artisan mi:fr \
+&& php artisan db:seed --class=ArticlesTableSeeder \
+&& php artisan db:seed --class=ArticleCommentsTableSeeder

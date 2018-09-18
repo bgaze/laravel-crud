@@ -2,14 +2,14 @@
 
 namespace Bgaze\Crud\Themes\Vue\Builders;
 
-use Bgaze\Crud\Themes\Classic\Builders\Views\Index;
+use Bgaze\Crud\Themes\Classic\Builders\IndexView;
 
 /**
  * The Index view builder.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class IndexComponent extends Index {
+class IndexComponent extends IndexView {
 
     /**
      * The file that the builder generates.
