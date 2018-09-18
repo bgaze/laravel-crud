@@ -22,7 +22,7 @@ class ServiceProvider extends Base {
      */
     public function boot() {
         // Publish configuration.
-        $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud');
+        $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud-config');
 
         // Register & publish default themes.
         $this->registerTheme(Themes\Api\Crud::class, 'Generate a REST API CRUD using default theme');

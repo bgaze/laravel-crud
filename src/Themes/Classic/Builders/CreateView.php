@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Themes\Classic\Builders\Views;
+namespace Bgaze\Crud\Themes\Classic\Builders;
 
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
@@ -11,7 +11,7 @@ use Bgaze\Crud\Core\FieldsTemplatesTrait;
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Create extends Builder {
+class CreateView extends Builder {
 
     use FieldsTemplatesTrait;
 
@@ -127,6 +127,16 @@ class Create extends Builder {
         $value = $this->compileArrayForPhp(array_combine($choices, $choices), true);
 
         return sprintf("{!! Form::select('FieldName', %s) !!}", $value);
+    }
+
+    /**
+     * Get the template for a text field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function textTemplate(Field $field) {
+        return "{!! Form::textarea('FieldName') !!}";
     }
 
 }
