@@ -23,7 +23,7 @@ trait ThemeProviderTrait {
         if ($views) {
             $viewsNamespace = call_user_func("{$class}::views");
             $this->loadViewsFrom($views, $viewsNamespace);
-            $this->publishes([$views => $viewsNamespace]);
+            $this->publishes([$views => resource_path("views/vendor/{$viewsNamespace}")], "{$viewsNamespace}-views");
         }
 
         // Register commands.
