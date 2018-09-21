@@ -3,12 +3,12 @@
  * Routes for ControllerFullName
  *
  * You can also use the resource syntax : 
- * Route::apiResource('PluralsKebabSlash', 'ControllerFullName');
+ * Route::apiResource('PluralsKebabSlash', 'ControllerFullName', ['as' => 'api']);
  */
 Route::prefix('/PluralsKebabSlash')->group(function () {
-    Route::get('/', 'ControllerFullName@index')->name('PluralsKebabDot.index');
-    Route::post('/', 'ControllerFullName@store')->name('PluralsKebabDot.store');
-    Route::get('/{ModelCamel}', 'ControllerFullName@show')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.show');
-    Route::put('/{ModelCamel}', 'ControllerFullName@update')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.update');
-    Route::delete('/{ModelCamel}', 'ControllerFullName@destroy')->where(['ModelCamel' => '\d+'])->name('PluralsKebabDot.destroy');
+    Route::get('/', 'ControllerFullName@index')->name('api.PluralsKebabDot.index');
+    Route::post('/', 'ControllerFullName@store')->name('api.PluralsKebabDot.store');
+    Route::get('/{ModelCamel}', 'ControllerFullName@show')->where(['ModelCamel' => '\d+'])->name('api.PluralsKebabDot.show');
+    Route::put('/{ModelCamel}', 'ControllerFullName@update')->where(['ModelCamel' => '\d+'])->name('api.PluralsKebabDot.update');
+    Route::delete('/{ModelCamel}', 'ControllerFullName@destroy')->where(['ModelCamel' => '\d+'])->name('api.PluralsKebabDot.destroy');
 });
