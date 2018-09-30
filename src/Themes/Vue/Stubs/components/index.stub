@@ -1,61 +1,71 @@
 <template>
     <div>
+        <vue-headful title="PluralFullName"/>
+        
         <h1>PluralFullName</h1>
-
+        
         <p>
-            <router-link to="{{ route('PluralsKebabDot.create') }}">Create new ModelFullName</router-link>
+            <router-link :to="{name: 'ModelFullStudlyCreate'}" class="nav-link">Create a new ModelStudly</router-link>
         </p>
-
+            
         <table>
             <thead>
                 <tr>
                     <th>#</th>
 #THEAD
-                    <th>Actions</th>
                 </tr>
             </thead>
+            
             <tbody>
-                <tr v-for="ModelCamel, index in PluralCamel">
+                <tr v-for="(ModelCamel, index) in PluralCamel.data" :key="ModelCamel.id">
                     <td>{{ ModelCamel.id }}</td>
 #TBODY
                     <td>
-                        <router-link to="{{ route('PluralsKebabDot.show', {ModelCamel: ModelCamel.id}) }}">Show</router-link>
-                        <router-link to="{{ route('PluralsKebabDot.edit', {ModelCamel: ModelCamel.id}) }}">Edit</router-link>
-                        <a href="#" v-on:click="destroy(ModelCamel, index)">Delete</a>
+                        <router-link :to="{name: 'ModelFullStudlyShow', params: {id: ModelCamel.id}}">Show</router-link>
+                        <router-link :to="{name: 'ModelFullStudlyEdit', params: {id: ModelCamel.id}}">Edit</router-link>
+                        <button v-on:click="deleteModelStudly(ModelCamel.id, index)">Delete</button>
                     </td>
                 </tr>
             </tbody>
         </table>
+
+        <pagination :data="PluralCamel" @pagination-change-page="fetchPluralStudly"></pagination>
     </div>
 </template>
 
 <script>
     export default {
-        data: function () {
-            return {PluralCamel: []};
+        components: {
+            name: 'PluralStudlyIndex'
         },
-        mounted() {
-            var app = this;
-            axios
-                .get(route('PluralsKebabDot.index')).then(function (response) {
-                    app.PluralCamel = response.data;
-                })
-                .catch(function (response) {
-                    console.log(response);
-                    alert("Could not load PluralFullName");
-                });
+        data() {
+            return {
+                PluralCamel: {}
+            };
+        },
+        created: function () {
+            this.fetchPluralStudly();
         },
         methods: {
-            destroy(ModelCamel, index) {
-                if (confirm("Do you really want to delete it?")) {
-                    var app = this;
-                    axios
-                        .delete(route('PluralsKebabDot.destroy', {ModelCamel: ModelCamel.id})).then(function (response) {
-                            app.companies.splice(index, 1);
-                        })
-                        .catch(function (response) {
-                            console.log(response);
-                            alert("Could not delete ModelFullName");
+            fetchPluralStudly(page) {
+                if (typeof page === 'undefined') {
+                    page = 1;
+                }
+
+                API.get('PluralsKebabSlash?page=' + page)
+                    .then((response) => {
+                        this.PluralCamel = response.data;
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+            },
+            deleteModelStudly(id, index) {
+                if (confirm('Delete ModelStudly #' + id + '?')) {
+                    API.delete('PluralsKebabSlash/' + id)
+                        .then(this.fetchPluralStudly)
+                        .catch((error) => {
+                          console.log(error);
                         });
                 }
             }

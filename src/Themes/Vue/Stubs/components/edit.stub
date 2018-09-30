@@ -1,48 +1,67 @@
 <template>
-    <p>
-        <router-link to="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</router-link>
-    </p>
-    
-    <h1>ModelFullName #{{ ModelCamel.id }} - Edit</h1>
+    <div>
+        <vue-headful :title="title"/>
 
-    <form v-on:submit="submitForm()">
+        <h3>{{ title }}</h3>
+
+        <p>
+            <router-link :to="{ name: 'PluralFullStudlyIndex' }">Back to PluralStudly</router-link>
+        </p>
+
+        <p v-if="errors.main">{{ errors.main }}</p>
+
+        <form v-on:submit.prevent="updateModelStudly">
 #CONTENT
-        <input type="submit" value="Save">
-    </form>
+            <div>
+                <input type="submit" value="Update ModelStudly"/>
+            </div>
+        </form>
+    </div>
 </template>
 
 <script>
-    export default {
-        mounted() {
-            var app = this;
-            axios
-                .get(route('PluralsKebabDot.index', {ModelCamel: this.$route.params.id}))
-                .then(function (response) {
-                    app.ModelCamel = response.data;
-                })
-                .catch(function () {
-                    alert("Could not load ModelFullName")
-                });
+    export default{
+        components: {
+            name: 'ModelStudlyEdit'
         },
-        data: function () {
-            return {
-                ModelCamel: {
-                    //BLANK_VALUES
-                }
+        data() {
+            return{
+                ModelCamel: {},
+                errors: {}
             };
         },
+        created: function () {
+            this.getModelStudly();
+        },
         methods: {
-            submitForm() {
-                var app = this;
-                axios
-                    .patch(route('PluralsKebabDot.update', {ModelCamel: app.ModelCamel.id}), app.ModelCamel)
-                    .then(function (response) {
-                        app.$router.replace(route('PluralsKebabDot.index'));
+            getModelStudly() {
+                API.get('PluralsKebabSlash/' + this.$route.params.id)
+                    .then((response) => {
+                        this.ModelCamel = response.data.data;
                     })
-                    .catch(function (response) {
-                        console.log(response);
-                        alert("Could not create ModelFullName");
+                    .catch((error) => {
+                      console.log(error);
                     });
+            },
+            updateModelStudly() {
+                API.put('PluralsKebabSlash/' + this.$route.params.id, this.ModelCamel)
+                    .then((response) => {
+                        this.$router.push({name: 'PluralFullStudlyIndex'});
+                    })
+                    .catch((error) => {
+                        if (typeof error.response.data.errors !== 'undefined') {
+                            this.errors = error.response.data.errors;
+                        } else if (typeof error.response.data.message !== 'undefined') {
+                            this.errors = {main: error.response.data.message};
+                        } else {
+                            this.errors = {main: 'Undefined error !'};
+                        }
+                    });
+            }
+        },
+        computed: {
+            title: function() {
+                return 'Edit ModelStudly #' + this.ModelCamel.id;
             }
         }
     }

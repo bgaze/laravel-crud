@@ -507,6 +507,17 @@ abstract class Crud {
     }
 
     /**
+     * Get the Model plural name studly cased
+     * 
+     * Exemple : MyModels
+     * 
+     * @return string
+     */
+    public function getPluralStudly() {
+        return Str::studly($this->plural->last());
+    }
+
+    /**
      * Get the Model plural name camel cased
      * 
      * Exemple : myModels

@@ -5,7 +5,7 @@
         "laravel/framework": ">=5.5.0",
         "laravelcollective/html": ">=5.5.4",
         "bgaze/laravel-php-cs-fixer": "~1",
-        "tightenco/ziggy": "*"
+        "tightenco/ziggy": "~0.6"
     },
     "license": "MIT",
     "authors": [

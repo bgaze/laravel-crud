@@ -1,34 +1,51 @@
 <template>
-    <p>
-        <router-link to="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</router-link>
-    </p>
-    
-    <h1>Create a new ModelFullName</h1>
+    <div>
+        <vue-headful title="Create ModelStudly"/>
+        
+        <h3>Create ModelStudly</h3>
 
-    <form v-on:submit="submitForm()">
+        <p>
+            <router-link :to="{ name: 'PluralFullStudlyIndex' }">Back to PluralStudly</router-link>
+        </p>
+        
+        <p v-if="errors.main">{{ errors.main }}</p>
+
+        <form v-on:submit.prevent="createModelStudly">
 #CONTENT
-        <input type="submit" value="Save">
-    </form>
+            <div>
+                <input type="submit" value="Create ModelStudly"/>
+            </div>
+        </form>
+    </div>
 </template>
 
 <script>
     export default {
-        data: function () {
+        components: {
+            name: 'ModelStudlyCreate'
+        },
+        data() {
             return {
-                ModelCamel: {
-                    //BLANK_VALUES
-                }
+                ModelCamel: {},
+                errors: {}
             };
         },
         methods: {
-            submitForm() {
-                var app = this;
-                axios.post(route('PluralsKebabDot.store'), app.ModelCamel).then(function (response) {
-                    app.$router.push({path: route('PluralsKebabDot.index')});
-                }).catch(function (response) {
-                    console.log(response);
-                    alert("Could not create your ModelFullName");
-                });
+            createModelStudly() {
+                API.post('PluralsKebabSlash', this.ModelCamel)
+                    .then((response) => {
+                        this.errors = {};
+                        this.$router.push({name: 'PluralFullStudlyIndex'});
+                    })
+                    .catch((error) => {
+                        if (typeof error.response.data.errors !== 'undefined') {
+                            this.errors = error.response.data.errors;
+                        } else if (typeof error.response.data.message !== 'undefined') {
+                            this.errors = {main: error.response.data.message};
+                        } else {
+                            this.errors = {main: 'Undefined error !'};
+                        }
+                    });
             }
         }
     }

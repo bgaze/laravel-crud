@@ -3,20 +3,26 @@
 <html lang="{{ app()->getLocale() }}">
     <head>
         @section('metas')
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <meta charset="utf-8">
+            <meta name="csrf-token" content="{{ csrf_token() }}">
         @show
         
-        <title>@yield('title')</title>
-        
+        <title></title>
+                
         @yield('stylesheets')
     </head>
     
-    <body @yield('body-attr')>
+    <body>
         @section('body')
-            @yield('content')
+        <div id="app">
+            <router-view></router-view>
+        </div>  
         @show
         
-        @yield('javascripts')
+        @section('javascripts')
+            <script src="{{ asset('js/app.js') }}"></script>
+        @show
     </body>
 </html>
 @show
+

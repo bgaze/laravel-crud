@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Themes\Vue\Builders;
 
 use Bgaze\Crud\Themes\Classic\Builders\ShowView;
+use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
 
 /**
  * The Show view builder.
@@ -11,13 +12,15 @@ use Bgaze\Crud\Themes\Classic\Builders\ShowView;
  */
 class ShowComponent extends ShowView {
 
+    use RegisterComponentTrait;
+
     /**
      * The file that the builder generates.
      * 
      * @return string The absolute path of the file
      */
     public function file() {
-        return resource_path('assets/js/components/' . $this->crud->getPluralsKebabSlash() . "/show.blade.php");
+        return resource_path('assets/js/components/' . $this->crud->getPluralsKebabSlash() . "/Show.vue");
     }
 
     /**
@@ -27,8 +30,14 @@ class ShowComponent extends ShowView {
      */
     public function build() {
         $stub = $this->stub('components.show');
+
         $this->replace($stub, '#CONTENT', $this->content());
-        return $this->generateFile($this->file(), $stub);
+
+        $path = $this->generateFile($this->file(), $stub);
+
+        $this->registerComponent('Show', $this->crud->getModelFullStudly() . 'Show', '/:id');
+
+        return $path;
     }
 
 }

@@ -59,4 +59,5 @@ clear \
 -c "float note 2 1 -n" \
 && php artisan mi:fr \
 && php artisan db:seed --class=ArticlesTableSeeder \
-&& php artisan db:seed --class=ArticleCommentsTableSeeder
+&& php artisan db:seed --class=ArticleCommentsTableSeeder \
+&& npm run dev

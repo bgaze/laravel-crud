@@ -1,7 +1,5 @@
 <?php
 
-//https://github.com/LaravelDaily/Laravel-Vue-First-CRUD
-
 namespace Bgaze\Crud\Themes\Vue;
 
 use Bgaze\Crud\Themes\Api\Crud as Base;
@@ -34,6 +32,7 @@ class Crud extends Base {
             'partials.index-body' => __DIR__ . '/Stubs/partials/index-body.stub',
             'partials.show-group' => __DIR__ . '/Stubs/partials/show-group.stub',
             'partials.form-group' => __DIR__ . '/Stubs/partials/form-group.stub',
+            'partials.register-component' => __DIR__ . '/Stubs/partials/register-component.stub',
             'components.index' => __DIR__ . '/Stubs/components/index.stub',
             'components.show' => __DIR__ . '/Stubs/components/show.stub',
             'components.create' => __DIR__ . '/Stubs/components/create.stub',

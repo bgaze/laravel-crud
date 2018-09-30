@@ -4,6 +4,7 @@ namespace Bgaze\Crud\Themes\Vue\Builders;
 
 use Bgaze\Crud\Themes\Classic\Builders\CreateView;
 use Bgaze\Crud\Core\Field;
+use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
 
 /**
  * The Create view builder.
@@ -12,13 +13,15 @@ use Bgaze\Crud\Core\Field;
  */
 class CreateComponent extends CreateView {
 
+    use RegisterComponentTrait;
+
     /**
      * The file that the builder generates.
      * 
      * @return string The absolute path of the file
      */
     public function file() {
-        return resource_path('assets/js/components/' . $this->crud->getPluralsKebabSlash() . "/create.blade.php");
+        return resource_path('assets/js/components/' . $this->crud->getPluralsKebabSlash() . "/Create.vue");
     }
 
     /**
@@ -27,7 +30,11 @@ class CreateComponent extends CreateView {
      * @return string The relative path of the generated file
      */
     public function build() {
-        return $this->buildForm('components.create', 'partials.form-group');
+        $path = $this->buildForm('components.create', 'partials.form-group');
+
+        $this->registerComponent('Create', $this->crud->getModelFullStudly() . 'Create', '/create');
+
+        return $path;
     }
 
     /**

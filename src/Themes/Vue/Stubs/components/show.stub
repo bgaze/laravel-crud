@@ -1,43 +1,58 @@
 <template>
-    <p>
-        <router-link to="{{ route('PluralsKebabDot.index') }}">Back to PluralFullName</router-link>
-    </p>
-    
-    <h1>ModelFullName #{{ ModelCamel.id }}</h1>
+    <div>
+        <vue-headful :title="title"/>
 
+        <h3>{{ title }}</h3>
+
+        <p>
+            <router-link :to="{ name: 'PluralFullStudlyIndex' }">Back to PluralStudly</router-link>
+        </p>
+        
 #CONTENT
 
-    <router-link to="{{ route('PluralsKebabDot.edit', {ModelCamel: ModelCamel.id}) }}">Edit</router-link>
-    <a href="#" v-on:click="destroy()">Delete</a>
+        <router-link :to="{name: 'ModelStudlyEdit', params: {id: ModelCamel.id}}">Edit</router-link>
+        <button v-on:click="deleteModelStudly(ModelCamel.id, index)">Delete</button>
+    </div>
 </template>
 
 <script>
-    export default {
-        mounted() {
-            var app = this;
-            axios
-                .get(route('PluralsKebabDot.index', {ModelCamel: this.$route.params.id}))
-                .then(function (response) {
-                    app.ModelCamel = response.data;
-                })
-                .catch(function () {
-                    alert("Could not load ModelFullName")
-                });
+    export default{
+        components: {
+            name: 'ModelStudlyShow'
+        },
+        data() {
+            return{
+                ModelCamel: {}
+            };
+        },
+        created: function () {
+            this.getModelStudly();
         },
         methods: {
-            destroy() {
-                if (confirm("Do you really want to delete it?")) {
-                    var app = this;
-                    axios
-                        .delete(route('PluralsKebabDot.destroy', {ModelCamel: app.ModelCamel.id}))
-                        .then(function (response) {
-                            app.$router.replace(route('PluralsKebabDot.index'));
+            getModelStudly() {
+                API.get('PluralsKebabSlash/' + this.$route.params.id)
+                    .then((response) => {
+                        this.ModelCamel = response.data.data;
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+            },
+            deleteModelStudly(id) {
+                if (confirm('Delete ModelCamel #' + id + '?')) {
+                    API.delete('PluralsKebabSlash/' + id)
+                        .then((response) => {
+                            this.$router.push({name: 'PluralFullStudlyIndex'});
                         })
-                        .catch(function (response) {
-                            console.log(response);
-                            alert("Could not delete ModelFullName");
+                        .catch((error) => {
+                          console.log(error);
                         });
                 }
+            }
+        },
+        computed: {
+            title: function() {
+                return 'ModelStudly #' + this.ModelCamel.id;
             }
         }
     }

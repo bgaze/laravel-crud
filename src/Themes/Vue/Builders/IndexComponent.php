@@ -3,6 +3,7 @@
 namespace Bgaze\Crud\Themes\Vue\Builders;
 
 use Bgaze\Crud\Themes\Classic\Builders\IndexView;
+use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
 
 /**
  * The Index view builder.
@@ -11,13 +12,15 @@ use Bgaze\Crud\Themes\Classic\Builders\IndexView;
  */
 class IndexComponent extends IndexView {
 
+    use RegisterComponentTrait;
+
     /**
      * The file that the builder generates.
      * 
      * @return string The absolute path of the file
      */
     public function file() {
-        return resource_path('assets/js/components/' . $this->crud->getPluralsKebabSlash() . "/index.blade.php");
+        return resource_path('assets/js/components/' . $this->crud->getPluralsKebabSlash() . "/Index.vue");
     }
 
     /**
@@ -33,7 +36,11 @@ class IndexComponent extends IndexView {
                 ->replace($stub, '#TBODY', $this->tableBody())
         ;
 
-        return $this->generateFile($this->file(), $stub);
+        $path = $this->generateFile($this->file(), $stub);
+
+        $this->registerComponent('Index', $this->crud->getPluralFullStudly() . 'Index');
+
+        return $path;
     }
 
 }

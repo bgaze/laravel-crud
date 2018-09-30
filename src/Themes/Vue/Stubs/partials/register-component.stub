@@ -1,0 +1,3 @@
+import ComponentFullName from './components/PluralsKebabSlash/ComponentName.vue';
+routes.push({name: 'ComponentFullName', path: '/PluralsKebabSlashComponentPath', component: ComponentFullName});
+//CRUD//
