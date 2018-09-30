@@ -437,6 +437,21 @@ abstract class Crud {
     }
 
     ############################################################################
+    # CALLBACKS
+    # Do action during CRUD generation.
+
+    /**
+     * Do custom actions after a successfull CRUD generation.
+     * 
+     * @param array $arguments  The arguments passed to the command
+     * @param array $options    The options passed to the command
+     * @return null|string      A message to display in the command output
+     */
+    public function onSuccessfullBuild(array $arguments, array $options) {
+        return null;
+    }
+
+    ############################################################################
     # NAMES VARIABLES
     # Main CRUD names and plurals formats.
 

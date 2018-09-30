@@ -12,6 +12,15 @@ use Bgaze\Crud\Themes\Vue\Builders;
  */
 class Crud extends Base {
 
+    public $imports;
+    public $routes;
+
+    public function __construct($model) {
+        $this->imports = collect();
+        $this->routes = collect();
+        parent::__construct($model);
+    }
+
     /**
      * The unique name of the CRUD theme.
      * 
@@ -32,11 +41,13 @@ class Crud extends Base {
             'partials.index-body' => __DIR__ . '/Stubs/partials/index-body.stub',
             'partials.show-group' => __DIR__ . '/Stubs/partials/show-group.stub',
             'partials.form-group' => __DIR__ . '/Stubs/partials/form-group.stub',
-            'partials.register-component' => __DIR__ . '/Stubs/partials/register-component.stub',
+            'partials.component-import' => __DIR__ . '/Stubs/partials/component-import.stub',
+            'partials.component-route' => __DIR__ . '/Stubs/partials/component-route.stub',
             'components.index' => __DIR__ . '/Stubs/components/index.stub',
             'components.show' => __DIR__ . '/Stubs/components/show.stub',
             'components.create' => __DIR__ . '/Stubs/components/create.stub',
             'components.edit' => __DIR__ . '/Stubs/components/edit.stub',
+            'register-components' => __DIR__ . '/Stubs/register-components.stub',
         ]);
     }
 
@@ -64,6 +75,58 @@ class Crud extends Base {
      */
     public function indexPath() {
         return url($this->getPluralsKebabSlash());
+    }
+
+    public function registerComponent($name, $fullname, $path = '') {
+        $stubs = self::stubs();
+        $replacements = [
+            'PluralsKebabSlash' => $this->getPluralsKebabSlash(),
+            'ComponentFullName' => $fullname,
+            'ComponentName' => $name,
+            'ComponentPath' => $path
+        ];
+
+        $stub = file_get_contents($stubs['partials.component-import']);
+        $stub = str_replace(array_keys($replacements), array_values($replacements), $stub);
+        $this->imports->push($stub);
+
+        $stub = file_get_contents($stubs['partials.component-route']);
+        $stub = str_replace(array_keys($replacements), array_values($replacements), $stub);
+        $this->routes->push($stub);
+    }
+
+    /**
+     * Register CRUD components after a successfull generation.
+     * 
+     * @param array $arguments  The arguments passed to the command
+     * @param array $options    The options passed to the command
+     * @return null|string      A message to display in the command output
+     */
+    public function onSuccessfullBuild(array $arguments, array $options) {
+        if ($this->imports->isEmpty() || $this->routes->isEmpty()) {
+            return null;
+        }
+
+        $stubs = self::stubs();
+        $stub = file_get_contents($stubs['register-components']);
+
+        $stub = str_replace('ModelFullName', $this->getModelFullName(), $stub);
+        $stub = str_replace('#IMPORTS', $this->imports->implode("\n"), $stub);
+        $stub = str_replace('#ROUTES', $this->routes->implode(",\n"), $stub);
+
+        $file = resource_path('assets/js/app.js');
+        if (!file_exists($file)) {
+            file_put_contents($file, $stub);
+        } else {
+            $content = file_get_contents($file);
+            if (preg_match('/\/\/CRUD\/\//', $content)) {
+                file_put_contents($file, str_replace('//CRUD//', $stub, $content));
+            } else {
+                file_put_contents($file, $content, FILE_APPEND);
+            }
+        }
+
+        return ' <info>Components imported into:</info> /resources/assets/js/app.js';
     }
 
 }

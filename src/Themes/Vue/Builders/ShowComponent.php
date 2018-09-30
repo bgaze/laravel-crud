@@ -3,7 +3,6 @@
 namespace Bgaze\Crud\Themes\Vue\Builders;
 
 use Bgaze\Crud\Themes\Classic\Builders\ShowView;
-use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
 
 /**
  * The Show view builder.
@@ -11,8 +10,6 @@ use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
  * @author bgaze <benjamin@bgaze.fr>
  */
 class ShowComponent extends ShowView {
-
-    use RegisterComponentTrait;
 
     /**
      * The file that the builder generates.
@@ -35,7 +32,7 @@ class ShowComponent extends ShowView {
 
         $path = $this->generateFile($this->file(), $stub);
 
-        $this->registerComponent('Show', $this->crud->getModelFullStudly() . 'Show', '/:id');
+        $this->crud->registerComponent('Show', $this->crud->getModelFullStudly() . 'Show', '/:id');
 
         return $path;
     }

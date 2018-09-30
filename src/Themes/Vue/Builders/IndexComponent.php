@@ -3,7 +3,6 @@
 namespace Bgaze\Crud\Themes\Vue\Builders;
 
 use Bgaze\Crud\Themes\Classic\Builders\IndexView;
-use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
 
 /**
  * The Index view builder.
@@ -11,8 +10,6 @@ use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
  * @author bgaze <benjamin@bgaze.fr>
  */
 class IndexComponent extends IndexView {
-
-    use RegisterComponentTrait;
 
     /**
      * The file that the builder generates.
@@ -38,7 +35,7 @@ class IndexComponent extends IndexView {
 
         $path = $this->generateFile($this->file(), $stub);
 
-        $this->registerComponent('Index', $this->crud->getPluralFullStudly() . 'Index');
+        $this->crud->registerComponent('Index', $this->crud->getPluralFullStudly() . 'Index');
 
         return $path;
     }

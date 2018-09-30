@@ -4,7 +4,6 @@ namespace Bgaze\Crud\Themes\Vue\Builders;
 
 use Bgaze\Crud\Themes\Classic\Builders\CreateView;
 use Bgaze\Crud\Core\Field;
-use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
 
 /**
  * The Create view builder.
@@ -12,8 +11,6 @@ use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
  * @author bgaze <benjamin@bgaze.fr>
  */
 class CreateComponent extends CreateView {
-
-    use RegisterComponentTrait;
 
     /**
      * The file that the builder generates.
@@ -32,7 +29,7 @@ class CreateComponent extends CreateView {
     public function build() {
         $path = $this->buildForm('components.create', 'partials.form-group');
 
-        $this->registerComponent('Create', $this->crud->getModelFullStudly() . 'Create', '/create');
+        $this->crud->registerComponent('Create', $this->crud->getModelFullStudly() . 'Create', '/create');
 
         return $path;
     }

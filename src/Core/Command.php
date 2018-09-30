@@ -444,6 +444,10 @@ class Command extends Base {
                 $this->dl('Created ' . ucfirst(str_replace('-', ' ', $name)), $builder->build());
             });
 
+            if ($message = $this->crud->onSuccessfullBuild($this->arguments(), $this->options())) {
+                $this->line($message);
+            }
+
             $this->nl();
             $this->comment(' CRUD generated successfully.');
             if (method_exists($this->crud, 'indexPath')) {

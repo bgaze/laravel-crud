@@ -2,16 +2,12 @@
 
 namespace Bgaze\Crud\Themes\Vue\Builders;
 
-use Bgaze\Crud\Themes\Vue\RegisterComponentTrait;
-
 /**
  * The Edit view builder
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
 class EditComponent extends CreateComponent {
-
-    use RegisterComponentTrait;
 
     /**
      * The file that the builder generates.
@@ -30,7 +26,7 @@ class EditComponent extends CreateComponent {
     public function build() {
         $path = $this->buildForm('components.edit', 'partials.form-group');
 
-        $this->registerComponent('Edit', $this->crud->getModelFullStudly() . 'Edit', 'edit/:id');
+        $this->crud->registerComponent('Edit', $this->crud->getModelFullStudly() . 'Edit', '/edit/:id');
 
         return $path;
     }
