@@ -5,7 +5,7 @@
         <h1>PluralFullName</h1>
         
         <p>
-            <router-link :to="{name: 'ModelFullStudlyCreate'}" class="nav-link">Create a new ModelStudly</router-link>
+            <router-link :to="{name: 'PluralsKebabDot.create'}" class="nav-link">Create a new ModelStudly</router-link>
         </p>
             
         <table>
@@ -21,8 +21,8 @@
                     <td>{{ ModelCamel.id }}</td>
 #TBODY
                     <td>
-                        <router-link :to="{name: 'ModelFullStudlyShow', params: {id: ModelCamel.id}}">Show</router-link>
-                        <router-link :to="{name: 'ModelFullStudlyEdit', params: {id: ModelCamel.id}}">Edit</router-link>
+                        <router-link :to="{name: 'PluralsKebabDot.show', params: {id: ModelCamel.id}}">Show</router-link>
+                        <router-link :to="{name: 'PluralsKebabDot.edit', params: {id: ModelCamel.id}}">Edit</router-link>
                         <button v-on:click="deleteModelStudly(ModelCamel.id, index)">Delete</button>
                     </td>
                 </tr>

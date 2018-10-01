@@ -1,1 +1,1 @@
-import ComponentFullName from './components/PluralsKebabSlash/ComponentName.vue';
+import ComponentName from './components/ComponentFile.vue';

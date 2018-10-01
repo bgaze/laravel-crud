@@ -26,7 +26,7 @@ class EditComponent extends CreateComponent {
     public function build() {
         $path = $this->buildForm('components.edit', 'partials.form-group');
 
-        $this->crud->registerComponent('Edit', $this->crud->getModelFullStudly() . 'Edit', '/edit/:id');
+        $this->crud->registerComponent('Edit', '/edit/:id');
 
         return $path;
     }

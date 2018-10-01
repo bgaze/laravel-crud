@@ -5,12 +5,12 @@
         <h3>{{ title }}</h3>
 
         <p>
-            <router-link :to="{ name: 'PluralFullStudlyIndex' }">Back to PluralStudly</router-link>
+            <router-link :to="{name: 'PluralsKebabDot.index'}">Back to PluralStudly</router-link>
         </p>
         
 #CONTENT
 
-        <router-link :to="{name: 'ModelStudlyEdit', params: {id: ModelCamel.id}}">Edit</router-link>
+        <router-link :to="{name: 'PluralsKebabDot.edit', params: {id: ModelCamel.id}}">Edit</router-link>
         <button v-on:click="deleteModelStudly(ModelCamel.id, index)">Delete</button>
     </div>
 </template>
@@ -42,7 +42,7 @@
                 if (confirm('Delete ModelCamel #' + id + '?')) {
                     API.delete('PluralsKebabSlash/' + id)
                         .then((response) => {
-                            this.$router.push({name: 'PluralFullStudlyIndex'});
+                            this.$router.push({name: 'PluralsKebabDot.index'});
                         })
                         .catch((error) => {
                           console.log(error);

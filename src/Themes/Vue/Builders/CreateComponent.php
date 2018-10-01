@@ -29,7 +29,7 @@ class CreateComponent extends CreateView {
     public function build() {
         $path = $this->buildForm('components.create', 'partials.form-group');
 
-        $this->crud->registerComponent('Create', $this->crud->getModelFullStudly() . 'Create', '/create');
+        $this->crud->registerComponent('Create', '/create');
 
         return $path;
     }

@@ -5,7 +5,7 @@
         <h3>{{ title }}</h3>
 
         <p>
-            <router-link :to="{ name: 'PluralFullStudlyIndex' }">Back to PluralStudly</router-link>
+            <router-link :to="{name: 'PluralsKebabDot.index'}">Back to PluralStudly</router-link>
         </p>
 
         <p v-if="errors.main">{{ errors.main }}</p>
@@ -46,7 +46,7 @@
             updateModelStudly() {
                 API.put('PluralsKebabSlash/' + this.$route.params.id, this.ModelCamel)
                     .then((response) => {
-                        this.$router.push({name: 'PluralFullStudlyIndex'});
+                        this.$router.push({name: 'PluralsKebabDot.index'});
                     })
                     .catch((error) => {
                         if (typeof error.response.data.errors !== 'undefined') {

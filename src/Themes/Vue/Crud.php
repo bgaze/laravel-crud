@@ -12,9 +12,25 @@ use Bgaze\Crud\Themes\Vue\Builders;
  */
 class Crud extends Base {
 
+    /**
+     * A collection to store import directives for generated components
+     *
+     * @var \Illuminate\Support\Collection 
+     */
     public $imports;
+
+    /**
+     * A collection to store route directive for generated components
+     *
+     * @var \Illuminate\Support\Collection 
+     */
     public $routes;
 
+    /**
+     * The constructor of the class.
+     *
+     * @return void
+     */
     public function __construct($model) {
         $this->imports = collect();
         $this->routes = collect();
@@ -77,13 +93,19 @@ class Crud extends Base {
         return url($this->getPluralsKebabSlash());
     }
 
-    public function registerComponent($name, $fullname, $path = '') {
+    /**
+     * Remember component import and route.
+     * 
+     * @param string $file      The basename of the component file
+     * @param string $path      The path to append to CRUD base url
+     */
+    public function registerComponent($file, $path = '') {
         $stubs = self::stubs();
         $replacements = [
-            'PluralsKebabSlash' => $this->getPluralsKebabSlash(),
-            'ComponentFullName' => $fullname,
-            'ComponentName' => $name,
-            'ComponentPath' => $path
+            'ComponentName' => $this->getModelFullStudly() . $file,
+            'ComponentRoute' => $this->getPluralsKebabDot() . '.' . strtolower($file),
+            'ComponentFile' => $this->getPluralsKebabSlash() . '/' . $file,
+            'ComponentPath' => $this->getPluralsKebabSlash() . $path
         ];
 
         $stub = file_get_contents($stubs['partials.component-import']);

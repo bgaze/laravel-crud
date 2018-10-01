@@ -32,7 +32,7 @@ class ShowComponent extends ShowView {
 
         $path = $this->generateFile($this->file(), $stub);
 
-        $this->crud->registerComponent('Show', $this->crud->getModelFullStudly() . 'Show', '/:id');
+        $this->crud->registerComponent('Show', '/:id');
 
         return $path;
     }

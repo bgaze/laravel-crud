@@ -1,1 +1,1 @@
-    {name: 'ComponentFullName', path: '/PluralsKebabSlashComponentPath', component: ComponentFullName}
+    {name: 'ComponentRoute', path: '/ComponentPath', component: ComponentName}

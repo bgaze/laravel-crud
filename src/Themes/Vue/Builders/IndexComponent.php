@@ -35,7 +35,7 @@ class IndexComponent extends IndexView {
 
         $path = $this->generateFile($this->file(), $stub);
 
-        $this->crud->registerComponent('Index', $this->crud->getPluralFullStudly() . 'Index');
+        $this->crud->registerComponent('Index');
 
         return $path;
     }
