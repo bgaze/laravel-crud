@@ -27,7 +27,7 @@
                     <td>
                         <a href="{{ route('PluralsKebabDot.show', ['ModelCamel' => $ModelCamel->id]) }}">Show</a>
                         <a href="{{ route('PluralsKebabDot.edit', ['ModelCamel' => $ModelCamel->id]) }}">Edit</a>
-                        {!! Form::model($ModelCamel, ['route' => ['PluralsKebabDot.destroy', $ModelCamel->id], 'method' => 'delete']) !!}
+                        {!! Form::model($ModelCamel, ['route' => ['PluralsKebabDot.destroy', $ModelCamel->id], 'method' => 'delete', 'onsubmit' => 'return confirm(\'Do you really want to delete ModelFullName #' . $ModelCamel->id . '?\');']) !!}
                         {!! Form::submit('Delete') !!}
                         {!! Form::close() !!}
                     </td>
