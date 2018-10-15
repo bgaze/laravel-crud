@@ -267,7 +267,7 @@ abstract class Crud {
         } elseif (config('crud.layout')) {
             $this->layout = config('crud.layout');
         } else {
-            $this->layout = self::layout();
+            $this->layout = static::layout();
         }
     }
 
