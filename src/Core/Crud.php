@@ -263,7 +263,7 @@ abstract class Crud {
      */
     public function setLayout($value = false) {
         if ($value) {
-            $this->layout = $this->option('layout');
+            $this->layout = $value;
         } elseif (config('crud.layout')) {
             $this->layout = config('crud.layout');
         } else {
