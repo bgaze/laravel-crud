@@ -10,12 +10,12 @@ This package allows to generate in a breath entire CRUD into your Laravel 5.5+ a
 
 ## Demo
 
-[This short video on Vimeo](https://vimeo.com/330304646) shows the creation of a CRUD for an **Article** model containing:
+[This short video on Vimeo](https://vimeo.com/330304646) shows the creation of a CRUD for an **Article** model containing following fields:
 
-* An indexed **category:** enum field, with _ffo_ and _bar_ as values.
-* A mandatory string field **title**.
-* A nullable **body** text field.
-* A boolean **active** field with _0_ as default value.
+* **category:** indexed enum field, with _foo_ and _bar_ as values.
+* **title:** a mandatory string field.
+* **body:** a nullable text field.
+* **active:** a boolean field with _0_ as default value.
 * Timestamps and softDeletes fields.
 
 ## Overview
