@@ -55,7 +55,7 @@ php artisan vendor:publish --tag=crud-classic-views
 > This section explain very important concepts required to use the package.  
 > Please read it carrefully.
 
-#### FullName and Plurals
+### FullName and Plurals
 
 As a convention, we designate by:
 
@@ -66,7 +66,7 @@ When a CRUD command is invoked, the only required argument is model's FullName, 
  
 A confirmation is asked for Plurals, please pay attention to that important step and correct the proposed value if needed.
 
-Examples:
+**Examples:**
 
 ```
 // Models:
@@ -84,6 +84,48 @@ Examples:
     MyGrandParents\MyParents  
     MyGrandParents\MyParents\MyChildren
 ```
+
+### SignedInput
+
+When dealing with CRUD, a tricky part is often to define model's properties (aka table fields).
+
+I believe that the Laravel commands signature syntax is a very great to do that in a concise and handy way.  
+So I've kinda "hacked" it to make that step as easy as possible.
+
+Please note that you can also use that trick for your own needs using the `Bgaze\Crud\Support\SignedInput` class.
+
+**Examples:**
+
+Adding a _foo_ integer field, nullable and indexed.
+
+```
+// Input:
+integer foo -n -i
+
+// Result:
+$table->integer('foo')->nullable()->index();
+```
+
+Adding a _bar_ varchar field, with a length of 100 and a unique constraint.
+
+```
+// Input:
+string bar 100 -q
+
+// Result:
+$table->string('foo', 100)->unique();
+```
+
+Adding a _baz_ enum field, with 'user' and 'admin' as values, and 'user' as default value.
+
+```
+// Input:
+enum baz user admin -d user
+
+// Result:
+$table->enum('baz', ['user', 'admin'])->default('user');
+```
+
 ## Usage
 
 Each CRUD theme is registred as a dedicated command.
