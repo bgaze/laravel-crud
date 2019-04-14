@@ -4,18 +4,20 @@
 
 This package allows to generate in a breath entire CRUD into your Laravel 5.5+ applications.
 
-See it in action, creating a CRUD for an **Article** model containing:
+<p align="center">
+  <img src="doc/assets/demo.png">
+</p>
+
+## Demo
+
+[See this demo on Vimeo](https://vimeo.com/330304646)
+
+This short video shows the creation of a CRUD for an **Article** model containing:
 
 * An indexed **category:** enum field, with _ffo_ and _bar_ as values.
 * A mandatory string field **title**.
 * A nullable **body** text field.
 * A boolean **active** field with _0_ as default value.
-
-<p align="center">
-    
-[![https://vimeo.com/330304646](doc/assets/demo.png)](https://vimeo.com/330304646)
-
-</p>
 
 ## Overview
 
