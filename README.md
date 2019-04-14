@@ -12,7 +12,9 @@ See it in action, creating a CRUD for an **Article** model containing:
 * A boolean **active** field with _0_ as default value.
 
 <p align="center">
-[![https://vimeo.com/330304646](doc/assets/demo.png | width=600)](https://vimeo.com/330304646)
+    
+[![https://vimeo.com/330304646](doc/assets/demo.png)](https://vimeo.com/330304646)
+
 </p>
 
 ## Overview
