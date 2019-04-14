@@ -1,7 +1,0 @@
-// Components and routes for ModelFullName CRUD.
-#IMPORTS
-routes.push(...[
-#ROUTES
-]);
-
-//CRUD//

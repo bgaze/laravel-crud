@@ -1,5 +1,0 @@
-            <div id="FieldName-group">
-                <label for="FieldName">FieldLabel</label>
-                #FIELD
-                <small v-if="errors.FieldName">{{ errors.FieldName[0] }}</small>
-            </div>

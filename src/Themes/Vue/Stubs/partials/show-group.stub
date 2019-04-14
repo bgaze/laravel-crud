@@ -1,3 +1,0 @@
-        <p id="FieldName-group">
-            <b>FieldLabel:</b> {{ ModelCamel.FieldName }}
-        </p>

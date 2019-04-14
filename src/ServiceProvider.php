@@ -27,7 +27,6 @@ class ServiceProvider extends Base {
         // Register & publish default themes.
         $this->registerTheme(Themes\Api\Crud::class, 'Generate a REST API CRUD using default theme');
         $this->registerTheme(Themes\Classic\Crud::class, 'Generate a classic CRUD using default theme', __DIR__ . '/Themes/Classic/Views');
-        $this->registerTheme(Themes\Vue\Crud::class, 'Generate a Vue.js CRUD using default theme', __DIR__ . '/Themes/Vue/Views');
     }
 
     /**
