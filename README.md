@@ -11,7 +11,9 @@ See it in action, creating a CRUD for an **Article** model containing:
 * A nullable **body** text field.
 * A boolean **active** field with _0_ as default value.
 
-[![https://vimeo.com/330304646](doc/assets/demo.png)](https://vimeo.com/330304646)
+<p align="center">
+[![https://vimeo.com/330304646](doc/assets/demo.png | width=600)](https://vimeo.com/330304646)
+</p>
 
 ## Overview
 
