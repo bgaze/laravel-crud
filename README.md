@@ -11,9 +11,17 @@ See it in action, creating a CRUD for an **Article** model containing:
 * A nullable **body** text field.
 * A boolean **active** field with _0_ as default value.
 
-<video width="880" height="704" controls>
-  <source src="doc/assets/demo.mp4" type="video/mp4">
-</video>
+<div class="embed-container">
+  <iframe
+      src="https://player.vimeo.com/video/330304646"
+      width="500"
+      height="281"
+      frameborder="0"
+      webkitallowfullscreen
+      mozallowfullscreen
+      allowfullscreen>
+  </iframe>
+</div>
 
 ## Overview
 
