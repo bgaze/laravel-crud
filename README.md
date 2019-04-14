@@ -94,9 +94,9 @@ So I've kinda "hacked" it to make that step as easy as possible.
 
 Please note that you can also use that trick for your own needs using the `Bgaze\Crud\Support\SignedInput` class.
 
-**Examples:**
+<details><summary>Examples</summary><p>
 
-Adding a _foo_ integer field, nullable and indexed.
+Adding a _foo_ integer field, nullable and indexed:
 
 ```
 // Input:
@@ -106,7 +106,7 @@ integer foo -n -i
 $table->integer('foo')->nullable()->index();
 ```
 
-Adding a _bar_ varchar field, with a length of 100 and a unique constraint.
+Adding a _bar_ varchar field, with a length of 100 and a unique constraint:
 
 ```
 // Input:
@@ -116,7 +116,7 @@ string bar 100 -q
 $table->string('foo', 100)->unique();
 ```
 
-Adding a _baz_ enum field, with 'user' and 'admin' as values, and 'user' as default value.
+Adding a _baz_ enum field, with 'user' and 'admin' as values, and 'user' as default value:
 
 ```
 // Input:
@@ -125,6 +125,8 @@ enum baz user admin -d user
 // Result:
 $table->enum('baz', ['user', 'admin'])->default('user');
 ```
+
+</p></details> 
 
 ## Usage
 
