@@ -55,9 +55,7 @@ php artisan vendor:publish --tag=crud-classic-views
 > This section explain very important concepts required to use the package.  
 > Please read it carrefully.
 
-#### Model FullName and Plurals
-
-To generate a CRUD, the generator needs to manipulate the Model name and it namespace.
+#### FullName and Plurals
 
 As a convention, we designate by:
 
