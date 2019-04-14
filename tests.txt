@@ -3,13 +3,13 @@
 clear \
 && git reset --hard \
 && git clean -fd \
-&& php artisan crud:default:api Article -n \
+&& php artisan crud:api Article -n \
 -c "string title" \
 -c "enum category foo bar foobar -i" \
 -c "text body -n" \
 -c "unsignedInteger views -d 0" \
 -c "boolean active -d 1" \
-&& php artisan crud:default:api Article/Comment -n \
+&& php artisan crud:api Article/Comment -n \
 -c "string pseudo" \
 -c "dateTime date -u" \
 -c "text comment" \
@@ -24,13 +24,13 @@ clear \
 clear \
 && git reset --hard \
 && git clean -fd \
-&& php artisan crud:default:classic Article -n \
+&& php artisan crud:classic Article -n \
 -c "string title" \
 -c "enum category foo bar foobar -i" \
 -c "text body -n" \
 -c "unsignedInteger views -d 0" \
 -c "boolean active -d 1" \
-&& php artisan crud:default:classic Article/Comment -n \
+&& php artisan crud:classic Article/Comment -n \
 -c "string pseudo" \
 -c "dateTime date -u" \
 -c "text comment" \

@@ -18,7 +18,16 @@ class Crud extends Base {
      * @return string
      */
     static public function name() {
-        return 'default:api';
+        return 'crud:api';
+    }
+
+    /**
+     * The description the CRUD theme.
+     * 
+     * @return string
+     */
+    static public function description() {
+        return 'Generate a REST API CRUD : migration, model, factory, seeder, request, resource, controller, routes';
     }
 
     /**

@@ -116,6 +116,13 @@ abstract class Crud {
     abstract static public function name();
 
     /**
+     * The description the CRUD theme.
+     * 
+     * @return string
+     */
+    abstract static public function description();
+
+    /**
      * The stubs availables in the CRUD theme.
      * 
      * @return array Name as key, absolute path as value.
@@ -130,14 +137,29 @@ abstract class Crud {
     abstract static public function builders();
 
     /**
+     * The views directory.
+     * 
+     * This function should return the theme views location, or false if the theme has no views.
+     * Any "Views" directory at the theme root will be used by default.
+     * 
+     * If defined, theme views will be registred and made publishable.
+     * 
+     * @return string|false
+     */
+    static public function views() {
+        $dir = dirname((new \ReflectionClass(static::class))->getFileName()) . '/Views';
+        return is_dir($dir) ? $dir : false;
+    }
+
+    /**
      * The views namespace.
      * 
      * It is used to publish and register Theme's views.
      * 
      * @return string
      */
-    static public function views() {
-        return 'crud-' . str_replace(':', '-', static::name());
+    static public function viewsNamespace() {
+        return str_replace(':', '-', static::name());
     }
 
     /**
@@ -148,7 +170,7 @@ abstract class Crud {
      * @return string
      */
     static public function layout() {
-        return static::views() . '::layout';
+        return static::viewsNamespace() . '::layout';
     }
 
     ############################################################################

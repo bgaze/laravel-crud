@@ -18,7 +18,16 @@ class Crud extends Base {
      * @return string
      */
     static public function name() {
-        return 'default:classic';
+        return 'crud:classic';
+    }
+
+    /**
+     * The description the CRUD theme.
+     * 
+     * @return string
+     */
+    static public function description() {
+        return 'Generate a default CRUD : migration, model, factory, seeder, request, resource, controller, views, routes';
     }
 
     /**

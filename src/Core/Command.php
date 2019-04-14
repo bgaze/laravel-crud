@@ -46,13 +46,12 @@ class Command extends Base {
      * The command constructor.
      * 
      * @param string $class         The CRUD theme class
-     * @param type $description     The command description
      * @return void
      */
-    public function __construct($class, $description) {
+    public function __construct($class) {
         $this->theme = call_user_func("{$class}::name");
 
-        $this->description = $description;
+        $this->description = call_user_func("{$class}::description");
 
         $this->signature = $this->compileSignature($class);
 
@@ -73,7 +72,7 @@ class Command extends Base {
 
         $softDeletes = $this->getDatesModifiersChoices('softDeletes', true);
 
-        return "crud:{$this->theme} 
+        return "{$this->theme} 
             {model : The name of the Model.}
             {--p|plurals= : The plurals versions of the Model\'s names.}
             {--t|timestamps= : Add timestamps directives: <fg=cyan>{$timestamps}</>}

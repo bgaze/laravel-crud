@@ -15,13 +15,12 @@ trait ThemeProviderTrait {
      * Register a new CRUD theme
      * 
      * @param string $class         The CRUD class to use
-     * @param string $description   The description to display into theme's command help
-     * @param false|string $views   The path of theme's views
      */
-    protected function registerTheme($class, $description, $views = false) {
+    protected function registerTheme($class) {
         // Register & publish default theme views.
+        $views = call_user_func("{$class}::views");
         if ($views) {
-            $viewsNamespace = call_user_func("{$class}::views");
+            $viewsNamespace = call_user_func("{$class}::viewsNamespace");
             $this->loadViewsFrom($views, $viewsNamespace);
             $this->publishes([$views => resource_path("views/vendor/{$viewsNamespace}")], "{$viewsNamespace}-views");
         }
@@ -36,8 +35,8 @@ trait ThemeProviderTrait {
             });
 
             // Register theme command.
-            $this->app->singleton("crud.theme.{$name}.command", function () use ($class, $description) {
-                return new Command($class, $description);
+            $this->app->singleton("crud.theme.{$name}.command", function () use ($class) {
+                return new Command($class);
             });
             $this->commands("crud.theme.{$name}.command");
         }
