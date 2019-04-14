@@ -94,7 +94,7 @@ So I've kinda "hacked" it to make that step as easy as possible.
 
 Please note that you can also use that trick for your own needs using the `Bgaze\Crud\Support\SignedInput` class.
 
-<details><summary>Examples</summary><p>
+<details><summary><b>Examples</b></summary><p>
 
 Adding a _foo_ integer field, nullable and indexed:
 
