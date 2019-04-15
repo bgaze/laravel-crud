@@ -4,6 +4,16 @@
     <img src="doc/assets/demo.png">
 </p>
 
+* [Overview](#overview)
+* [Demo](#demo)
+* [Why this package?](#why-this-package)
+* [Conventions](#conventions)
+* [Installation](#installation)
+* [Usage](#usage)
+    * [Generation process](#generation-process)
+    * [Defining migration fields](#defining-migration-fields)
+    * [No interraction.](#no-interraction)
+
 ## Overview
 
 This package allows to generate CRUDs in a breath for your Laravel 5.5+ applications.
@@ -22,16 +32,16 @@ Two themes are provided :
 
 [This short video on Vimeo](https://vimeo.com/330304646) shows the creation of a CRUD for an **Article** model containing following fields:
 
-* **category:** indexed enum field, with _foo_ and _bar_ as values.
+* **category:** indexed enum field, with `foo` and `bar` as values.
 * **title:** a mandatory string field.
 * **body:** a nullable text field.
-* **active:** a boolean field with _0_ as default value.
-* Timestamps and softDeletes fields.
+* **active:** a boolean field with `0` as default value.
+* **Timestamps** and **softDeletes** fields.
 
 ## Why this package?
 
 Laravel is my favorite PHP framework.  
-Using it daily, at work and for my private projects, I've noticed that each time I create a model, 
+But using it daily, at work and for my private projects, I've noticed that each time I create a model, 
 I have to do the same repetitive tasks before starting to really work on the application itself:
 
 1. Generate classes: model, migration, controller, request, factory, seeder, ...
@@ -45,10 +55,10 @@ I have to do the same repetitive tasks before starting to really work on the app
 Sticking to the framework conventions, I believe that this process can be automated a lot to produce
 a generic functionnal CRUD that we just need to customize, keeping the focus on the application logic.
 
-The key for that is to define the Model table field, from whom a lot of things can be deducted.  
+The key for that is to define the Model table fields, from whom a lot of things can be deducted.  
 For instance request rules (a non-nullable field is required) or form fields (an enum field is often a select).
 
-But even if the logic behind CRUD generation will be almost the same, the files to generate can vary a lot depending on the tools used in the app.  
+But even if the logic behind CRUD generation will be almost the same, the files to generate can vary a lot depending on the tools used.  
 For instance, using classic HTML or Vue.js, a CRUD files will be very different.
 
 So this package goals are to provide:
