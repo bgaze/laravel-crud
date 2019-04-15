@@ -2,9 +2,9 @@
 
 # Usage
 
-* [Generation process](#generation-process)
-* [Defining migration fields](#defining-migration-fields)
-* [Layout inheritance](#layout-inheritance)
+[Generation process](#generation-process)  
+[Defining migration fields](#defining-migration-fields)  
+[Layout inheritance](#layout-inheritance)
 
 Each CRUD theme is available as a dedicated command.  
 Please call any CRUD command with the `-h` switch to see a complete description of it's arguments and options.
