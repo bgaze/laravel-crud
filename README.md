@@ -174,11 +174,11 @@ Adding a primary index on firstname and lastname fields:
 
 **Field type help:**
 
-[Field type help](doc/assets/signed-input-help.png)
+![Field type help](doc/assets/signed-input-help.png)
 
 **Field types list:**
 
-[Field types list](doc/assets/signed-input-list.png)
+![Field types list](doc/assets/signed-input-list.png)
 
 ### No interraction.
 
