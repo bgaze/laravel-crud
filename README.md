@@ -199,6 +199,8 @@ Adding a primary index on firstname and lastname fields:
 Any step of the process can also be set using options.  
 Any option directly passed to the command will be skipped by the wizard.
 
+Please see [CRUD command options](doc/crud-options.md) for more details.
+
 Example, CRUD generation without any interractions:
 
 ```
