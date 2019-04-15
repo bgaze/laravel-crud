@@ -1,7 +1,7 @@
 # Laravel CRUD Generator
 
 <p align="center">
-    <img src="doc/assets/demo.png">
+    <img src="doc/assets/intro.png">
 </p>
 
 ## Table of content
