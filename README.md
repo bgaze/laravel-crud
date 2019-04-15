@@ -89,7 +89,7 @@ As a convention, we designate by:
 
 * **FullName:** the model's name including namespace without the `App` part. 
 * **Plural:** the FullName with last segment pluralized.
-* **Plurals:** the pluralized form of each segment of the FullName.
+* **Plurals:** the FullName with each segments pluralized.
 
 **Examples:**
 
