@@ -15,6 +15,9 @@
     * [Generation process](#generation-process)
     * [Defining migration fields](#defining-migration-fields)
     * [Layout inheritance](#layout-inheritance)
+
+Digging deeper:
+
 * [CRUD command options](doc/crud-options.md)
 * [Custom CRUD theme](doc/custom-theme.md)
 
