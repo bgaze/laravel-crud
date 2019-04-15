@@ -6,6 +6,9 @@
 
 ## Table of content
 
+> The Conventions section explain very important concepts.  
+> Please read it carrefully before using this package.
+
 * [Overview](#overview)
 * [Installation](#installation)
 * [Why this package?](#why-this-package)
@@ -85,9 +88,6 @@ So this package goals are to provide:
     + Basic HTML CRUD using Blade templates. 
 
 ## Conventions
-
-> This section explain very important concepts required to use the package.  
-> Please read it carrefully.
 
 CRUD generator need to manipulate Model name in order to generate required ressources.  
 As a convention, we designate by:
