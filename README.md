@@ -11,7 +11,7 @@
 * [Why this package?](#why-this-package)
 * [Conventions](#conventions)
 
-Digging deeper:
+Documentation:
 
 * [Usage](doc/usage.md)
 * [CRUD command options](doc/crud-options.md)
@@ -24,8 +24,7 @@ Please have a look to [this short video on Vimeo](https://vimeo.com/330304646) t
 
 Using the SignedInput syntax, it offers a concise and handy way to define the model fields.
 
-It is designed to be easily extended in order to create custom CRUDs (aka _themes_).  
-Each theme is available as a dedicated console command.
+It is designed to be easily extended in order to create custom CRUDs (aka _themes_) available as a dedicated console command.
 
 Two themes are provided :
 
