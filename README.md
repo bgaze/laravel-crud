@@ -44,8 +44,8 @@ Two themes are provided :
 ### Why this package?
 
 Laravel is my favorite PHP framework.  
-But using it daily, at work and for my private projects, I've noticed that each time I create a model, 
-I have to do the same repetitive tasks before starting to really work on the application itself:
+But using it daily, at work and for my private projects, I realized that each time I create a model, 
+I was wasting a lot of time doing repetitive tasks instead of really working on the application itself:
 
 1. Generate classes: model, migration, controller, request, factory, seeder, ...
 2. Define the table fields into migration.
@@ -55,11 +55,11 @@ I have to do the same repetitive tasks before starting to really work on the app
 6. Register controller routes.
 7. Create CRUD views and model forms.
 
-I believe that this process can be automated a lot to produce
-a generic functionnal CRUD that we just need to customize, keeping the focus on the application logic.
+I believe that this process can be automated a lot to produce a generic functionnal CRUD 
+that we just need to customize, keeping the focus on the application logic.
 
 The key for that is to define the Model table fields from whom, sticking to the framework conventions, a lot of things can be deducted.  
-For instance request rules (a non-nullable field is required) or form fields (an enum field is often a select).
+For instance request rules or form fields: a non-nullable field is required, an enum field is often a select.
 
 But even if CRUD generation logic will be almost the same, the files to generate can vary a lot depending on the tools used.  
 For instance, using classic HTML or Vue.js, a CRUD files will be very different.
@@ -194,3 +194,48 @@ Adding a primary index on firstname and lastname fields:
 **Field types list:**
 
 ![Field types list](doc/assets/signed-input-list.png)
+
+### Layout inheritance.
+
+> This section is written for **classic** theme, but should also work with any theme creating blade templates.
+> See [Custom CRUD theme](doc/custom-theme.md) for more information on CRUD theme creation.
+
+When a theme creates views, they extend from a provided base layout.  
+Obviously, we wish that views extend our application layout.
+
+There is two ways to do that.  
+In both cases, the application layout must be compatible with default one.
+
+**Overriding theme's layout**
+
+Publish theme's views :
+
+```
+php artisan vendor:publish --tag=crud-classic-views
+```
+
+Then customize the created file `/resources/views/vendor/crud-classic/layout.blade.php`.  
+It will be automatically used when extending `crud-classic::layout`.
+
+**Extending theme's layout**
+
+As I don't like to have my app layouts in a vendor subfolder, this is my prefered way.  
+Simply create a view extending the theme layout:
+
+```
+<!-- /resources/views/layouts/main.blade.php -->
+@extends('crud-classic::layout')
+```
+
+Then use pass it to the CRUD command option:
+
+```
+php artisan crud:classic --layout=layouts.main MyModelFullName
+```
+
+You can configure your app to use it as default for all commands using layout key in `/config/crud.php`.  
+You can always use the `theme` option on command to override that configuration.
+
+```
+'layout' => 'layouts.main',
+```
