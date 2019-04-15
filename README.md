@@ -6,16 +6,6 @@
   <img src="doc/assets/demo.png">
 </p>
 
-## Demo
-
-[This short video on Vimeo](https://vimeo.com/330304646) shows the creation of a CRUD for an **Article** model containing following fields:
-
-* **category:** indexed enum field, with _foo_ and _bar_ as values.
-* **title:** a mandatory string field.
-* **body:** a nullable text field.
-* **active:** a boolean field with _0_ as default value.
-* Timestamps and softDeletes fields.
-
 ## Overview
 
 This package allows to generate CRUDs in a breath for your Laravel 5.5+ applications.
@@ -29,6 +19,16 @@ Two themes are provided :
 
 * **crud:classic** generates a fully fonctionnal "classic" CRUD, creating for you : migration, model, factory, seeder, request, resource, controller, views and routes.
 * **crud:api:** generates a fully fonctionnal REST API CRUD, creating for you : migration, model, factory, seeder, request, resource, controller and routes.
+
+## Demo
+
+[This short video on Vimeo](https://vimeo.com/330304646) shows the creation of a CRUD for an **Article** model containing following fields:
+
+* **category:** indexed enum field, with _foo_ and _bar_ as values.
+* **title:** a mandatory string field.
+* **body:** a nullable text field.
+* **active:** a boolean field with _0_ as default value.
+* Timestamps and softDeletes fields.
 
 ## Why this package?
 
