@@ -7,10 +7,9 @@
 ## Table of content
 
 * [Overview](#overview)
-    * [Demo](#demo)
-    * [Why this package?](#why-this-package)
-    * [Conventions](#conventions)
 * [Installation](#installation)
+* [Why this package?](#why-this-package)
+* [Conventions](#conventions)
 
 Digging deeper:
 
@@ -20,7 +19,8 @@ Digging deeper:
 
 ## Overview
 
-This package allows to generate CRUDs in a breath for your Laravel 5.5+ applications.
+This package allows to generate CRUDs in a breath for your Laravel 5.5+ applications.  
+Please have a look to [this short video on Vimeo](https://vimeo.com/330304646) to see it in action.
 
 Using the SignedInput syntax, it offers a concise and handy way to define the model fields.
 
@@ -32,17 +32,27 @@ Two themes are provided :
 * **crud:classic** generates a fully fonctionnal "classic" HTML CRUD, creating for you : migration, model, factory, seeder, request, resource, controller, views and routes.
 * **crud:api** generates a fully fonctionnal REST API CRUD, creating for you : migration, model, factory, seeder, request, resource, controller and routes.
 
-### Demo
+## Installation
 
-[This short video on Vimeo](https://vimeo.com/330304646) shows the creation of a CRUD for an **Article** model containing following fields:
+Simply import the package as a dev dependency into your Laravel application:
 
-* **category:** indexed enum field, with `foo` and `bar` as values.
-* **title:** a mandatory string field.
-* **body:** a nullable text field.
-* **active:** a boolean field with `0` as default value.
-* **Timestamps** and **softDeletes** fields.
+```
+composer require --dev bgaze/laravel-crud
+```
 
-### Why this package?
+You can publish the package configuration to `/config/crud.php`:
+
+```
+php artisan vendor:publish --provider=Bgaze\Crud\ServiceProvider
+```
+
+And classic themes views to `/resources/views/vendor/crud-classic`:
+
+```
+php artisan vendor:publish --tag=crud-classic-views
+```
+
+## Why this package?
 
 Laravel is my favorite PHP framework.  
 But using it daily, at work and for my private projects, I realized that each time I create a model, 
@@ -73,7 +83,7 @@ So this package goals are to provide:
     + REST API CRUD.
     + Basic HTML CRUD using Blade templates. 
 
-### Conventions
+## Conventions
 
 > This section explain very important concepts required to use the package.  
 > Please read it carrefully.
@@ -108,24 +118,3 @@ Plurals:
     MyGrandParents\MyParents  
     MyGrandParents\MyParents\MyChildren
 ```
-
-## Installation
-
-Simply import the package as a dev dependency into your Laravel application:
-
-```
-composer require --dev bgaze/laravel-crud
-```
-
-You can publish the package configuration to `/config/crud.php`:
-
-```
-php artisan vendor:publish --provider=Bgaze\Crud\ServiceProvider
-```
-
-And classic themes views to `/resources/views/vendor/crud-classic`:
-
-```
-php artisan vendor:publish --tag=crud-classic-views
-```
-
