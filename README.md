@@ -55,16 +55,10 @@ php artisan vendor:publish --tag=crud-classic-views
 > This section explain very important concepts required to use the package.  
 > Please read it carrefully.
 
-### FullName and Plurals
-
 As a convention, we designate by:
 
 * **FullName:** the model's name including namespace without the `App` part. 
 * **Plurals:** the pluralized form of each segment of the FullName.
-
-When a CRUD command is invoked, the only required argument is model's FullName, and Plurals is automatically generated based on english language. 
- 
-A confirmation is asked for Plurals, please pay attention to that important step and correct the proposed value if needed.
 
 **Examples:**
 
@@ -85,9 +79,29 @@ A confirmation is asked for Plurals, please pay attention to that important step
     MyGrandParents\MyParents\MyChildren
 ```
 
+## Usage
+
+Each CRUD theme is registred as a dedicated command.  
+Please call them with the `-h` switch to see a complete description of arguments of options. 
+
+The only mandatory argument is the FullName of the model.  
+When invoked, a wizard will drive you through following steps.
+
+### Plurals definition
+
+Plurals is automatically suggested based on model's FullName and english language.
+
+Please pay attention to that important step and correct the proposed value if needed.  
+Otherwise, simply confirm.
+
+### Timestamps and softDeletes
+
+The wizard 
+
+
 ### SignedInput
 
-When dealing with CRUD, a tricky part is often to define model's properties (aka table fields).
+When dealing with CRUDs, a tricky part is often to define model's properties (aka table fields).
 
 I believe that the Laravel commands signature syntax is a very great to do that in a concise and handy way.  
 So I've kinda "hacked" it to make that step as easy as possible.
@@ -128,35 +142,23 @@ $table->enum('baz', ['user', 'admin'])->default('user');
 
 </p></details> 
 
-## Usage
+### No interraction.
 
-Each CRUD theme is registred as a dedicated command.
+Any step of the process can also be set using options.
 
-The only mandatory argument is the 
+<details><summary><b>Example</b></summary><p>
+
+Creating a CRUD without interractions :
 
 ```
-Usage:
-  crud:classic [options] [--] <model>
-
-Arguments:
-  model                              The name of the Model.
-
-Options:
-  -p, --plurals[=PLURALS]            The plurals versions of the Model\'s names.
-  -t, --timestamps[=TIMESTAMPS]      Add timestamps directives: [timestamps]|timestampsTz|nullableTimestamps|none
-  -s, --soft-deletes[=SOFT-DELETES]  Add soft delete directives: [softDeletes]|softDeletesTz|none
-  -c, --content[=CONTENT]            The list of Model\'s fields (signature syntax). (multiple values allowed)
-  -o, --only[=ONLY]                  Generate only selected files: migration-class|model-class|factory-file|seeds-class|request-class|resource-class|controller-class|index-view|create-view|edit-view|show-view (multiple values allowed)
-  -l, --layout[=LAYOUT]              The layout to extend into generated views: [crud-classic::layout]
-  -h, --help                         Display this help message
-  -q, --quiet                        Do not output any message
-  -V, --version                      Display this application version
-      --ansi                         Force ANSI output
-      --no-ansi                      Disable ANSI output
-  -n, --no-interaction               Do not ask any interactive question
-      --env[=ENV]                    The environment the command should run under
-  -v|vv|vvv, --verbose               Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
-
-Help:
-  Generate a default CRUD : migration, model, factory, seeder, request, resource, controller, views, routes
+php artisan crud:classic Article -n \
+-c "string title" \
+-c "enum category foo bar foobar -i" \
+-c "text body -n" \
+-c "unsignedInteger views -d 0" \
+-c "boolean active -d 1" \
+&& php artisan migrate \
+&& php artisan db:seed --class=ArticlesTableSeeder 
 ```
+
+</p></details> 
