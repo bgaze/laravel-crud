@@ -94,22 +94,22 @@ As a convention, we designate by:
 **Examples:**
 
 ```
-**Models:**
+Models:
     \App\MyGrandParent  
     \App\MyGrandParent\MyParent  
     \App\MyGrandParent\MyParent\MyChild
 
-**FullName:**
+FullName:
     MyGrandParent  
     MyGrandParent\MyParent  
     MyGrandParent\MyParent\MyChild
 
-**Plural:**
+Plural:
     MyGrandParents  
     MyGrandParent\MyParents  
     MyGrandParent\MyParent\MyChildren
 
-**Plurals:**
+Plurals:
     MyGrandParents  
     MyGrandParents\MyParents  
     MyGrandParents\MyParents\MyChildren
