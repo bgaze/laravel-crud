@@ -37,15 +37,14 @@ When dealing with CRUDs, a tricky part is often to define model's properties (ak
 fields types and syntax vary a lot, and user input needs to be guided and validated. 
 
 I believe that the Laravel commands signature syntax is very great to do that in a concise and handy way.  
-So I've kinda "hacked" it to make that step as easy as possible.  
+So I've kinda "hacked" it to make that step as easy as possible.
+
 Please note that you can also use that trick for your own needs using the `Bgaze\Crud\Support\SignedInput` class.
 
-To add a field, enter its type (the CRUD wizard provides autocompletion) followed with required arguments and validate.  
-To get the detailed syntax of a type, validate with no arguments.
+**Adding a field:**
 
-Finally, to see a detailed list of available types, enter `list` and validate.
-
-**Examples:**
+To add a field, enter its type followed with required arguments and validate.  
+The CRUD wizard provides autocompletion for fields types, use the `TAB` key to expand a proposition.
 
 ```
 Adding a foo integer field, nullable and indexed:
@@ -67,9 +66,13 @@ Adding a primary index on firstname and lastname fields:
 
 **Field type help:**
 
+To get the detailed syntax of a type, validate with no arguments.
+
 ![Field type help](assets/signed-input-help.png)
 
 **Field types list:**
+
+To see a detailed list of available types, enter `list` and validate.
 
 ![Field types list](assets/signed-input-list.png)
 
