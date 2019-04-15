@@ -34,11 +34,11 @@ Two themes are provided :
 
 Laravel is my favorite PHP framework, but I believe that models and related files generation can be automated a lot.  
 Model creation is quite repetitive: in most cases, several commands needs to be ran to generate related files and classes.  
+Moreover, views generators are missing.
 
 Provided generators create empty classes, but once the model table fields are defined, and sticking to framework conventions, I believe that a lot of things can be deducted.  
 For instance request rules (a non-nullable field is required) or form fields (an enum field is often a select)...
 
-Finally, views generators are missing.
 
 ## Installation
 
