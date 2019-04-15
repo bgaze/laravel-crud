@@ -100,7 +100,8 @@ It will be automatically used when extending `crud-classic::layout`.
 
 **Extending theme's layout**
 
-As I don't like to have my app layouts in a vendor subfolder, this is my prefered way.  
+As I don't like to have my app layouts in the vendor subfolder, this is my prefered way.
+
 Simply create a view extending the theme layout:
 
 ```
@@ -108,14 +109,14 @@ Simply create a view extending the theme layout:
 @extends('crud-classic::layout')
 ```
 
-Then use pass it to the CRUD command option:
+Then pass it to the CRUD command:
 
 ```
 php artisan crud:classic --layout=layouts.main MyModelFullName
 ```
 
-You can configure your app to use it as default for all commands using layout key in `/config/crud.php`.  
-You can always use the `theme` option on command to override that configuration.
+You can configure your app to use it as default in `/config/crud.php`.  
+You can always override that configuration using the `theme` option on the command.
 
 ```
 'layout' => 'layouts.main',
