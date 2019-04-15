@@ -22,14 +22,14 @@ Documentation:
 
 ## Overview
 
-This package allows to generate CRUDs in a breath for your Laravel 5.5+ applications.  
+This package allows to generate CRUDs in a breath for your **Laravel 5.5+** applications.  
 Please have a look to [this short video on Vimeo](https://vimeo.com/330304646) to see it in action.
 
-Using the SignedInput syntax, it offers a concise and handy way to define the model fields.
+Using the **SignedInput syntax**, it offers a concise and handy way to define the model fields.
 
-It is designed to be easily extended in order to create custom CRUDs (aka _themes_) available as a dedicated console command.
+It is designed to create easily custom CRUDs, aka **themes**.
 
-Two themes are provided :
+Two simple themes are provided :
 
 * **crud:classic** generates a fully fonctionnal "classic" CRUD.  
 _It creates for you : migration, model, factory, seeder, request, resource, controller, blade views and routes._
@@ -82,10 +82,10 @@ For instance, using classic HTML or Vue.js, a CRUD files will be very different.
 So this package goals are to provide:
 
 * A handy way to define required informations for a CRUD generation.
-* A robust and extensible base to create easily custom CRUD generators (named **themes**).
-* Two base themes:
-    + REST API CRUD.
-    + Basic HTML CRUD using Blade templates. 
+* An extensible base to create easily custom CRUD generators (named **themes**).
+* Two simple themes to use as base for custom CRUDs:
+    + A REST API CRUD.
+    + A standart CRUD using Blade templates. 
 
 ## Conventions
 
