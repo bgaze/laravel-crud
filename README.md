@@ -1,9 +1,7 @@
-> Documentation in progress ;-)
-
 # Laravel CRUD Generator
 
 <p align="center">
-  <img src="doc/assets/demo.png">
+    <img src="doc/assets/demo.png">
 </p>
 
 ## Overview
@@ -12,7 +10,7 @@ This package allows to generate CRUDs in a breath for your Laravel 5.5+ applicat
 
 Using the SignedInput syntax, it offers a concise and handy way to define the model fields.
 
-It is designed to be easily extended in order to create custom CRUD (aka _themes_).  
+It is designed to be easily extended in order to create custom CRUDs (aka _themes_).  
 Each theme is available as a dedicated console command.
 
 Two themes are provided :
@@ -44,8 +42,8 @@ I have to do the same repetitive tasks before starting to really work on the app
 6. Register controller routes.
 7. Create CRUD views and model forms.
 
-Sticking to the framework conventions, I believe that this process can be automated a lot to produce a generic functionnal CRUD.  
-So we could customize it, keeping the focus on the application logic.
+Sticking to the framework conventions, I believe that this process can be automated a lot to produce
+a generic functionnal CRUD that we just need to customize, keeping the focus on the application logic.
 
 The key for that is to define the Model table field, from whom a lot of things can be deducted.  
 For instance request rules (a non-nullable field is required) or form fields (an enum field is often a select).
@@ -55,29 +53,9 @@ For instance, using classic HTML or Vue.js, a CRUD files will be very different.
 
 So this package goals are to provide:
 
-* A handy way to define required informations for a complete CRUD generation.
+* A handy way to define required informations for a CRUD generation.
 * A robust and extensible base to create easily custom CRUD generators (named **themes**).
 * Base CRUD themes for REST API and classic HTML (using Blade templates). 
-
-## Installation
-
-Simply import the package as a dev dependency into your Laravel application:
-
-```
-composer require --dev bgaze/laravel-crud
-```
-
-You can publish the package configuration to `/config/crud.php`:
-
-```
-php artisan vendor:publish --provider=Bgaze\Crud\ServiceProvider
-```
-
-And classic themes views to `/resources/views/vendor/crud-classic`:
-
-```
-php artisan vendor:publish --tag=crud-classic-views
-```
 
 ## Conventions
 
@@ -115,10 +93,30 @@ Plurals:
     MyGrandParents\MyParents\MyChildren
 ```
 
+## Installation
+
+Simply import the package as a dev dependency into your Laravel application:
+
+```
+composer require --dev bgaze/laravel-crud
+```
+
+You can publish the package configuration to `/config/crud.php`:
+
+```
+php artisan vendor:publish --provider=Bgaze\Crud\ServiceProvider
+```
+
+And classic themes views to `/resources/views/vendor/crud-classic`:
+
+```
+php artisan vendor:publish --tag=crud-classic-views
+```
+
 ## Usage
 
 Each CRUD theme is registred as a dedicated command.  
-Please call any CRUD command with the `-h` switch to see a complete description of arguments of options. 
+Please call any CRUD command with the `-h` switch to see a complete description of arguments and options. 
 
 ### Generation process
 
@@ -142,12 +140,17 @@ You can also create some data for your model using the generated seeder class.
 
 ### Defining migration fields
 
-When dealing with CRUDs, a tricky part is often to define model's properties (aka table fields).
+When dealing with CRUDs, a tricky part is often to define model's properties (aka table fields) because fields types and syntax vary a lot.  
+ser input needs to be guided and validated. 
 
-I believe that the Laravel commands signature syntax is a very great to do that in a concise and handy way.  
-So I've kinda "hacked" it to make that step as easy as possible.
+I believe that the Laravel commands signature syntax is very great to do that in a concise and handy way.  
+So I've kinda "hacked" it to make that step as easy as possible.  
+Please note that you can also use that trick for your own needs using the `Bgaze\Crud\Support\SignedInput` class.
 
-> Please note that you can also use that trick for your own needs using the `Bgaze\Crud\Support\SignedInput` class.
+To add a field, enter its type (the CRUD wizard provides autocompletion) followed with required arguments and validate.  
+To get the detailed syntax of a type, validate with no arguments.
+
+Finally, to see a detailed list of available types, enter `list` and validate.
 
 **Examples:**
 
@@ -168,6 +171,14 @@ Adding a primary index on firstname and lastname fields:
     Input:  primaryIndex firstname lastname
     Result: $table->primary(['firstname', 'lastname']);
 ```
+
+**Field type help:**
+
+[Field type help](doc/assets/signed-input-help.png)
+
+**Field types list:**
+
+[Field types list](doc/assets/signed-input-list.png)
 
 ### No interraction.
 
