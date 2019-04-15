@@ -32,11 +32,22 @@ Two themes are provided :
 
 ## Why this package?
 
-Laravel is my favorite PHP framework, but I believe that models and related files generation can be automated a lot.  
-Model creation is quite repetitive: in most cases, several commands needs to be ran to generate related files and classes.  
-Moreover, views generators are missing.
+Laravel is my favorite PHP framework.  
+Using it daily, at work and for my private project, I've noticed that each time I create a model, 
+I have to do the same repetitive tasks before starting to really work on the application itself:
 
-Provided generators create empty classes, but once the model table fields are defined, and sticking to framework conventions, I believe that a lot of things can be deducted.  
+* Generate classes: model, migration, controller, request, factory, seeder, ...
+* Define the table fields into migration.
+* Create the rules into the request class.
+* Create the model faker into factory.
+* Define CRUD actions into controller.
+* Register controller routes.
+* Create CRUD views and model forms.
+
+Sticking to framework conventions, I believe that this process can be automated a lot to produce a generic functionnal CRUD.  
+So we could customize it, keeping the focus on the application logic.
+
+The keys for that are to define the Model table field, from whom a lot of things can be deducted.  
 For instance request rules (a non-nullable field is required) or form fields (an enum field is often a select)...
 
 
