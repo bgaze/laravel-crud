@@ -14,6 +14,7 @@
 * [Usage](#usage)
     * [Generation process](#generation-process)
     * [Defining migration fields](#defining-migration-fields)
+    * [Layout inheritance](#layout-inheritance)
 * [CRUD command options](doc/crud-options.md)
 * [Custom CRUD theme](doc/custom-theme.md)
 
@@ -197,7 +198,7 @@ Adding a primary index on firstname and lastname fields:
 
 ### Layout inheritance.
 
-> This section is written for **classic** theme, but should also work with any theme creating blade templates.
+> This section is written for **crud:classic** theme, but should also work with any theme creating blade templates.  
 > See [Custom CRUD theme](doc/custom-theme.md) for more information on CRUD theme creation.
 
 When a theme creates views, they extend from a provided base layout.  
