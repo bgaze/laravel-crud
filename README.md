@@ -14,7 +14,6 @@
 * [Usage](#usage)
     * [Generation process](#generation-process)
     * [Defining migration fields](#defining-migration-fields)
-    * [No interraction.](#no-interraction)
 * [CRUD command options](doc/crud-options.md)
 * [Custom CRUD theme](doc/custom-theme.md)
 
@@ -135,6 +134,8 @@ Please call any CRUD command with the `-h` switch to see a complete description 
 ### Generation process
 
 The only mandatory argument for CRUD commands is the FullName of the model.  
+Any step of the process can also be set using options, please see [CRUD command options](doc/crud-options.md) for more details.
+
 When invoked, depending on provided options, a wizard will drive you through following steps.
 
 1. **Plurals definition**  
@@ -193,23 +194,3 @@ Adding a primary index on firstname and lastname fields:
 **Field types list:**
 
 ![Field types list](doc/assets/signed-input-list.png)
-
-### No interraction.
-
-Any step of the process can also be set using options.  
-Any option directly passed to the command will be skipped by the wizard.
-
-Please see [CRUD command options](doc/crud-options.md) for more details.
-
-Example, CRUD generation without any interractions:
-
-```
-php artisan crud:classic Article -n -s=none \
--c "string title" \
--c "enum category foo bar foobar -i" \
--c "text body -n" \
--c "unsignedInteger views -d 0" \
--c "boolean active -d 1" \
-&& php artisan migrate \
-&& php artisan db:seed --class=ArticlesTableSeeder 
-```
