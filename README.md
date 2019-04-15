@@ -5,9 +5,9 @@
 </p>
 
 * [Overview](#overview)
-* [Demo](#demo)
-* [Why this package?](#why-this-package)
-* [Conventions](#conventions)
+    * [Demo](#demo)
+    * [Why this package?](#why-this-package)
+    * [Conventions](#conventions)
 * [Installation](#installation)
 * [Usage](#usage)
     * [Generation process](#generation-process)
@@ -28,7 +28,7 @@ Two themes are provided :
 * **crud:classic** generates a fully fonctionnal "classic" CRUD, creating for you : migration, model, factory, seeder, request, resource, controller, views and routes.
 * **crud:api** generates a fully fonctionnal REST API CRUD, creating for you : migration, model, factory, seeder, request, resource, controller and routes.
 
-## Demo
+### Demo
 
 [This short video on Vimeo](https://vimeo.com/330304646) shows the creation of a CRUD for an **Article** model containing following fields:
 
@@ -38,7 +38,7 @@ Two themes are provided :
 * **active:** a boolean field with `0` as default value.
 * **Timestamps** and **softDeletes** fields.
 
-## Why this package?
+### Why this package?
 
 Laravel is my favorite PHP framework.  
 But using it daily, at work and for my private projects, I've noticed that each time I create a model, 
@@ -67,7 +67,7 @@ So this package goals are to provide:
 * A robust and extensible base to create easily custom CRUD generators (named **themes**).
 * Base CRUD themes for REST API and classic HTML (using Blade templates). 
 
-## Conventions
+### Conventions
 
 > This section explain very important concepts required to use the package.  
 > Please read it carrefully.
