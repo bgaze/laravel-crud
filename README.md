@@ -1,6 +1,6 @@
 > Documentation in progress ;-)
 
-# bgaze/laravel-crud
+# Laravel CRUD Generator
 
 <p align="center">
   <img src="doc/assets/demo.png">
@@ -20,7 +20,7 @@
 
 This package allows to generate CRUDs in a breath for your Laravel 5.5+ applications.
 
-Using the command signature syntax, it offers a handy way to define the model fields.
+Using the SignedInput syntax, it offers a concise and handy way to define the model fields.
 
 It is designed to be easily extended in order to create custom CRUD (aka _themes_).  
 Each theme is available as a dedicated console command.
@@ -29,6 +29,16 @@ Two themes are provided :
 
 * **crud:classic** generates a fully fonctionnal "classic" CRUD, creating for you : migration, model, factory, seeder, request, resource, controller, views and routes.
 * **crud:api:** generates a fully fonctionnal REST API CRUD, creating for you : migration, model, factory, seeder, request, resource, controller and routes.
+
+## Why this package?
+
+Laravel is my favorite PHP framework, but I believe that models and related files generation can be automated a lot.  
+Model creation is quite repetitive: in most cases, several commands needs to be ran to generate related files and classes.  
+
+Provided generators create empty classes, but once the model table fields are defined, and sticking to framework conventions, I believe that a lot of things can be deducted.  
+For instance request rules (a non-nullable field is required) or form fields (an enum field is often a select)...
+
+Finally, views generators are missing.
 
 ## Installation
 
