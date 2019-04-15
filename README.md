@@ -185,7 +185,7 @@ Adding a primary index on firstname and lastname fields:
 Any step of the process can also be set using options.  
 Any option directly passed to the command will be skipped by the wizard.
 
-**Example:** creating a CRUD without any interractions.
+Example, CRUD generation without any interractions:
 
 ```
 php artisan crud:classic Article -n -s=none \
