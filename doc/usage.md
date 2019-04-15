@@ -33,8 +33,8 @@ You can also create some data for your model using the generated seeder class.
 
 ## Defining migration fields
 
-When dealing with CRUDs, a tricky part is often to define model's properties (aka table fields) because fields types and syntax vary a lot.  
-ser input needs to be guided and validated. 
+When dealing with CRUDs, a tricky part is often to define model's properties (aka table fields):
+fields types and syntax vary a lot, and user input needs to be guided and validated. 
 
 I believe that the Laravel commands signature syntax is very great to do that in a concise and handy way.  
 So I've kinda "hacked" it to make that step as easy as possible.  
