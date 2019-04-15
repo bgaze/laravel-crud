@@ -57,7 +57,7 @@ So this package goals are to provide:
 
 * A handy way to define required informations for a complete CRUD generation.
 * A robust and extensible base to create easily custom CRUD generators (named **themes**).
-* Base CRUD themes : for REST API and classic HTML (using Blade templates). 
+* Base CRUD themes for REST API and classic HTML (using Blade templates). 
 
 ## Installation
 
@@ -127,13 +127,13 @@ When invoked, depending on provided options, a wizard will drive you through fol
 
 1. **Plurals definition**  
 Plurals is automatically suggested based on model's FullName and english language.  
-Please pay attention to that important step and correct the proposed value if needed, otherwise, simply confirm.
+Please pay attention to that important step and correct the proposed value if needed, otherwise simply confirm.
 2. **Timestamps definition**  
 Choose the option you need, simply confirm to add standart timestamps fields.
 3. **SoftDeletes**  
 Choose the option you need, simply confirm to add standart softDelete fields.
 4. **Migration fields**  
-Define your model's table field (see detailed explainations below).
+Define your model's table field (see detailed explanations below).
 5. **Review and confirm CRUD configuration**  
 Review the displayed summary of the CRUD and confirm to start files generation.  
 
@@ -149,7 +149,7 @@ So I've kinda "hacked" it to make that step as easy as possible.
 
 > Please note that you can also use that trick for your own needs using the `Bgaze\Crud\Support\SignedInput` class.
 
-<details><summary><b>SignedInput examples</b></summary><p>
+**Examples:**
 
 ```
 Adding a foo integer field, nullable and indexed:
@@ -169,16 +169,12 @@ Adding a primary index on firstname and lastname fields:
     Result: $table->primary(['firstname', 'lastname']);
 ```
 
-</p></details> 
-
 ### No interraction.
 
 Any step of the process can also be set using options.  
 Any option directly passed to the command will be skipped by the wizard.
 
-<details><summary><b>Example</b></summary><p>
-
-Creating a CRUD without any interractions :
+**Example:** creating a CRUD without any interractions.
 
 ```
 php artisan crud:classic Article -n -s=none \
@@ -190,5 +186,3 @@ php artisan crud:classic Article -n -s=none \
 && php artisan migrate \
 && php artisan db:seed --class=ArticlesTableSeeder 
 ```
-
-</p></details> 
