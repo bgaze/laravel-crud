@@ -4,6 +4,8 @@
     <img src="doc/assets/demo.png">
 </p>
 
+## Table of content
+
 * [Overview](#overview)
     * [Demo](#demo)
     * [Why this package?](#why-this-package)
@@ -13,6 +15,8 @@
     * [Generation process](#generation-process)
     * [Defining migration fields](#defining-migration-fields)
     * [No interraction.](#no-interraction)
+* [CRUD command options](doc/crud-options.md)
+* [Custom CRUD theme](doc/custom-theme.md)
 
 ## Overview
 
