@@ -55,13 +55,13 @@ I have to do the same repetitive tasks before starting to really work on the app
 6. Register controller routes.
 7. Create CRUD views and model forms.
 
-Sticking to the framework conventions, I believe that this process can be automated a lot to produce
+I believe that this process can be automated a lot to produce
 a generic functionnal CRUD that we just need to customize, keeping the focus on the application logic.
 
-The key for that is to define the Model table fields, from whom a lot of things can be deducted.  
+The key for that is to define the Model table fields from whom, sticking to the framework conventions, a lot of things can be deducted.  
 For instance request rules (a non-nullable field is required) or form fields (an enum field is often a select).
 
-But even if the logic behind CRUD generation will be almost the same, the files to generate can vary a lot depending on the tools used.  
+But even if CRUD generation logic will be almost the same, the files to generate can vary a lot depending on the tools used.  
 For instance, using classic HTML or Vue.js, a CRUD files will be very different.
 
 So this package goals are to provide:
