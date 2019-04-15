@@ -29,8 +29,10 @@ Each theme is available as a dedicated console command.
 
 Two themes are provided :
 
-* **crud:classic** generates a fully fonctionnal "classic" HTML CRUD, creating for you : migration, model, factory, seeder, request, resource, controller, views and routes.
-* **crud:api** generates a fully fonctionnal REST API CRUD, creating for you : migration, model, factory, seeder, request, resource, controller and routes.
+* **crud:classic** generates a fully fonctionnal "classic" CRUD.  
+_It creates for you : migration, model, factory, seeder, request, resource, controller, blade views and routes._
+* **crud:api** generates a fully fonctionnal REST API CRUD.  
+_It creates for you : migration, model, factory, seeder, request, resource, controller and routes._
 
 ## Installation
 
