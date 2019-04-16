@@ -9,11 +9,11 @@
 Each CRUD theme is available as a dedicated command.  
 Please call any CRUD command with the `-h` switch to see a complete description of it's arguments and options.
 
-The commands triggers a wizard to assist you, but any step of the generation process can also be set directly using options.  
-Please see [CRUD command options](crud-options.md) for more details.
+The command triggers a wizard to assist you, but any step of the generation process can also be set directly using options.  
 
-A very good way to work is to first focus on your application database shema by preparing all your application Models as CRUD commands.  
-Then you just need to run prepared commands to get a working base application.
+> A very good way to work is to first focus on your application database shema by preparing all your application Models as CRUD commands.  
+> Then you just need to run prepared commands to get a working base application.  
+> Please see [CRUD command options](crud-options.md) for more details.
 
 ## Generation process
 
