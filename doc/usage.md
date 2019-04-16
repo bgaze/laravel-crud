@@ -12,8 +12,6 @@ Please call any CRUD command with the `-h` switch to see a complete description 
 ## Generation process
 
 The only mandatory argument for CRUD commands is the FullName of the model.  
-Any step of the process can also be set using options, please see [CRUD command options](crud-options.md) for more details.
-
 When invoked, depending on provided options, a wizard will drive you through following steps.
 
 1. **Plurals definition**  
@@ -24,12 +22,19 @@ Choose the option you need, simply confirm to add standart timestamps fields.
 3. **SoftDeletes**  
 Choose the option you need, simply confirm to add standart softDelete fields.
 4. **Migration fields**  
-Define your model's table field (see detailed explanations below).
+Define your model's table field (detailed explanations [below](#defining-migration-fields)).
 5. **Review and confirm CRUD configuration**  
 Review the displayed summary of the CRUD and confirm to start files generation.  
 
 To use your CRUD, simply run `php artisan migrate` and access to the displayed index path.  
 You can also create some data for your model using the generated seeder class.
+
+Any step of this generation process can also be set using options.
+
+A very good way to work is first to prepare all your app Models as CRUD commands, so you can focus on your application structure and database shema.  
+Then you just need to run prepared commands to get a warking base application.
+
+Please see [CRUD command options](crud-options.md) for more details.
 
 ## Defining migration fields
 
