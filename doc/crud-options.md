@@ -72,14 +72,14 @@ Plurals is automatically set/suggested based on FullName and english language.
 **timestamps:**
 
 The timestamps to add to the model.  
-Available values are: `timestamps`, `timestampsTz`, `nullableTimestamps`, `none`  
-Default value is: `timestamps`
+Allowed values are: `timestamps`, `timestampsTz`, `nullableTimestamps`, `none`  
+Default is: `timestamps`
 
 **soft-deletes:**
 
 The softDelete to add to the model.  
-Available values are: `softDeletes`, `softDeletesTz`, `none`  
-Default value is: `softDeletes`
+Allowed values are: `softDeletes`, `softDeletesTz`, `none`  
+Default is: `softDeletes`
 
 **content:**
 
