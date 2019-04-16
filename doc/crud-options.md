@@ -5,7 +5,7 @@
 Any step of the CRUD generation process can be set using options.  
 Any option directly passed to the command will be skipped by the wizard.
 
-A very good way to work is first to prepare all your app Models as CRUD commands, so you can focus on your application structure and database shema.  
+A very good way to work is to first focus on your application database shema by preparing all your application Models as CRUD commands.  
 Then you just need to run prepared commands to get a working base application.
 
 ## Example

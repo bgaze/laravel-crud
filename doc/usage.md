@@ -9,6 +9,12 @@
 Each CRUD theme is available as a dedicated command.  
 Please call any CRUD command with the `-h` switch to see a complete description of it's arguments and options.
 
+The commands triggers a wizard to assist you, but any step of the generation process can also be set directly using options.  
+Please see [CRUD command options](crud-options.md) for more details.
+
+A very good way to work is to first focus on your application database shema by preparing all your application Models as CRUD commands.  
+Then you just need to run prepared commands to get a working base application.
+
 ## Generation process
 
 The only mandatory argument for CRUD commands is the FullName of the model.  
@@ -25,16 +31,10 @@ Choose the option you need, simply confirm to add standart softDelete fields.
 Define your model's table field (detailed explanations [below](#defining-migration-fields)).
 5. **Review and confirm CRUD configuration**  
 Review the displayed summary of the CRUD and confirm to start files generation.  
+Once the CRUD is generated, it's index url is displayed.
 
 To use your CRUD, simply run `php artisan migrate` and access to the displayed index path.  
 You can also create some data for your model using the generated seeder class.
-
-Any step of this generation process can also be set using options.
-
-A very good way to work is first to prepare all your app Models as CRUD commands, so you can focus on your application structure and database shema.  
-Then you just need to run prepared commands to get a warking base application.
-
-Please see [CRUD command options](crud-options.md) for more details.
 
 ## Defining migration fields
 
