@@ -27,7 +27,7 @@ class Crud extends Base {
      * @return string
      */
     static public function description() {
-        return 'Generate a REST API CRUD: <fg=cyan>migration, model, factory, seeder, request, resource, controller, routes</>';
+        return 'Generate a REST API CRUD files: <fg=cyan>migration, model, factory, seeder, request, resource, controller, routes</>';
     }
 
     /**
