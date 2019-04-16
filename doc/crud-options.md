@@ -61,3 +61,49 @@ Options:
       --env[=ENV]                    The environment the command should run under
   -v|vv|vvv, --verbose               Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 ```
+
+**model**
+
+The FullName of the model: the model's name including namespace without the `App` part.  
+This is the only required agrument to CRUD commands.
+
+**plurals**
+
+Model's FullName with each segments pluralized.  
+Plurals is automatically set/suggested based on FullName and english language.
+
+**timestamps**
+
+The timestamps to add to the model.  
+Available values are: `timestamps`, `timestampsTz`, `nullableTimestamps`, `none`  
+Default value is: `timestamps`
+
+**soft-deletes**
+
+The softDelete to add to the model.  
+Available values are: `softDeletes`, `softDeletesTz`, `none`  
+Default value is: `softDeletes`
+
+**content**
+
+The model's table fields described using SignedInput syntax.
+
+**only**
+
+Generate only selected files.  
+The list of allowed values depend on CRUD theme and is provided into command's help.
+
+Allowed values for **crud:api** theme:  
+_migration-class, model-class, factory-file, seeds-class, request-class, resource-class, controller-class_
+
+Allowed values for **crud:classic** theme:  
+_migration-class, model-class, factory-file, seeds-class, request-class, resource-class, controller-class, index-view, create-view, edit-view, show-view_
+
+**layout**
+
+> Please note that this options has no effect on commands that don't create views, like **crud:api**.
+
+The layout to extend into generated views.  
+Default value is provided by the theme and displayed into command's help.
+
+Default value for **crud:classic** theme: _crud-classic::layout_
