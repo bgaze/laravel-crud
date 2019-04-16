@@ -73,11 +73,11 @@ class Command extends Base {
         $softDeletes = $this->getDatesModifiersChoices('softDeletes', true);
 
         return "{$this->theme} 
-            {model : The name of the Model.}
-            {--p|plurals= : The plurals versions of the Model\'s names.}
+            {model : The FullName of the Model.}
+            {--p|plurals= : The Plurals version of the Model's name}
             {--t|timestamps= : Add timestamps directives: <fg=cyan>{$timestamps}</>}
             {--s|soft-deletes= : Add soft delete directives: <fg=cyan>{$softDeletes}</>}
-            {--c|content=* : The list of Model\'s fields (signature syntax).}
+            {--c|content=* : The list of Model's fields using SignedInput syntax}
             {--o|only=* : Generate only selected files: <fg=cyan>{$only}</>}
             {--l|layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
     }
