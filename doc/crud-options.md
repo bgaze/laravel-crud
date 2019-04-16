@@ -39,56 +39,53 @@ This command will:
 All the CRUD commands have the same signature:
 
 ```
-Usage:
-  crud:classic [options] [--] <model>
-
 Arguments:
   model                              The FullName of the Model
 
 Options:
-  -p, --plurals[=PLURALS]            The Plurals version of the Model's name
-  -t, --timestamps[=TIMESTAMPS]      Add timestamps directives
-  -s, --soft-deletes[=SOFT-DELETES]  Add soft delete directives
-  -c, --content[=CONTENT]            The list of Model\'s fields using SignedInput syntax (multiple values allowed)
-  -o, --only[=ONLY]                  Generate only selected files (multiple values allowed)
-  -l, --layout[=LAYOUT]              The layout to extend into generated views
+  -p, --plurals                      The Plurals version of the Model's name
+  -t, --timestamps                   Add timestamps directive
+  -s, --soft-deletes                 Add soft delete directive
+  -c, --content                      The list of Model\'s fields using SignedInput syntax (multiple values allowed)
+  -o, --only                         Generate only selected files (multiple values allowed)
+  -l, --layout                       The layout to extend into generated views
   -h, --help                         Display this help message
   -q, --quiet                        Do not output any message
   -V, --version                      Display this application version
       --ansi                         Force ANSI output
       --no-ansi                      Disable ANSI output
   -n, --no-interaction               Do not ask any interactive question
-      --env[=ENV]                    The environment the command should run under
+      --env                          The environment the command should run under
   -v|vv|vvv, --verbose               Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 ```
 
-**model**
+**model:**
 
 The FullName of the model: the model's name including namespace without the `App` part.  
 This is the only required agrument to CRUD commands.
 
-**plurals**
+**plurals:**
 
 Model's FullName with each segments pluralized.  
 Plurals is automatically set/suggested based on FullName and english language.
 
-**timestamps**
+**timestamps:**
 
 The timestamps to add to the model.  
 Available values are: `timestamps`, `timestampsTz`, `nullableTimestamps`, `none`  
 Default value is: `timestamps`
 
-**soft-deletes**
+**soft-deletes:**
 
 The softDelete to add to the model.  
 Available values are: `softDeletes`, `softDeletesTz`, `none`  
 Default value is: `softDeletes`
 
-**content**
+**content:**
 
 The model's table fields described using SignedInput syntax.
 
-**only**
+**only:**
 
 Generate only selected files.  
 The list of allowed values depend on CRUD theme and is provided into command's help.
@@ -99,7 +96,7 @@ _migration-class, model-class, factory-file, seeds-class, request-class, resourc
 Allowed values for **crud:classic** theme:  
 _migration-class, model-class, factory-file, seeds-class, request-class, resource-class, controller-class, index-view, create-view, edit-view, show-view_
 
-**layout**
+**layout:**
 
 > Please note that this options has no effect on commands that don't create views, like **crud:api**.
 
