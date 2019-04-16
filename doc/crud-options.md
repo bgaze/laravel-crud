@@ -91,14 +91,16 @@ The model's table fields described using SignedInput syntax.
 
 Generate only selected files.
 
-* Allowed values for **crud:api** theme: `migration-class`, ` model-class`, ` factory-file`, ` seeds-class`, ` request-class`, ` resource-class`, ` controller-class`
-* Allowed values for **crud:classic** theme: `migration-class`, ` model-class`, ` factory-file`, ` seeds-class`, ` request-class`, ` resource-class`, ` controller-class`, ` index-view`, ` create-view`, ` edit-view`, ` show-view`
+* Allowed values for _crud:api_ theme:  
+`migration-class`, ` model-class`, ` factory-file`, ` seeds-class`, ` request-class`, ` resource-class`, ` controller-class`
+* Allowed values for _crud:classic_ theme:  
+`migration-class`, ` model-class`, ` factory-file`, ` seeds-class`, ` request-class`, ` resource-class`, ` controller-class`, ` index-view`, ` create-view`, ` edit-view`, ` show-view`
 
 **layout:**
 
-> Please note that this options has no effect on commands that don't create views, like **crud:api**.
+> Please note that this options has no effect for themes that don't create views (like _crud:api_).
 
 The layout to extend into generated views.  
 Default value is provided by the theme and displayed into command's help.
 
-Default value for **crud:classic** theme: `crud-classic::layout`
+Default value for _crud:classic_ theme: `crud-classic::layout`
