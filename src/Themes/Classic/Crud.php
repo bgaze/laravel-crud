@@ -27,7 +27,7 @@ class Crud extends Base {
      * @return string
      */
     static public function description() {
-        return 'Generate a default CRUD : migration, model, factory, seeder, request, resource, controller, views, routes';
+        return 'Generate a default CRUD: <fg=cyan>migration, model, factory, seeder, request, resource, controller, views, routes</>';
     }
 
     /**
