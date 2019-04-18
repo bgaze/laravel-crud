@@ -22,7 +22,7 @@ class EditView extends CreateView {
      * Build the file.
      */
     public function build() {
-        return $this->buildForm('views.edit', 'partials.form-group');
+        $this->buildForm('views.edit', 'partials.form-group');
     }
 
 }
