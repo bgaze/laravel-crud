@@ -26,11 +26,9 @@ class CreateView extends Builder {
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     public function build() {
-        return $this->buildForm('views.create', 'partials.form-group');
+        $this->buildForm('views.create', 'partials.form-group');
     }
 
     /**
@@ -38,14 +36,13 @@ class CreateView extends Builder {
      * 
      * @param string $viewStub      The main stub to use to compile form view file
      * @param string $groupStub     The stub to use to compile a field form group
-     * @return string               The relative path of the generated file
      */
     public function buildForm($viewStub, $groupStub) {
         $stub = $this->stub($viewStub);
 
         $this->replace($stub, '#CONTENT', $this->content($groupStub));
 
-        return $this->generateFile($this->file(), $stub);
+        $this->generateFile($this->file(), $stub);
     }
 
     /**

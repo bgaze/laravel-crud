@@ -11,7 +11,7 @@ use Bgaze\Crud\Core\FieldsTemplatesTrait;
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Request extends Builder {
+class RequestClass extends Builder {
 
     use FieldsTemplatesTrait;
 
@@ -26,15 +26,13 @@ class Request extends Builder {
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     public function build() {
         $stub = $this->stub('request');
 
         $this->replace($stub, '#CONTENT', $this->content());
 
-        return $this->generatePhpFile($this->file(), $stub);
+        $this->generatePhpFile($this->file(), $stub);
     }
 
     /**

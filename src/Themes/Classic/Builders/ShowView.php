@@ -23,13 +23,11 @@ class ShowView extends Builder {
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     public function build() {
         $stub = $this->stub('views.show');
         $this->replace($stub, '#CONTENT', $this->content());
-        return $this->generateFile($this->file(), $stub);
+        $this->generateFile($this->file(), $stub);
     }
 
     /**

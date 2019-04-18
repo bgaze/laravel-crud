@@ -2,8 +2,9 @@
 
 namespace Bgaze\Crud\Core;
 
-use Bgaze\Crud\Core\Crud;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
+use Bgaze\Crud\Core\Command;
 
 /**
  * Builds a file using a CRUD instance
@@ -27,14 +28,41 @@ abstract class Builder {
     protected $crud;
 
     /**
+     * The CRUD command instance.
+     * 
+     * @var \Bgaze\Crud\Core\Command 
+     */
+    protected $command;
+
+    /**
      * The class constructor
      * 
-     * @param  \Illuminate\Filesystem\Filesystem  $files The filesystem instance
-     * @param Crud $crud
+     * @param \Illuminate\Filesystem\Filesystem $files     The filesystem instance
+     * @param \Bgaze\Crud\Core\Command $command            The command instance
      */
-    function __construct(Filesystem $files, Crud $crud) {
+    public function __construct(Filesystem $files, Command $command) {
         $this->files = $files;
-        $this->crud = $crud;
+        $this->command = $command;
+        $this->crud = $this->command->getCrud();
+    }
+
+    /**
+     * Get builder slug.
+     * 
+     * @return string
+     */
+    public static function slug() {
+        $class = new \ReflectionClass(static::class);
+        return Str::kebab($class->getShortName());
+    }
+
+    /**
+     * Get human friendly builder name.
+     * 
+     * @return string
+     */
+    public static function name() {
+        return ucfirst(str_replace('-', ' ', static::slug()));
     }
 
     /**
@@ -46,8 +74,6 @@ abstract class Builder {
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     abstract public function build();
 
@@ -200,16 +226,32 @@ abstract class Builder {
     }
 
     /**
-     * Check that the file to generate doesn't exists.
+     * Check if nothing prevent the builder execution.
      * 
-     * @return false|string     The error message if file exists, false otherwise
+     * By default this function checks that the builder target doesn't already exists
+     * 
+     * @return false|string     An error message, false otherwise
      */
-    public function fileExists() {
+    public function cannotBuild() {
         if ($this->files->exists($this->file())) {
-            return $this->relativePath($this->file());
+            return $this->relativePath($this->file()) . ' already exists';
         }
 
         return false;
+    }
+
+    /**
+     * Print builder's action summary into console.
+     */
+    public function summarize() {
+        $this->command->dl(' ' . static::name() . ' creation', $this->relativePath($this->file()));
+    }
+
+    /**
+     * Print builder's effect summary into console.
+     */
+    public function done() {
+        $this->command->dl(' Created ' . static::name(), $this->relativePath($this->file()));
     }
 
 }

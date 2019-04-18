@@ -3,7 +3,7 @@
 namespace Bgaze\Crud\Themes\Api\Builders;
 
 use Illuminate\Filesystem\Filesystem;
-use Bgaze\Crud\Core\Crud;
+use Bgaze\Crud\Core\Command;
 use Bgaze\Crud\Core\Builder;
 
 /**
@@ -11,7 +11,7 @@ use Bgaze\Crud\Core\Builder;
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Seeds extends Builder {
+class SeedsClass extends Builder {
 
     /**
      * The Composer instance.
@@ -23,11 +23,11 @@ class Seeds extends Builder {
     /**
      * The class constructor.
      * 
-     * @param \Illuminate\Filesystem\Filesystem $files
-     * @param \Bgaze\Crud\Core\Crud $crud
+     * @param \Illuminate\Filesystem\Filesystem $files     The filesystem instance
+     * @param \Bgaze\Crud\Core\Command $command            The command instance
      */
-    public function __construct(Filesystem $files, Crud $crud) {
-        parent::__construct($files, $crud);
+    public function __construct(Filesystem $files, Command $command) {
+        parent::__construct($files, $command);
 
         $this->composer = resolve('Illuminate\Support\Composer');
     }
@@ -43,18 +43,13 @@ class Seeds extends Builder {
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     public function build() {
         // Write migration file.
-        $path = $this->generatePhpFile($this->file(), $this->stub('seeds'));
+        $this->generatePhpFile($this->file(), $this->stub('seeds'));
 
         // Update autoload.
         $this->composer->dumpAutoloads();
-
-        // Return relative path.
-        return $path;
     }
 
 }

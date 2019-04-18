@@ -55,13 +55,14 @@ class Crud extends Base {
      */
     static public function builders() {
         return [
-            'migration-class' => Builders\Migration::class,
-            'model-class' => Builders\Model::class,
-            'factory-file' => Builders\Factory::class,
-            'seeds-class' => Builders\Seeds::class,
-            'request-class' => Builders\Request::class,
-            'resource-class' => Builders\Resource::class,
-            'controller-class' => Builders\Controller::class,
+            'migration-class' => Builders\MigrationClass::class,
+            'model-class' => Builders\ModelClass::class,
+            'factory-file' => Builders\FactoryFile::class,
+            'seeds-class' => Builders\SeedsClass::class,
+            'request-class' => Builders\RequestClass::class,
+            'resource-class' => Builders\ResourceClass::class,
+            'controller-class' => Builders\ControllerClass::class,
+            'routes-registration' => Builders\RoutesRegistration::class,
         ];
     }
 

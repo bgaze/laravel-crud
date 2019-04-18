@@ -23,8 +23,6 @@ class IndexView extends Builder {
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     public function build() {
         $stub = $this->stub('views.index');
@@ -34,7 +32,7 @@ class IndexView extends Builder {
                 ->replace($stub, '#TBODY', $this->tableBody())
         ;
 
-        return $this->generateFile($this->file(), $stub);
+        $this->generateFile($this->file(), $stub);
     }
 
     /**

@@ -57,7 +57,7 @@ class Crud extends Base {
      */
     static public function builders() {
         return array_merge(parent::builders(), [
-            'controller-class' => Builders\Controller::class,
+            'routes-registration' => Builders\RoutesRegistration::class,
             'index-view' => Builders\IndexView::class,
             'create-view' => Builders\CreateView::class,
             'edit-view' => Builders\EditView::class,

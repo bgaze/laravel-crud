@@ -42,6 +42,9 @@ class Command extends Base {
      */
     protected $builders;
 
+    ############################################################################
+    # PUBLIC ACCESS
+
     /**
      * The command constructor.
      * 
@@ -56,30 +59,6 @@ class Command extends Base {
         $this->signature = $this->compileSignature($class);
 
         parent::__construct();
-    }
-
-    /**
-     * 
-     * @param string $class     The CRUD theme class
-     * @return void
-     */
-    protected function compileSignature($class) {
-        $layout = config('crud.layout') ? config('crud.layout') : call_user_func("{$class}::layout");
-
-        $only = implode('|', array_keys(call_user_func("{$class}::builders")));
-
-        $timestamps = $this->getDatesModifiersChoices('timestamps', true);
-
-        $softDeletes = $this->getDatesModifiersChoices('softDeletes', true);
-
-        return "{$this->theme} 
-            {model : The FullName of the Model.}
-            {--p|plurals= : The Plurals version of the Model's name}
-            {--t|timestamps= : Add timestamps directive: <fg=cyan>{$timestamps}</>}
-            {--s|soft-deletes= : Add soft delete directive: <fg=cyan>{$softDeletes}</>}
-            {--c|content=* : The list of Model's fields using SignedInput syntax}
-            {--o|only=* : Generate only selected files: <fg=cyan>{$only}</>}
-            {--l|layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
     }
 
     /**
@@ -99,6 +78,63 @@ class Command extends Base {
         $this->nl($this->option('no-interaction'));
         $this->h2('Generation');
         $this->build();
+    }
+
+    /**
+     * Get the CRUD instance.
+     * 
+     * @return \Bgaze\Crud\Core\Crud
+     */
+    public function getCrud() {
+        return $this->crud;
+    }
+
+    ############################################################################
+    # PREPARE THEME SIGNATURE
+
+    /**
+     * 
+     * @param string $class     The CRUD theme class
+     * @return void
+     */
+    protected function compileSignature($class) {
+        $layout = config('crud.layout', call_user_func("{$class}::layout"));
+
+        $builders = collect(call_user_func("{$class}::builders"))->map(function($builder) {
+                    return call_user_func("{$builder}::slug");
+                })->implode('|');
+
+        $timestamps = $this->getDatesModifiersChoices('timestamps', true);
+
+        $softDeletes = $this->getDatesModifiersChoices('softDeletes', true);
+
+        return "{$this->theme} 
+            {model : The FullName of the Model}
+            {--p|plurals= : The Plurals version of the Model's name}
+            {--t|timestamps= : Add timestamps directive: <fg=cyan>{$timestamps}</>}
+            {--s|soft-deletes= : Add soft delete directive: <fg=cyan>{$softDeletes}</>}
+            {--c|content=* : The list of Model's fields using SignedInput syntax}
+            {--o|only=* : Generate only selected files: <fg=cyan>{$builders}</>}
+            {--l|layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
+    }
+
+    /**
+     * Get the list of options for dates modifiers (timestamps & soft deletes).
+     * 
+     * @param string $key       The modifier [timestamps|softDeletes]
+     * @param type $signature   Return it in signature format
+     * @return string
+     */
+    protected function getDatesModifiersChoices($key, $signature = false) {
+        $list = array_keys(config("crud-definitions.{$key}"));
+        $list[] = 'none';
+
+        if ($signature) {
+            $list[0] = '[' . $list[0] . ']';
+            return implode('|', $list);
+        }
+
+        return $list;
     }
 
     ############################################################################
@@ -129,8 +165,8 @@ class Command extends Base {
         // Get plurals value.
         $this->getPluralsInput();
 
-        // Check that no file already exists.
-        $this->ensureNoFileExists();
+        // Check that nothing prevents builders executions.
+        $this->isBuildPossible();
 
         // Get timestamps value.
         $this->getTimestampsInput();
@@ -148,34 +184,36 @@ class Command extends Base {
      * @return void
      */
     protected function getBuilders() {
-        $builders = $this->crud::builders();
+        // Get builders list based on "only" option.
+        $only = $this->option('only');
+        $builders = collect($this->crud::builders())->filter(function($class) use($only) {
+            return (!$only || empty($only) || in_array(call_user_func("{$class}::slug"), $only));
+        });
 
-        if ($this->option('only') && !empty($this->option('only'))) {
-            $builders = array_intersect_key($builders, array_flip($this->option('only')));
-        }
-
+        // Instanciate selected builders.
         $filesystem = resolve('Illuminate\Filesystem\Filesystem');
-
-        $this->builders = collect($builders)->map(function($class) use(&$filesystem) {
-            return new $class($filesystem, $this->crud);
+        $this->builders = $builders->map(function($class) use(&$filesystem) {
+            return new $class($filesystem, $this);
         });
     }
 
     /**
-     * Check that no file to generate already exists.
+     * Check that nothing prevents builders executions.
      * 
      * @return void
      * @throws \Exception
      */
-    protected function ensureNoFileExists() {
+    protected function isBuildPossible() {
         $errors = $this->builders->map(function(Builder $builder) {
-                    return $builder->fileExists();
+                    return $builder->cannotBuild();
                 })->filter();
 
         if ($errors->count() === 1) {
-            throw new \Exception("Following file already exists: " . $errors->first());
-        } elseif ($errors->count() > 1) {
-            throw new \Exception("Following files already exist:\n- " . $errors->implode("\n- "));
+            throw new \Exception("Cannot generate this CRUD: " . $errors->first());
+        }
+
+        if ($errors->count() > 1) {
+            throw new \Exception("Cannot generate this CRUD:\n- " . $errors->implode("\n- "));
         }
     }
 
@@ -200,25 +238,6 @@ class Command extends Base {
         if (!$ask) {
             $this->dl('Plurals', $this->crud->getPluralsFullName());
         }
-    }
-
-    /**
-     * Get the list of options for dates modifiers (timestamps & soft deletes).
-     * 
-     * @param string $key       The modifier [timestamps|softDeletes]
-     * @param type $signature   Return it in signature format
-     * @return string
-     */
-    protected function getDatesModifiersChoices($key, $signature = false) {
-        $list = array_keys(config("crud-definitions.{$key}"));
-        $list[] = 'none';
-
-        if ($signature) {
-            $list[0] = '[' . $list[0] . ']';
-            return implode('|', $list);
-        }
-
-        return $list;
     }
 
     /**
@@ -411,20 +430,14 @@ class Command extends Base {
     # BUILD
 
     /**
-     * Generate a summary of generator's actions.
-     * 
-     * @return string
+     * Display a summary of generator's actions.
      */
     protected function summarize() {
-        $files = $this->builders->map(function(Builder $builder) {
-            return str_replace(base_path() . '/', '', $builder->file());
+        $this->warn('Following action(s) will be executed:');
+        $this->builders->each(function(Builder $builder) {
+            $builder->summarize(false);
         });
-
-        if ($files->count() === 1) {
-            return " <info>Following file will be generated:</info> " . $files->first();
-        }
-
-        return " <info>Following files will be generated:</info>\n  " . $files->implode("\n  ");
+        $this->nl();
     }
 
     /**
@@ -433,27 +446,33 @@ class Command extends Base {
      * @return void
      */
     protected function build() {
+        // If interractions allowed, show a summary.
         if (!$this->option('no-interaction')) {
-            $this->line($this->summarize());
-            $this->nl();
-        }
-
-        if ($this->option('no-interaction') || $this->confirm('Proceed?', true)) {
-            $this->builders->each(function(Builder $builder, $name) {
-                $this->dl('Created ' . ucfirst(str_replace('-', ' ', $name)), $builder->build());
+            $this->warn('Following action(s) will be executed:');
+            $this->builders->each(function(Builder $builder) {
+                $builder->summarize();
             });
-
-            if ($message = $this->crud->onSuccessfullBuild($this->arguments(), $this->options())) {
-                $this->line($message);
-            }
-
-            $this->nl();
-            $this->comment(' CRUD generated successfully.');
-            if (method_exists($this->crud, 'indexPath')) {
-                $this->line(' <comment>Index path:</comment> ' . $this->crud->indexPath());
-            }
             $this->nl();
         }
+
+        // If interractions, ask for user confirmation.
+        if (!$this->option('no-interaction') && !$this->confirm('Proceed?', true)) {
+            return;
+        }
+
+        // Execute builders showing an action summary.
+        $this->builders->each(function(Builder $builder) {
+            $builder->build();
+            $builder->done();
+        });
+        $this->nl();
+
+        // Show success message.
+        $this->comment(' CRUD generated successfully.');
+        if (method_exists($this->crud, 'indexPath')) {
+            $this->line(' <comment>Index path:</comment> ' . $this->crud->indexPath());
+        }
+        $this->nl();
     }
 
 }

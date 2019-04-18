@@ -4,7 +4,7 @@ namespace Bgaze\Crud\Themes\Api\Builders;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
-use Bgaze\Crud\Core\Crud;
+use Bgaze\Crud\Core\Command;
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
 use Bgaze\Crud\Core\FieldsTemplatesTrait;
@@ -14,7 +14,7 @@ use Bgaze\Crud\Core\FieldsTemplatesTrait;
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Migration extends Builder {
+class MigrationClass extends Builder {
 
     use FieldsTemplatesTrait;
 
@@ -35,11 +35,11 @@ class Migration extends Builder {
     /**
      * The class constructor
      * 
-     * @param \Illuminate\Filesystem\Filesystem $files
-     * @param \Bgaze\Crud\Core\Crud $crud
+     * @param \Illuminate\Filesystem\Filesystem $files     The filesystem instance
+     * @param \Bgaze\Crud\Core\Command $command            The command instance
      */
-    public function __construct(Filesystem $files, Crud $crud) {
-        parent::__construct($files, $crud);
+    public function __construct(Filesystem $files, Command $command) {
+        parent::__construct($files, $command);
 
         $this->composer = resolve('Illuminate\Support\Composer');
     }
@@ -88,13 +88,10 @@ class Migration extends Builder {
         // Write migration file.
         $stub = $this->stub('migration');
         $this->replace($stub, '#CONTENT', $this->content());
-        $path = $this->generatePhpFile($this->file(), $stub);
+        $this->generatePhpFile($this->file(), $stub);
 
         // Update autoload.
         $this->composer->dumpAutoloads();
-
-        // Return relative path.
-        return $path;
     }
 
     /**

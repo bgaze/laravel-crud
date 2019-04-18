@@ -7,11 +7,11 @@ use Bgaze\Crud\Core\Field;
 use Bgaze\Crud\Core\FieldsTemplatesTrait;
 
 /**
- * The Factory builder
+ * Description of Model
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Factory extends Builder {
+class ModelClass extends Builder {
 
     use FieldsTemplatesTrait;
 
@@ -21,46 +21,108 @@ class Factory extends Builder {
      * @return string The absolute path of the file
      */
     public function file() {
-        return database_path('factories/' . $this->crud->getModelFullStudly() . 'Factory.php');
+        return app_path(trim($this->crud->modelsSubDirectory() . '/' . $this->crud->model()->implode('/') . '.php', '/'));
     }
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     public function build() {
-        $stub = $this->stub('factory');
+        $stub = $this->stub('model');
 
-        $this->replace($stub, '#CONTENT', $this->content());
+        $this
+                ->replace($stub, '#TIMESTAMPS', $this->timestamps())
+                ->replace($stub, '#SOFTDELETE', $this->softDeletes())
+                ->replace($stub, '#FILLABLES', $this->fillables())
+                ->replace($stub, '#DATES', $this->dates())
+                ->replace($stub, '#PROPERTIES', $this->properties())
+        ;
 
-        return $this->generatePhpFile($this->file(), $stub);
+        $this->generatePhpFile($this->file(), $stub);
     }
 
     /**
-     * Compile the content of the class.
+     * Compile CRUD timestamps.
      * 
      * @return string
      */
-    protected function content() {
-        $content = $this->crud->content(false);
+    protected function timestamps() {
+        return $this->crud->timestamps() ? 'public $timestamps = true;' : '';
+    }
 
-        if ($content->isEmpty()) {
-            return '// TODO';
+    /**
+     * Compile CRUD soft deletes.
+     * 
+     * @return string
+     */
+    protected function softDeletes() {
+        return $this->crud->softDeletes() ? 'use \Illuminate\Database\Eloquent\SoftDeletes;' : '';
+    }
+
+    /**
+     * Compile CRUD content to Model fillables array.
+     * 
+     * @return string
+     */
+    protected function fillables() {
+        $fillables = $this->crud
+                ->content(false)
+                ->keys()
+                ->toArray();
+        return 'protected $fillable = ' . $this->compileArrayForPhp($fillables) . ';';
+    }
+
+    /**
+     * Compile CRUD content to Model dates array.
+     * 
+     * @return string
+     */
+    protected function dates() {
+        $dates = $this->crud
+                ->content(false)
+                ->filter(function(Field $field) {
+                    return $field->isDate();
+                })
+                ->keys();
+
+        if ($this->crud->softDeletes() && !$dates->contains('deleted_at')) {
+            $dates->prepend('deleted_at');
         }
 
-        return $content
-                        ->map(function(Field $field) {
-                            $faker = $this->fieldTemplate($field);
+        return 'protected $dates = ' . $this->compileArrayForPhp($dates->toArray()) . ';';
+    }
 
-                            if (empty($faker)) {
-                                return "// TODO : '{$field->name()}' => '...',";
-                            }
+    /**
+     * Compile CRUD content to phpDocumentor properties annotations.
+     * 
+     * @return string
+     */
+    protected function properties() {
+        $content = $this->crud->content(false)->map(function(Field $field) {
+            return $this->fieldTemplate($field);
+        });
 
-                            return "'{$field->name()}' => {$faker},";
-                        })
-                        ->filter()
-                        ->implode("\n");
+        if ($this->crud->timestamps()) {
+            $content->push($this->property('\Carbon\Carbon', 'created_at'));
+            $content->push($this->property('\Carbon\Carbon', 'updated_at'));
+        }
+
+        if ($this->crud->softDeletes()) {
+            $content->push($this->property('\Carbon\Carbon', 'deleted_at'));
+        }
+
+        return "/**\n" . $content->implode("\n") . "\n */";
+    }
+
+    /**
+     * Generate a phpDocumentor property annotation
+     * 
+     * @param string $type  The property type
+     * @param string $name  The property name
+     * @return string
+     */
+    protected function property($type, $name) {
+        return "* @property {$type} \${$name}";
     }
 
     /**
@@ -70,7 +132,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function defaultTemplate(Field $field) {
-        return "\$faker->sentence()";
+        return $this->property('string', $field->name());
     }
 
     /**
@@ -80,7 +142,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function bigIntegerTemplate(Field $field) {
-        return 'mt_rand(-2 ** 63, 2 ** 63 - 1)';
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -90,7 +152,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function booleanTemplate(Field $field) {
-        return '(mt_rand(0, 1) === 1)';
+        return $this->property('boolean', $field->name());
     }
 
     /**
@@ -100,7 +162,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function dateTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->property('\Carbon\Carbon', $field->name());
     }
 
     /**
@@ -110,7 +172,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function dateTimeTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->property('\Carbon\Carbon', $field->name());
     }
 
     /**
@@ -120,7 +182,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function dateTimeTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->property('\Carbon\Carbon', $field->name());
     }
 
     /**
@@ -130,7 +192,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function decimalTemplate(Field $field) {
-        return $this->floatTemplate($field);
+        return $this->property('float', $field->name());
     }
 
     /**
@@ -140,22 +202,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function doubleTemplate(Field $field) {
-        return $this->floatTemplate($field);
-    }
-
-    /**
-     * Get the template for a enum field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function enumTemplate(Field $field) {
-        $input = $field->input();
-        $choices = $input->getArgument('allowed');
-        if ($input->getOption('nullable')) {
-            array_unshift($choices, null);
-        }
-        return 'array_random(' . $this->compileArrayForPhp($choices) . ')';
+        return $this->property('float', $field->name());
     }
 
     /**
@@ -165,29 +212,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function floatTemplate(Field $field) {
-        $input = $field->input();
-        $total = str_repeat(9, $input->getArgument('total') - $input->getArgument('places'));
-        return sprintf('round(mt_rand() / mt_getrandmax() * %d, %d)', $total, $input->getArgument('places'));
-    }
-
-    /**
-     * Get the template for a geometry field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function geometryTemplate(Field $field) {
-        return null;
-    }
-
-    /**
-     * Get the template for a geometryCollection field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function geometryCollectionTemplate(Field $field) {
-        return null;
+        return $this->property('float', $field->name());
     }
 
     /**
@@ -197,17 +222,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function integerTemplate(Field $field) {
-        return 'mt_rand(-2147483648, 2147483647)';
-    }
-
-    /**
-     * Get the template for a ipAddress field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function ipAddressTemplate(Field $field) {
-        return "\$faker->ipv4";
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -217,7 +232,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function jsonTemplate(Field $field) {
-        return "\$faker->sentences(5)";
+        return $this->property('array', $field->name());
     }
 
     /**
@@ -227,37 +242,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function jsonbTemplate(Field $field) {
-        return "\$faker->sentences(5)";
-    }
-
-    /**
-     * Get the template for a lineString field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function lineStringTemplate(Field $field) {
-        return null;
-    }
-
-    /**
-     * Get the template for a longText field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function longTextTemplate(Field $field) {
-        return $this->textTemplate($field);
-    }
-
-    /**
-     * Get the template for a macAddress field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function macAddressTemplate(Field $field) {
-        return "\$faker->macAddress";
+        return $this->property('array', $field->name());
     }
 
     /**
@@ -267,17 +252,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function mediumIntegerTemplate(Field $field) {
-        return 'mt_rand(-8388608, 8388607)';
-    }
-
-    /**
-     * Get the template for a mediumText field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function mediumTextTemplate(Field $field) {
-        return $this->textTemplate($field);
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -287,37 +262,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function morphsTemplate(Field $field) {
-        return null;
-    }
-
-    /**
-     * Get the template for a multiLineString field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function multiLineStringTemplate(Field $field) {
-        return null;
-    }
-
-    /**
-     * Get the template for a multiPoint field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function multiPointTemplate(Field $field) {
-        return null;
-    }
-
-    /**
-     * Get the template for a multiPolygon field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function multiPolygonTemplate(Field $field) {
-        return null;
+        return $this->property('integer', $field->name() . '_id') . "\n" . $this->property('string', $field->name() . '_type');
     }
 
     /**
@@ -327,27 +272,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function nullableMorphsTemplate(Field $field) {
-        return $this->morphsTemplate($field);
-    }
-
-    /**
-     * Get the template for a point field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function pointTemplate(Field $field) {
-        return null;
-    }
-
-    /**
-     * Get the template for a polygon field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function polygonTemplate(Field $field) {
-        return null;
+        return $this->property('integer', $field->name() . '_id') . "\n" . $this->property('string', $field->name() . '_type');
     }
 
     /**
@@ -357,17 +282,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function smallIntegerTemplate(Field $field) {
-        return 'mt_rand(-32768, 32767)';
-    }
-
-    /**
-     * Get the template for a text field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function textTemplate(Field $field) {
-        return "\$faker->text(1000)";
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -377,7 +292,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function timeTemplate(Field $field) {
-        return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
+        return $this->property('\Carbon\Carbon', $field->name());
     }
 
     /**
@@ -387,7 +302,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function timeTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->property('\Carbon\Carbon', $field->name());
     }
 
     /**
@@ -397,7 +312,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function timestampTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->property('\Carbon\Carbon', $field->name());
     }
 
     /**
@@ -407,7 +322,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function timestampTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+        return $this->property('\Carbon\Carbon', $field->name());
     }
 
     /**
@@ -417,7 +332,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function tinyIntegerTemplate(Field $field) {
-        return 'mt_rand(-128, 127)';
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -427,7 +342,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedBigIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 2 ** 64 -1)';
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -437,7 +352,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedDecimalTemplate(Field $field) {
-        return $this->floatTemplate($field);
+        return $this->property('float', $field->name());
     }
 
     /**
@@ -447,7 +362,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 4294967295)';
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -457,7 +372,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedMediumIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 16777215)';
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -467,7 +382,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedSmallIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 65535)';
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -477,17 +392,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function unsignedTinyIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 255)';
-    }
-
-    /**
-     * Get the template for a uuid field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function uuidTemplate(Field $field) {
-        return "\$faker->uuid";
+        return $this->property('integer', $field->name());
     }
 
     /**
@@ -497,7 +402,7 @@ class Factory extends Builder {
      * @return string The template for the field
      */
     public function yearTemplate(Field $field) {
-        return 'mt_rand(1900, 2100)';
+        return $this->property('\Carbon\Carbon', $field->name());
     }
 
 }

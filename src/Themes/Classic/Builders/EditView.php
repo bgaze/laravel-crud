@@ -20,8 +20,6 @@ class EditView extends CreateView {
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     public function build() {
         return $this->buildForm('views.edit', 'partials.form-group');

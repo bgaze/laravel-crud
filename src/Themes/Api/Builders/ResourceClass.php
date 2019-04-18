@@ -9,7 +9,7 @@ use Bgaze\Crud\Core\Builder;
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Resource extends Builder {
+class ResourceClass extends Builder {
 
     /**
      * The file that the builder generates.
@@ -22,15 +22,13 @@ class Resource extends Builder {
 
     /**
      * Build the file.
-     * 
-     * @return string The relative path of the generated file
      */
     public function build() {
         $stub = $this->stub('resource');
 
         $this->replace($stub, '#CONTENT', $this->content());
 
-        return $this->generatePhpFile($this->file(), $stub);
+        $this->generatePhpFile($this->file(), $stub);
     }
 
     /**

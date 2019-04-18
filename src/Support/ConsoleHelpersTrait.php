@@ -18,7 +18,7 @@ trait ConsoleHelpersTrait {
      */
     protected function setCustomStyles() {
         $this->output->getFormatter()->setStyle('h1', new OutputFormatterStyle('white', 'blue'));
-        $this->output->getFormatter()->setStyle('h2', new OutputFormatterStyle('blue', null, array('bold')));
+        $this->output->getFormatter()->setStyle('h2', new OutputFormatterStyle('blue', null, ['bold']));
     }
 
     /**
