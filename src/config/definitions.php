@@ -70,6 +70,7 @@ return [
       |---------------------------------------------------------------------------
      */
     'fields' => [
+        // Regular fields.
         'bigInteger' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'binary' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'boolean' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
@@ -115,6 +116,18 @@ return [
         'unsignedTinyInteger' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'uuid' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'year' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        // Relations.
+        'hasOne' => '{related} {--f|foreignKey=} {--l|localKey=}',
+        'hasMany' => '{related} {--f|foreignKey=} {--l|localKey=}',
+        'belongsTo' => '{related} {--f|foreignKey=} {--o|ownerKey=}',
+        'belongsToMany' => '{related} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=}',
+        'hasManyThrough' => '{related} {through} {--f|firstKey=} {--s|secondKey=} {--l|localKey=} {--r|secondLocalKey=}',
+        'morphTo' => '{--n|name=} {--t|type=} {--i|id=}',
+        'morphOne' => '{related} {name} {--t|type=} {--i|id=} {--l|localKey=}',
+        'morphMany' => '{related} {name} {--t|type=} {--i|id=} {--l|localKey=}',
+        'morphToMany' => '{related} {name} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=} {--i|inverse}',
+        'morphedByMany' => '{related} {name} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=}',
+        // Indexes.
         'index' => '{columns*}',
         'primaryIndex' => '{columns*}',
         'uniqueIndex' => '{columns*}',
