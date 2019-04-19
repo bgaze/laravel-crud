@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Console\Command as Base;
 use Bgaze\Crud\Support\ConsoleHelpersTrait;
 use Bgaze\Crud\Core\Builder;
+use Symfony\Component\Console\Helper\TableSeparator;
 
 /**
  * The CRUD generator command.
@@ -406,22 +407,31 @@ class Command extends Base {
      */
     protected function showFieldHelp($name) {
         $signature = config("crud-definitions.fields.{$name}");
-        $this->line("   <info>Add a {$name} field to table.</info>\n   Signature:   <fg=cyan>{$signature}</>\n");
+
+        preg_match('/^((\s?\{[^-\}]+\})*)/', $signature, $a);
+        $arguments = empty($a[1]) ? '' : " <fg=yellow>{$a[1]}</>";
+
+        preg_match('/((\{--[^\}]+\}\s?)*)$/', $signature, $o);
+        $options = empty($o[1]) ? '' : " <fg=cyan>{$o[1]}</>";
+
+        $this->line("   <info>Add a {$name} field to table.</info>\n   Signature:  {$arguments}{$options}\n");
     }
 
     /**
      * Display a help tablefor all availables fields type.
      */
     protected function showFieldsHelp() {
-        $rows = collect(config('crud-definitions.fields'))->map(function ($signature, $name) {
-            $pos = strpos($signature, '--');
+        $rows = [];
 
-            if ($pos) {
-                return [$name, substr($signature, 0, $pos - 2), substr($signature, $pos - 1)];
+        foreach (config('crud-definitions.fields') as $name => $signature) {
+            if ($name === 'index' || $name === 'hasOne') {
+                $rows[] = new TableSeparator();
             }
 
-            return [$name, $signature, ''];
-        });
+            preg_match('/^((\s?\{[^-\}]+\})*)/', $signature, $a);
+            preg_match('/((\{--[^\}]+\}\s?)*)$/', $signature, $o);
+            $rows[] = [$name, $a[1], $o[1]];
+        }
 
         $this->table(['Command', 'Arguments', 'Options'], $rows);
     }
