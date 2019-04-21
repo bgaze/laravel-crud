@@ -159,7 +159,7 @@ abstract class Crud {
      * @return string
      */
     static public function viewsNamespace() {
-        return str_replace(':', '-', static::name());
+        return static::views() ? str_replace(':', '-', static::name()) : false;
     }
 
     /**
@@ -170,7 +170,7 @@ abstract class Crud {
      * @return string
      */
     static public function layout() {
-        return static::viewsNamespace() . '::layout';
+        return static::views() ? static::viewsNamespace() . '::layout' : false;
     }
 
     ############################################################################
@@ -284,13 +284,7 @@ abstract class Crud {
      * @return void
      */
     public function setLayout($value = false) {
-        if ($value) {
-            $this->layout = $value;
-        } elseif (config('crud.layout')) {
-            $this->layout = config('crud.layout');
-        } else {
-            $this->layout = static::layout();
-        }
+        $this->layout = $value ? $value : static::layout();
     }
 
     /**
@@ -458,6 +452,15 @@ abstract class Crud {
         return $columns;
     }
 
+    /**
+     * Get the layout to extend in views
+     * 
+     * @return string
+     */
+    public function getViewsLayout() {
+        return $this->layout;
+    }
+
     ############################################################################
     # NAMES VARIABLES
     # Main CRUD names and plurals formats.
@@ -596,15 +599,6 @@ abstract class Crud {
     # Main CRUD files and resources variables.
 
     /**
-     * Get the layout to extend in views
-     * 
-     * @return string
-     */
-    public function getViewsLayout() {
-        return $this->layout;
-    }
-
-    /**
      * Get the Model's table name
      * 
      * Exemple : my_grand_parents_my_parents_my_models
@@ -653,7 +647,10 @@ abstract class Crud {
     public function getModelNamespace() {
         $parents = clone $this->model;
         $parents->pop();
-        return app()->getNamespace() . trim($this->modelsSubDirectory() . '\\' . $parents->implode('\\'), '\\');
+
+        $namespace = trim($this->modelsSubDirectory() . '\\' . $parents->implode('\\'), '\\');
+
+        return trim(app()->getNamespace() . $namespace, '\\');
     }
 
     /**

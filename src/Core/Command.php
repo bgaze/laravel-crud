@@ -69,7 +69,7 @@ class Command extends Base {
      */
     public function handle() {
         $this->setCustomStyles();
-        $this->h1('Welcome to CRUD generator');
+        $this->h1("Welcome to {$this->theme} generator");
 
         // Configure  CRUD based on theme and model inputs.
         $this->h2('Configuration');
@@ -99,8 +99,6 @@ class Command extends Base {
      * @return void
      */
     protected function compileSignature($class) {
-        $layout = config('crud.layout', call_user_func("{$class}::layout"));
-
         $builders = collect(call_user_func("{$class}::builders"))->map(function($builder) {
                     return call_user_func("{$builder}::slug");
                 })->implode('|');
@@ -109,14 +107,21 @@ class Command extends Base {
 
         $softDeletes = $this->getDatesModifiersChoices('softDeletes', true);
 
-        return "{$this->theme} 
+        $signature = "{$this->theme} 
             {model : The FullName of the Model}
             {--p|plurals= : The Plurals version of the Model's name}
             {--t|timestamps= : Add timestamps directive: <fg=cyan>{$timestamps}</>}
             {--s|soft-deletes= : Add soft delete directive: <fg=cyan>{$softDeletes}</>}
             {--c|content=* : The list of Model's fields using SignedInput syntax}
-            {--o|only=* : Generate only selected files: <fg=cyan>{$builders}</>}
-            {--l|layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
+            {--o|only=* : Generate only selected files: <fg=cyan>{$builders}</>}";
+
+        $layout = call_user_func("{$class}::layout");
+        if ($layout) {
+
+            $signature .= "            {--l|layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
+        }
+
+        return $signature;
     }
 
     /**
@@ -155,12 +160,10 @@ class Command extends Base {
         // Instanciate Theme builders.
         $this->getBuilders();
 
-        // Get Layout.
-        $this->crud->setLayout($this->option('layout'));
+        // Set Layout.
+        $this->getLayoutInput();
 
-        // Show configuration summary.
-        $this->dl('Theme', $this->theme);
-        $this->dl('Views layout', $this->crud->getViewsLayout());
+        // Show model FullName.
         $this->dl('Model name', $this->crud->getModelFullName());
 
         // Get plurals value.
@@ -216,6 +219,25 @@ class Command extends Base {
         if ($errors->count() > 1) {
             throw new \Exception("Cannot generate this CRUD:\n- " . $errors->implode("\n- "));
         }
+    }
+
+    /**
+     * Set CRUD's layout based on command inputs and configuration.
+     * 
+     * @return void 
+     */
+    protected function getLayoutInput() {
+        if (!$this->crud::layout()) {
+            return;
+        }
+
+        if ($this->hasOption('layout')) {
+            $this->crud->setLayout($this->option('layout'));
+        } elseif (config("crud.{$this->theme}.layout")) {
+            $this->crud->setLayout(config("crud.{$this->theme}.layout"));
+        }
+
+        $this->dl('Views layout', $this->crud->getViewsLayout());
     }
 
     /**

@@ -17,6 +17,12 @@ trait ThemeProviderTrait {
      * @param string $class         The CRUD class to use
      */
     protected function registerTheme($class) {
+        // Check if theme is enabled.
+        $name = call_user_func("{$class}::name");
+        if (!config("crud.{$name}.enabled", true)) {
+            return;
+        }
+
         // Register & publish default theme views.
         $views = call_user_func("{$class}::views");
         if ($views) {
@@ -27,8 +33,6 @@ trait ThemeProviderTrait {
 
         // Register commands.
         if ($this->app->runningInConsole()) {
-            $name = call_user_func("{$class}::name");
-
             // Register theme class.
             $this->app->bind("crud.theme.{$name}.class", function ($app, $parameters) use ($class) {
                 return new $class($parameters[0]);

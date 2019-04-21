@@ -23,20 +23,6 @@ return [
     
     /*
     |---------------------------------------------------------------------------
-    | Default layout
-    |---------------------------------------------------------------------------
-    |
-    | The layout to extend into generated views.
-    | Spedified layout should extend default theme layout.
-    | This is the good place to define globally your application base layout.
-    | 
-    | empty : use default theme layout.
-    |
-    */
-    'layout' => null,
-    
-    /*
-    |---------------------------------------------------------------------------
     | Models directory
     |---------------------------------------------------------------------------
     |
@@ -49,4 +35,52 @@ return [
     |
     */
     'models-directory' => false,
+    
+    /*
+    |---------------------------------------------------------------------------
+    | crud:api theme options
+    |---------------------------------------------------------------------------
+    */
+    'crud:api' => [
+        /*
+        |---------------------------------------------------------------------------
+        | Default layout
+        |---------------------------------------------------------------------------
+        |
+        | If, false the theme won't be registred into application.
+        |
+        */
+        'enabled' => true,
+    ],
+    
+    /*
+    |---------------------------------------------------------------------------
+    | crud:classic theme options
+    |---------------------------------------------------------------------------
+    */
+    'crud:classic' => [
+        /*
+        |---------------------------------------------------------------------------
+        | Default layout
+        |---------------------------------------------------------------------------
+        |
+        | If, false the theme won't be registred into application.
+        |
+        */
+        'enabled' => true,
+        
+        /*
+        |---------------------------------------------------------------------------
+        | Default layout
+        |---------------------------------------------------------------------------
+        |
+        | The layout to extend into generated views.
+        | Spedified layout should extend default theme layout.
+        | This setting can be overrided using --layout option when invoking the theme command.
+        | 
+        | empty : use default theme layout.
+        |
+        */
+        'layout' => null,
+    ],
 ];
