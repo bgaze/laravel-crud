@@ -8,6 +8,8 @@
 
 namespace Bgaze\Crud\Core;
 
+use Bgaze\Crud\Definitions;
+
 /**
  * A trait for fields templates generation.
  * 
@@ -105,7 +107,8 @@ trait FieldsTemplatesTrait {
      * @throws \BadMethodCallException
      */
     public function __call($method, $parameters) {
-        $methods = implode('|', array_keys(config('crud-definitions.fields')));
+        $methods = Definitions::entries()->keys()->implode('|');
+
         if (!preg_match('/^(' . $methods . ')Template$/', $method)) {
             throw new \BadMethodCallException("Method {$method} does not exist.");
         }

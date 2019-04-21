@@ -48,14 +48,14 @@ class RoutesRegistration extends Builder {
      * Print builder's action summary into console.
      */
     public function summarize() {
-        $this->command->dl(' ' . static::name() . ' into', $this->file());
+        $this->command->dl(' ' . static::name() . ' into', $this->relativePath($this->file()));
     }
 
     /**
      * Print builder's effect summary into console.
      */
     public function done() {
-        $this->command->dl(' Registred routes into', $this->file());
+        $this->command->dl(' Registred routes into', $this->relativePath($this->file()));
     }
 
 }

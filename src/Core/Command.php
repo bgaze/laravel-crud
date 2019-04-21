@@ -2,11 +2,12 @@
 
 namespace Bgaze\Crud\Core;
 
+use Symfony\Component\Console\Helper\TableSeparator;
 use Illuminate\Support\Collection;
 use Illuminate\Console\Command as Base;
 use Bgaze\Crud\Support\ConsoleHelpersTrait;
 use Bgaze\Crud\Core\Builder;
-use Symfony\Component\Console\Helper\TableSeparator;
+use Bgaze\Crud\Definitions;
 
 /**
  * The CRUD generator command.
@@ -99,14 +100,18 @@ class Command extends Base {
      * @return void
      */
     protected function compileSignature($class) {
+        // Get theme's builder list.
         $builders = collect(call_user_func("{$class}::builders"))->map(function($builder) {
                     return call_user_func("{$builder}::slug");
                 })->implode('|');
 
-        $timestamps = $this->getDatesModifiersChoices('timestamps', true);
+        // Get timestamps list.
+        $timestamps = Definitions::timestampsChoices(true);
 
-        $softDeletes = $this->getDatesModifiersChoices('softDeletes', true);
+        // Get softDeletes list.
+        $softDeletes = Definitions::softDeletesChoices(true);
 
+        // Prepare commands signature.
         $signature = "{$this->theme} 
             {model : The FullName of the Model}
             {--p|plurals= : The Plurals version of the Model's name}
@@ -115,32 +120,13 @@ class Command extends Base {
             {--c|content=* : The list of Model's fields using SignedInput syntax}
             {--o|only=* : Generate only selected files: <fg=cyan>{$builders}</>}";
 
+        // Add layout option if available in theme.
         $layout = call_user_func("{$class}::layout");
         if ($layout) {
-
             $signature .= "            {--l|layout= : The layout to extend into generated views: <fg=cyan>[{$layout}]</>}";
         }
 
         return $signature;
-    }
-
-    /**
-     * Get the list of options for dates modifiers (timestamps & soft deletes).
-     * 
-     * @param string $key       The modifier [timestamps|softDeletes]
-     * @param type $signature   Return it in signature format
-     * @return string
-     */
-    protected function getDatesModifiersChoices($key, $signature = false) {
-        $list = array_keys(config("crud-definitions.{$key}"));
-        $list[] = 'none';
-
-        if ($signature) {
-            $list[0] = '[' . $list[0] . ']';
-            return implode('|', $list);
-        }
-
-        return $list;
     }
 
     ############################################################################
@@ -277,7 +263,7 @@ class Command extends Base {
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
         if ($ask) {
-            $value = $this->choice('Do you wish to add timestamps?', $this->getDatesModifiersChoices('timestamps'), 0);
+            $value = $this->choice('Do you wish to add timestamps?', Definitions::timestampsChoices(), 0);
         }
 
         $this->crud->setTimestamps($value);
@@ -300,7 +286,7 @@ class Command extends Base {
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
         if ($ask) {
-            $value = $this->choice('Do you wish to add SoftDeletes?', $this->getDatesModifiersChoices('softDeletes'), 0);
+            $value = $this->choice('Do you wish to add SoftDeletes?', Definitions::softDeletesChoices(), 0);
         }
 
         $this->crud->setSoftDeletes($value);
@@ -319,7 +305,7 @@ class Command extends Base {
      * @return void 
      */
     protected function getContentInput() {
-        $fields = collect(config('crud-definitions.fields'))->keys();
+        $fields = Definitions::entries()->keys()->sort();
 
         // If fields where provided through option, add them.
         if ($this->option('content')) {
@@ -428,15 +414,10 @@ class Command extends Base {
      * @param type $name    The name of the field.
      */
     protected function showFieldHelp($name) {
-        $signature = config("crud-definitions.fields.{$name}");
-
-        preg_match('/^((\s?\{[^-\}]+\})*)/', $signature, $a);
-        $arguments = empty($a[1]) ? '' : " <fg=yellow>{$a[1]}</>";
-
-        preg_match('/((\{--[^\}]+\}\s?)*)$/', $signature, $o);
-        $options = empty($o[1]) ? '' : " <fg=cyan>{$o[1]}</>";
-
-        $this->line("   <info>Add a {$name} field to table.</info>\n   Signature:  {$arguments}{$options}\n");
+        $field = Definitions::parse($name);
+        $arguments = empty($field['arguments']) ? '' : " <fg=yellow>{$field['arguments']}</>";
+        $options = empty($field['options']) ? '' : " <fg=cyan>{$field['options']}</>";
+        $this->line(sprintf("   <info>Add a %s field to table.</info>\n   Signature:  %s%s\n", $name, $arguments, $options));
     }
 
     /**
@@ -445,14 +426,20 @@ class Command extends Base {
     protected function showFieldsHelp() {
         $rows = [];
 
-        foreach (config('crud-definitions.fields') as $name => $signature) {
-            if ($name === 'index' || $name === 'hasOne') {
-                $rows[] = new TableSeparator();
-            }
+        foreach (array_keys(Definitions::COLUMNS) as $name) {
+            $rows[] = Definitions::parse($name);
+        }
 
-            preg_match('/^((\s?\{[^-\}]+\})*)/', $signature, $a);
-            preg_match('/((\{--[^\}]+\}\s?)*)$/', $signature, $o);
-            $rows[] = [$name, $a[1], $o[1]];
+        $rows[] = new TableSeparator();
+
+        foreach (array_keys(Definitions::RELATIONS) as $name) {
+            $rows[] = Definitions::parse($name);
+        }
+
+        $rows[] = new TableSeparator();
+
+        foreach (array_keys(Definitions::INDEXES) as $name) {
+            $rows[] = Definitions::parse($name);
         }
 
         $this->table(['Command', 'Arguments', 'Options'], $rows);

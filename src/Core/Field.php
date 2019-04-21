@@ -4,6 +4,7 @@ namespace Bgaze\Crud\Core;
 
 use Illuminate\Support\Str;
 use Bgaze\Crud\Support\SignedInput;
+use Bgaze\Crud\Definitions;
 
 /**
  * A content entry of a CRUD (field or index).
@@ -34,11 +35,11 @@ class Field extends SignedInput {
      */
     public function __construct($type, $data) {
         // Instanciate field.
-        parent::__construct($type . ' ' . config("crud-definitions.fields.{$type}"));
+        parent::__construct($type . ' ' . Definitions::get($type));
 
         // Set & validate user input.
         $this->ask($data);
-        $this->validate(config('crud-definitions.validation'));
+        $this->validate(Definitions::VALIDATION);
 
         // Set field name.
         $this->setName();
@@ -92,16 +93,25 @@ class Field extends SignedInput {
      * @return boolean
      */
     public function isIndex() {
-        return in_array($this->command(), ['index', 'primaryIndex', 'uniqueIndex', 'spatialIndex']);
+        return Definitions::isIndex($this->command());
     }
 
     /**
-     * Check if the field is an index.
+     * Check if the field is a relation.
+     * 
+     * @return boolean
+     */
+    public function isRelation() {
+        return Definitions::isRelation($this->command());
+    }
+
+    /**
+     * Check if the field is an date.
      * 
      * @return boolean
      */
     public function isDate() {
-        return in_array($this->command(), ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz', 'year']);
+        return Definitions::isDate($this->command());
     }
 
     /**

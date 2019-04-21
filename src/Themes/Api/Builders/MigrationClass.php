@@ -8,6 +8,7 @@ use Bgaze\Crud\Core\Command;
 use Bgaze\Crud\Core\Builder;
 use Bgaze\Crud\Core\Field;
 use Bgaze\Crud\Core\FieldsTemplatesTrait;
+use Bgaze\Crud\Definitions;
 
 /**
  * The Migration class builder
@@ -104,12 +105,12 @@ class MigrationClass extends Builder {
             return $this->migrationGroup($field);
         });
 
-        if ($this->crud->softDeletes()) {
-            $content->prepend(config('crud-definitions.softDeletes.' . $this->crud->softDeletes()));
+        if ($this->crud->timestamps()) {
+            $content->push(Definitions::TIMESTAMPS[$this->crud->timestamps()]);
         }
 
-        if ($this->crud->timestamps()) {
-            $content->prepend(config('crud-definitions.timestamps.' . $this->crud->timestamps()));
+        if ($this->crud->softDeletes()) {
+            $content->push(Definitions::SOFT_DELETES[$this->crud->softDeletes()]);
         }
 
         return $content->implode("\n");
@@ -128,8 +129,8 @@ class MigrationClass extends Builder {
         }
 
         foreach ($field->input()->getOptions() as $k => $v) {
-            if ($v) {
-                $tmp .= str_replace('%value', $this->compileValueForPhp($v), config("crud-definitions.modifiers.{$k}"));
+            if ($v && isset(Definitions::COLUMNS_MODIFIERS[$k])) {
+                $tmp .= str_replace('%value', $this->compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
             }
         }
 

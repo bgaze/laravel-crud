@@ -1,22 +1,18 @@
 <?php
 
-/*
-  |---------------------------------------------------------------------------
-  | CRUD Definitions
-  |---------------------------------------------------------------------------
-  |
-  | This is a dictionnary for CRUD internal use.
-  | This file should not be published or modified.
-  |
- */
+namespace Bgaze\Crud;
 
-return [
-    /*
-      |---------------------------------------------------------------------------
-      | Validation rules for fields parameters and options
-      |---------------------------------------------------------------------------
+/**
+ * Description of FieldsDefinitions
+ *
+ * @author bgaze
+ */
+class Definitions {
+
+    /**
+     * The validation rules used against CRUD content inputs.
      */
-    'validation' => [
+    const VALIDATION = [
         'allowed' => 'array|min:1',
         'allowed.*' => 'table_column',
         'autoIncrement' => 'boolean',
@@ -50,74 +46,72 @@ return [
         'unique' => 'boolean',
         'unsigned' => 'boolean',
         'useCurrent' => 'boolean',
-    ],
-    /*
-      |---------------------------------------------------------------------------
-      | Timestamps templates
-      |---------------------------------------------------------------------------
+    ];
+
+    /**
+     * The list of date type columns.
      */
-    'timestamps' => [
+    const DATES = ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz', 'year'];
+
+    /**
+     * The available timestamps entries.
+     */
+    const TIMESTAMPS = [
         'timestamps' => '$table->timestamps();',
         'timestampsTz' => '$table->timestampsTz();',
-        'nullableTimestamps' => '$table->timestampsTz();',
-    ],
-    /*
-      |---------------------------------------------------------------------------
-      | Soft deletes templates
-      |---------------------------------------------------------------------------
+        'nullableTimestamps' => '$table->nullableTimestamps();',
+    ];
+
+    /**
+     * The availables sofDeletes entries.
      */
-    'softDeletes' => [
+    const SOFT_DELETES = [
         'softDeletes' => '$table->softDeletes();',
         'softDeletesTz' => '$table->softDeletesTz();',
-    ],
-    /*
-      |---------------------------------------------------------------------------
-      | Modifiers templates
-      |---------------------------------------------------------------------------
+    ];
+
+    /**
+     * The available modifiers availables for column entries.
      */
-    'modifiers' => [
+    const COLUMNS_MODIFIERS = [
         'default' => '->default(%value)',
         'comment' => '->comment(%value)',
         'nullable' => '->nullable()',
         'unsigned' => '->unsigned()',
         'index' => '->index()',
         'unique' => '->unique()'
-    ],
+    ];
+
     /*
-      |---------------------------------------------------------------------------
-      | Relations list
-      |---------------------------------------------------------------------------
+     * The available relation entries.
      */
-    'relations' => [
-        'hasOne',
-        'hasMany',
-        'belongsTo',
-        'belongsToMany',
-        'hasManyThrough',
-        'morphTo',
-        'morphOne',
-        'morphMany',
-        'morphToMany',
-        'morphedByMany',
-    ],
+    const RELATIONS = [
+        'hasOne' => '{related} {--f|foreignKey=} {--l|localKey=}',
+        'hasMany' => '{related} {--f|foreignKey=} {--l|localKey=}',
+        'belongsTo' => '{related} {--f|foreignKey=} {--o|ownerKey=}',
+        'belongsToMany' => '{related} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=}',
+        'hasManyThrough' => '{related} {through} {--f|firstKey=} {--s|secondKey=} {--l|localKey=} {--r|secondLocalKey=}',
+        'morphTo' => '{--n|name=} {--t|type=} {--i|id=}',
+        'morphOne' => '{related} {name} {--t|type=} {--i|id=} {--l|localKey=}',
+        'morphMany' => '{related} {name} {--t|type=} {--i|id=} {--l|localKey=}',
+        'morphToMany' => '{related} {name} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=} {--i|inverse}',
+        'morphedByMany' => '{related} {name} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=}',
+    ];
+
     /*
-      |---------------------------------------------------------------------------
-      | Indexes list
-      |---------------------------------------------------------------------------
+     * The available indexes entries.
      */
-    'indexes' => [
-        'index',
-        'primaryIndex',
-        'uniqueIndex',
-        'spatialIndex',
-    ],
+    const INDEXES = [
+        'index' => '{columns*}',
+        'primaryIndex' => '{columns*}',
+        'uniqueIndex' => '{columns*}',
+        'spatialIndex' => '{columns*}',
+    ];
+
     /*
-      |---------------------------------------------------------------------------
-      | Validation rules for fields parameters
-      |---------------------------------------------------------------------------
+     * The available columns entries.
      */
-    'fields' => [
-        // Regular fields.
+    const COLUMNS = [
         'bigInteger' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'binary' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'boolean' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
@@ -163,22 +157,120 @@ return [
         'unsignedTinyInteger' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'uuid' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'year' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
-        // Relations.
-        'hasOne' => '{related} {--f|foreignKey=} {--l|localKey=}',
-        'hasMany' => '{related} {--f|foreignKey=} {--l|localKey=}',
-        'belongsTo' => '{related} {--f|foreignKey=} {--o|ownerKey=}',
-        'belongsToMany' => '{related} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=}',
-        'hasManyThrough' => '{related} {through} {--f|firstKey=} {--s|secondKey=} {--l|localKey=} {--r|secondLocalKey=}',
-        'morphTo' => '{--n|name=} {--t|type=} {--i|id=}',
-        'morphOne' => '{related} {name} {--t|type=} {--i|id=} {--l|localKey=}',
-        'morphMany' => '{related} {name} {--t|type=} {--i|id=} {--l|localKey=}',
-        'morphToMany' => '{related} {name} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=} {--i|inverse}',
-        'morphedByMany' => '{related} {name} {--t|table=} {--f|foreignPivotKey=} {--r|relatedPivotKey=} {--p|parentKey=} {--l|relatedKey=}',
-        // Indexes.
-        'index' => '{columns*}',
-        'primaryIndex' => '{columns*}',
-        'uniqueIndex' => '{columns*}',
-        'spatialIndex' => '{columns*}',
-    ],
-];
+    ];
 
+    /**
+     * Get all available entries as a flat collection.
+     * 
+     * @return \Illuminate\Support\Collection
+     */
+    public static function entries() {
+        return collect(static::COLUMNS)->merge(static::RELATIONS)->merge(static::INDEXES);
+    }
+
+    /**
+     * Get a signature by entry name.
+     * 
+     * @param string $name  The entry name
+     * @return string       The entry signature
+     * @throws \Exception
+     */
+    public static function get($name) {
+        if (isset(static::COLUMNS[$name])) {
+            return static::COLUMNS[$name];
+        }
+
+        if (isset(static::RELATIONS[$name])) {
+            return static::RELATIONS[$name];
+        }
+
+        if (isset(static::INDEXES[$name])) {
+            return static::INDEXES[$name];
+        }
+
+        throw new \Exception("Unknown entry type: {$name}");
+    }
+
+    /**
+     * Get entry name, arguments and options as separated strings.
+     * 
+     * @param string $name  The entry name
+     * @return array
+     */
+    public static function parse($name) {
+        $signature = static::get($name);
+        preg_match('/^((\s?\{[^-\}]+\})*)/', $signature, $a);
+        preg_match('/((\{--[^\}]+\}\s?)*)$/', $signature, $o);
+        return ['name' => $name, 'arguments' => $a[1], 'options' => $o[1]];
+    }
+
+    /**
+     * Check if the entry is an index.
+     * 
+     * @param string $name  The entry name
+     * @return boolean
+     */
+    public static function isIndex($name) {
+        return isset(static::INDEXES[$name]);
+    }
+
+    /**
+     * Check if the entry is a relation.
+     * 
+     * @param string $name  The entry name
+     * @return boolean
+     */
+    public static function isRelation($name) {
+        return isset(static::RELATIONS[$name]);
+    }
+
+    /**
+     * Check if the entry is an index.
+     * 
+     * @param string $name  The entry name
+     * @return boolean
+     */
+    public static function isDate($name) {
+        return in_array($name, static::DATES);
+    }
+
+    /**
+     * Get the list of options for dates modifiers (timestamps & softDeletes).
+     * 
+     * @param array $data       The modifier list
+     * @param type $signature   Return it in signature format
+     * @return string
+     */
+    protected static function datesModifiersChoices($data, $signature = false) {
+        $list = array_keys($data);
+        $list[] = 'none';
+
+        if ($signature) {
+            $list[0] = '[' . $list[0] . ']';
+            return implode('|', $list);
+        }
+
+        return $list;
+    }
+
+    /**
+     * Get the list of options for dates modifiers (timestamps & soft deletes).
+     * 
+     * @param type $signature   Return it in signature format
+     * @return string
+     */
+    public static function timestampsChoices($signature = false) {
+        return static::datesModifiersChoices(static::TIMESTAMPS, $signature);
+    }
+
+    /**
+     * Get the list of options for dates modifiers (timestamps & soft deletes).
+     * 
+     * @param type $signature   Return it in signature format
+     * @return string
+     */
+    public static function softDeletesChoices($signature = false) {
+        return static::datesModifiersChoices(static::SOFT_DELETES, $signature);
+    }
+
+}

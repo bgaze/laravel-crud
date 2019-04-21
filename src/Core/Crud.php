@@ -4,6 +4,7 @@ namespace Bgaze\Crud\Core;
 
 use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Field;
+use Bgaze\Crud\Definitions;
 
 /**
  * The core class of the CRUD package
@@ -73,7 +74,7 @@ abstract class Crud {
     protected $softDeletes;
 
     /**
-     * Model's content (fields & indexes).
+     * Model's Field objects.
      *
      * @var \Illuminate\Support\Collection 
      */
@@ -239,7 +240,7 @@ abstract class Crud {
      * @return void
      */
     public function setTimestamps($value = false) {
-        $timestamps = array_keys(config('crud-definitions.timestamps'));
+        $timestamps = array_keys(Definitions::TIMESTAMPS);
 
         if ($value === 'none') {
             $this->timestamps = false;
@@ -262,7 +263,7 @@ abstract class Crud {
      * @return void
      */
     public function setSoftDeletes($value = false) {
-        $softDeletes = array_keys(config('crud-definitions.softDeletes'));
+        $softDeletes = array_keys(Definitions::SOFT_DELETES);
 
         if ($value === 'none') {
             $this->softDeletes = false;
@@ -432,7 +433,7 @@ abstract class Crud {
     public function columns() {
         $columns = $this->content(false)->map(function(Field $field) {
                     if ($field->command() === 'morphs' || $field->command() === 'nullableMorphs') {
-                        return[$field->name() . '_id', $field->name() . '_type'];
+                        return [$field->name() . '_id', $field->name() . '_type'];
                     }
 
                     return $field->name();

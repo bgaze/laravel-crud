@@ -46,9 +46,6 @@ class ServiceProvider extends Base {
      * @return void
      */
     public function register() {
-        // Merge crud definitions.
-        $this->mergeConfigFrom(__DIR__ . '/config/definitions.php', 'crud-definitions');
-
         // Merge package configuration.
         $this->mergeConfigFrom(__DIR__ . '/config/crud.php', 'crud');
 
