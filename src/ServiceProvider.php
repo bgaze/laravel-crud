@@ -2,6 +2,7 @@
 
 namespace Bgaze\Crud;
 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider as Base;
 use Bgaze\Crud\Support\ThemeProviderTrait;
 use Bgaze\Crud\Themes;
@@ -23,6 +24,16 @@ class ServiceProvider extends Base {
     public function boot() {
         // Publish configuration.
         $this->publishes([__DIR__ . '/config/crud.php' => config_path('crud.php')], 'crud-config');
+
+        // Register table colum name validation rule.
+        Validator::extend('table_column', function ($attribute, $value, $parameters, $validator) {
+            return preg_match(config('crud.table_column_format'), $value);
+        }, '":attribute" must be lowercased, must start with a letter and cannot end with underscore.');
+
+        // Register table colum name validation rule.
+        Validator::extend('model_name', function ($attribute, $value, $parameters, $validator) {
+            return preg_match(config('crud.model_fullname_format'), $value);
+        }, '":attribute" must be a valid Model fullname.');
 
         // Register & publish default themes.
         $this->registerTheme(Themes\Api\Crud::class);

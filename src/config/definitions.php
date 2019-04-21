@@ -17,20 +17,39 @@ return [
       |---------------------------------------------------------------------------
      */
     'validation' => [
-        'column' => 'alpha_dash',
-        'columns' => 'array|min:1',
-        'columns.*' => 'alpha_dash',
-        'total' => 'integer',
-        'places' => 'integer',
-        'length' => 'nullable|integer',
         'allowed' => 'array|min:1',
-        'allowed.*' => 'alpha_dash',
-        'nullable' => 'boolean',
+        'allowed.*' => 'table_column',
         'autoIncrement' => 'boolean',
-        'unsigned' => 'boolean',
-        'unique' => 'boolean',
+        'column' => 'table_column',
+        'columns' => 'array|min:1',
+        'columns.*' => 'table_column',
+        'comment' => 'nullable|string',
         'default' => 'nullable|string',
-        'comment' => 'nullable|string'
+        'firstKey' => 'table_column',
+        'foreignKey' => 'table_column',
+        'foreignPivotKey' => 'table_column',
+        'id' => 'table_column',
+        'index' => 'boolean',
+        'inverse' => 'boolean',
+        'length' => 'nullable|integer',
+        'localKey' => 'table_column',
+        'name' => 'table_column',
+        'nullable' => 'boolean',
+        'ownerKey' => 'table_column',
+        'parentKey' => 'table_column',
+        'places' => 'integer',
+        'related' => 'model_name',
+        'relatedKey' => 'table_column',
+        'relatedPivotKey' => 'table_column',
+        'secondKey' => 'table_column',
+        'secondLocalKey' => 'table_column',
+        'table' => 'table_column',
+        'through' => 'model_name',
+        'total' => 'integer',
+        'type' => 'model_name',
+        'unique' => 'boolean',
+        'unsigned' => 'boolean',
+        'useCurrent' => 'boolean',
     ],
     /*
       |---------------------------------------------------------------------------
@@ -63,6 +82,34 @@ return [
         'unsigned' => '->unsigned()',
         'index' => '->index()',
         'unique' => '->unique()'
+    ],
+    /*
+      |---------------------------------------------------------------------------
+      | Relations list
+      |---------------------------------------------------------------------------
+     */
+    'relations' => [
+        'hasOne',
+        'hasMany',
+        'belongsTo',
+        'belongsToMany',
+        'hasManyThrough',
+        'morphTo',
+        'morphOne',
+        'morphMany',
+        'morphToMany',
+        'morphedByMany',
+    ],
+    /*
+      |---------------------------------------------------------------------------
+      | Indexes list
+      |---------------------------------------------------------------------------
+     */
+    'indexes' => [
+        'index',
+        'primaryIndex',
+        'uniqueIndex',
+        'spatialIndex',
     ],
     /*
       |---------------------------------------------------------------------------

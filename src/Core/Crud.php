@@ -187,7 +187,7 @@ abstract class Crud {
     protected function setModel($value) {
         $model = str_replace('/', '\\', trim($value, '\\/ '));
 
-        if (!preg_match('/^((([A-Z][a-z]+)+)\\\\)*(([A-Z][a-z]+)+)$/', $model)) {
+        if (!preg_match(config('crud.model_fullname_format'), $model)) {
             throw new \Exception("Model name is invalid.");
         }
 
@@ -211,7 +211,7 @@ abstract class Crud {
             $error = "Plural names are invalid. It sould be something like : " . $default->implode('\\');
 
             $value = str_replace('/', '\\', trim($value, '\\/ '));
-            if (!preg_match('/^((([A-Z][a-z]+)+)\\\\)*(([A-Z][a-z]+)+)$/', $value)) {
+            if (!preg_match(config('crud.model_fullname_format'), $value)) {
                 throw new \Exception($error);
             }
 
