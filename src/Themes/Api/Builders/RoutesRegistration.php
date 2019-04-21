@@ -55,7 +55,7 @@ class RoutesRegistration extends Builder {
      * Print builder's effect summary into console.
      */
     public function done() {
-        $this->command->dl(' Routes registred into', $this->file());
+        $this->command->dl(' Registred routes into', $this->file());
     }
 
 }
