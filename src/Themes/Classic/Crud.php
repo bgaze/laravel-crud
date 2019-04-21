@@ -56,12 +56,16 @@ class Crud extends Base {
      * @return array Name as key, full class name as value.
      */
     static public function builders() {
-        return array_merge(parent::builders(), [
-            'routes-registration' => Builders\RoutesRegistration::class,
+        $builders = parent::builders();
+
+        unset($builders['routes-registration']);
+
+        return array_merge($builders, [
             'index-view' => Builders\IndexView::class,
             'create-view' => Builders\CreateView::class,
             'edit-view' => Builders\EditView::class,
             'show-view' => Builders\ShowView::class,
+            'routes-registration' => Builders\RoutesRegistration::class,
         ]);
     }
 
