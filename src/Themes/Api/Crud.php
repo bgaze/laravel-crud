@@ -112,17 +112,6 @@ class Crud extends Base {
     }
 
     /**
-     * Get the Model full name with namespace
-     * 
-     * Exemple : App\MyGrandParent\MyParent\MyModel
-     * 
-     * @return string
-     */
-    public function getModelClass() {
-        return app()->getNamespace() . trim($this->modelsSubDirectory() . '\\' . $this->model->implode('\\'), '\\');
-    }
-
-    /**
      * Get the Model namespace
      * 
      * Exemple : App\MyGrandParent\MyParent
