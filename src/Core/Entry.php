@@ -3,8 +3,9 @@
 namespace Bgaze\Crud\Core;
 
 use Illuminate\Support\Str;
-use Bgaze\Crud\Support\SignedInput;
 use Bgaze\Crud\Definitions;
+use Bgaze\Crud\Support\SignedInput;
+use Bgaze\Crud\Core\Model;
 
 /**
  * A content entry of a CRUD (entry or index).
@@ -28,6 +29,13 @@ class Entry extends SignedInput {
     protected $label;
 
     /**
+     * The related model for relations.
+     * 
+     * @var \Bgaze\Crud\Core\Model 
+     */
+    protected $related = null;
+
+    /**
      * The class constructor.
      * 
      * @param string $type      The entry type. 
@@ -40,6 +48,11 @@ class Entry extends SignedInput {
         // Set & validate user input.
         $this->ask($data);
         $this->validate(Definitions::VALIDATION);
+
+        // Init related model for relations.
+        if ($this->isRelation()) {
+            $this->related = new Model($this->input()->getArgument('related'), $this->input()->getOption('plurals'));
+        }
 
         // Set entry name.
         $this->setName();
@@ -79,21 +92,6 @@ class Entry extends SignedInput {
     }
 
     /**
-     * Get content's configuration entry by key.
-     * 
-     * @param string $key       The key of the entry
-     * @param mixed $default    The default value of the entry
-     * @return mixed
-     */
-    public function config($key, $default = false) {
-        if (!isset($this->config->{$key})) {
-            return $default;
-        }
-
-        return $this->config->{$key};
-    }
-
-    /**
      * Check if the entry is an index.
      * 
      * @return boolean
@@ -130,6 +128,24 @@ class Entry extends SignedInput {
     }
 
     /**
+     * The label to use for the entry.
+     * 
+     * @return string
+     */
+    public function label() {
+        return $this->label;
+    }
+
+    /**
+     * The related model to use for the entry.
+     * 
+     * @return \Bgaze\Crud\Core\Model
+     */
+    public function related() {
+        return $this->related;
+    }
+
+    /**
      * Get the columns added to the table.
      * 
      * @return array
@@ -156,15 +172,6 @@ class Entry extends SignedInput {
         }
 
         return [$this->name];
-    }
-
-    /**
-     * The label to use for the entry.
-     * 
-     * @return string
-     */
-    public function label() {
-        return $this->label;
     }
 
 }
