@@ -101,20 +101,24 @@ class MigrationClass extends Builder {
      */
     protected function content() {
         return $this->crud->content()->map(function(Entry $entry) {
-                    $tmp = $this->entryTemplate($entry);
+                            return $this->entryTemplate($entry);
+                        })
+                        ->filter()
+                        ->implode("\n");
+    }
 
-                    foreach ($entry->input()->getArguments() as $k => $v) {
-                        $tmp = str_replace("%$k", $this->compileValueForPhp($v), $tmp);
-                    }
-
-                    foreach ($entry->input()->getOptions() as $k => $v) {
-                        if ($v !== null && $v !== false && isset(Definitions::COLUMNS_MODIFIERS[$k])) {
-                            $tmp .= str_replace('%value', $this->compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
-                        }
-                    }
-
-                    return $tmp . ';';
-                })->implode("\n");
+    /**
+     * Add modifiers to template based on entry options and user input.
+     * 
+     * @param Bgaze\Crud\Core\Entry $entry
+     * @param string $template
+     */
+    protected function addModifiers(Entry $entry, &$template) {
+        foreach ($entry->input()->getOptions() as $k => $v) {
+            if ($v !== null && $v !== false && isset(Definitions::COLUMNS_MODIFIERS[$k])) {
+                $template .= str_replace('%value', $this->compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
+            }
+        }
     }
 
     /**
@@ -124,13 +128,59 @@ class MigrationClass extends Builder {
      * @return string The template for the entry
      */
     public function defaultTemplate(Entry $entry) {
-        $arguments = array_keys($entry->definition()->getArguments());
+        $arguments = $entry->definition()->getArguments();
 
         if (!empty($arguments)) {
-            return '$table->' . $entry->command() . '(%' . implode(', %', $arguments) . ')';
+            $template = '$table->' . $entry->command() . '(%' . implode(', %', array_keys($arguments)) . ')';
+        } else {
+            $template = '$table->' . $entry->command() . '()';
         }
 
-        return '$table->' . $entry->command() . '()';
+        foreach ($entry->input()->getArguments() as $k => $v) {
+            $template = str_replace("%$k", $this->compileValueForPhp($v), $template);
+        }
+
+        $this->addModifiers($entry, $template);
+
+        return $template . ';';
+    }
+
+    /**
+     * Get the template for a hasOne entry.
+     * 
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
+     */
+    public function hasOneTemplate(Entry $entry) {
+        return null;
+    }
+
+    /**
+     * Get the template for a hasMany entry.
+     * 
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
+     */
+    public function hasManyTemplate(Entry $entry) {
+        return null;
+    }
+
+    /**
+     * Get the template for a belongsTo entry.
+     * 
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
+     */
+    public function belongsToTemplate(Entry $entry) {
+        $column = $entry->input()->getOption('foreignKey');
+
+        if (empty($column)) {
+            $column = $entry->related()->getModelCamel() . '_id';
+        }
+
+        $template = '$table->unsignedInteger(' . $this->compileValueForPhp($column) . ')';
+        $this->addModifiers($entry, $template);
+        return $template . ';';
     }
 
 }
