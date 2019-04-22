@@ -5,7 +5,7 @@ namespace Bgaze\Crud\Core;
 use Illuminate\Support\Str;
 use Bgaze\Crud\Definitions;
 use Bgaze\Crud\Support\SignedInput;
-use Bgaze\Crud\Core\Model;
+use Bgaze\Crud\Core\Crud;
 
 /**
  * A content entry of a CRUD (entry or index).
@@ -31,7 +31,7 @@ class Entry extends SignedInput {
     /**
      * The related model for relations.
      * 
-     * @var \Bgaze\Crud\Core\Model 
+     * @var \Bgaze\Crud\Core\Crud 
      */
     protected $related = null;
 
@@ -41,7 +41,7 @@ class Entry extends SignedInput {
      * @param string $type      The entry type. 
      * @param string $data      Options and arguments
      */
-    public function __construct($type, $data) {
+    public function __construct($type, $data, $crudClass) {
         // Instanciate entry.
         parent::__construct($type . ' ' . Definitions::get($type));
 
@@ -51,7 +51,10 @@ class Entry extends SignedInput {
 
         // Init related model for relations.
         if ($this->isRelation()) {
-            $this->related = new Model($this->input()->getArgument('related'), $this->input()->getOption('plurals'));
+            $this->related = new $crudClass($this->input()->getArgument('related'));
+            if ($this->definition()->hasOption('plurals') && $this->input()->hasOption('plurals')) {
+                $this->related->setPlurals($this->input()->getOption('plurals'));
+            }
         }
 
         // Set entry name.
