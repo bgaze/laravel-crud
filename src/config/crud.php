@@ -19,7 +19,7 @@ return [
     | This regular expression is used to validate model FullName.
     | 
     */
-    'model_fullname_format' => '/^((([A-Z][a-z]+)+)\\\\)*(([A-Z][a-z]+)+)$/',
+    'model_fullname_format' => '/^((([A-Z][a-z]+)+)(\\\\|\/))*(([A-Z][a-z]+)+)$/',
     
     /*
     |---------------------------------------------------------------------------
