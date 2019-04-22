@@ -41,7 +41,6 @@ class MigrationClass extends Builder {
      */
     public function __construct(Filesystem $files, Command $command) {
         parent::__construct($files, $command);
-
         $this->composer = resolve('Illuminate\Support\Composer');
     }
 
@@ -101,40 +100,21 @@ class MigrationClass extends Builder {
      * @return string
      */
     protected function content() {
-        $content = $this->crud->content()->map(function(Field $field) {
-            return $this->migrationGroup($field);
-        });
+        return $this->crud->content()->map(function(Field $field) {
+                    $tmp = $this->fieldTemplate($field);
 
-        if ($this->crud->timestamps()) {
-            $content->push(Definitions::TIMESTAMPS[$this->crud->timestamps()]);
-        }
+                    foreach ($field->input()->getArguments() as $k => $v) {
+                        $tmp = str_replace("%$k", $this->compileValueForPhp($v), $tmp);
+                    }
 
-        if ($this->crud->softDeletes()) {
-            $content->push(Definitions::SOFT_DELETES[$this->crud->softDeletes()]);
-        }
+                    foreach ($field->input()->getOptions() as $k => $v) {
+                        if ($v !== null && $v !== false && isset(Definitions::COLUMNS_MODIFIERS[$k])) {
+                            $tmp .= str_replace('%value', $this->compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
+                        }
+                    }
 
-        return $content->implode("\n");
-    }
-
-    /**
-     * Compile content to migration class body line.
-     * 
-     * @return string
-     */
-    protected function migrationGroup(Field $field) {
-        $tmp = $this->fieldTemplate($field);
-
-        foreach ($field->input()->getArguments() as $k => $v) {
-            $tmp = str_replace("%$k", $this->compileValueForPhp($v), $tmp);
-        }
-
-        foreach ($field->input()->getOptions() as $k => $v) {
-            if ($v && isset(Definitions::COLUMNS_MODIFIERS[$k])) {
-                $tmp .= str_replace('%value', $this->compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
-            }
-        }
-
-        return $tmp . ';';
+                    return $tmp . ';';
+                })->implode("\n");
     }
 
     /**
@@ -144,117 +124,13 @@ class MigrationClass extends Builder {
      * @return string The template for the field
      */
     public function defaultTemplate(Field $field) {
-        return '$table->' . $field->command() . '(%column)';
-    }
+        $arguments = array_keys($field->definition()->getArguments());
 
-    /**
-     * Get the template for a char field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function charTemplate(Field $field) {
-        return '$table->char(%column, %length)';
-    }
+        if (!empty($arguments)) {
+            return '$table->' . $field->command() . '(%' . implode(', %', $arguments) . ')';
+        }
 
-    /**
-     * Get the template for a decimal field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function decimalTemplate(Field $field) {
-        return '$table->decimal(%column, %total, %places)';
-    }
-
-    /**
-     * Get the template for a double field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function doubleTemplate(Field $field) {
-        return '$table->double(%column, %total, %places)';
-    }
-
-    /**
-     * Get the template for a enum field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function enumTemplate(Field $field) {
-        return '$table->enum(%column, %allowed)';
-    }
-
-    /**
-     * Get the template for a float field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function floatTemplate(Field $field) {
-        return '$table->float(%column, %total, %places)';
-    }
-
-    /**
-     * Get the template for a string field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function stringTemplate(Field $field) {
-        return '$table->string(%column, %length)';
-    }
-
-    /**
-     * Get the template for a unsignedDecimal field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function unsignedDecimalTemplate(Field $field) {
-        return '$table->unsignedDecimal(%column, %total, %places)';
-    }
-
-    /**
-     * Get the template for a index field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function indexTemplate(Field $field) {
-        return '$table->index(%columns)';
-    }
-
-    /**
-     * Get the template for a primaryIndex field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function primaryIndexTemplate(Field $field) {
-        return '$table->primary(%columns)';
-    }
-
-    /**
-     * Get the template for a uniqueIndex field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function uniqueIndexTemplate(Field $field) {
-        return '$table->unique(%columns)';
-    }
-
-    /**
-     * Get the template for a spatialIndex field.
-     * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
-     */
-    public function spatialIndexTemplate(Field $field) {
-        return '$table->spatialIndex(%columns)';
+        return '$table->' . $field->command() . '()';
     }
 
 }

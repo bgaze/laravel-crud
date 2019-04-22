@@ -41,28 +41,36 @@ class RequestClass extends Builder {
      * @return string
      */
     protected function content() {
-        $content = $this->crud->content(false);
+        $content = $this->crud
+                ->content(false)
+                ->map(function(Field $field) {
+                    $template = $this->fieldTemplate($field);
 
-        if ($content->isEmpty()) {
+                    if ($template === false) {
+                        return false;
+                    }
+
+                    return $this->requestGroup($field, $template);
+                })
+                ->filter()
+                ->implode("\n");
+
+        if (empty($content)) {
             return '// TODO';
         }
 
-        return $content
-                        ->map(function(Field $field) {
-                            return $this->requestGroup($field);
-                        })
-                        ->implode("\n");
+        return $content;
     }
 
     /**
      * Compile content to request class body line.
      * 
-     * @param \Bgaze\Crud\Core\Field $field
+     * @param \Bgaze\Crud\Core\Field $field     The field
+     * @param string $template                  The field rules
      * @return string
      */
-    protected function requestGroup(Field $field) {
+    protected function requestGroup(Field $field, $template) {
         $rules = [];
-
         $definition = $field->definition();
 
         if ($definition->hasOption('nullable')) {
@@ -73,7 +81,7 @@ class RequestClass extends Builder {
             $rules[] = 'required';
         }
 
-        $rules[] = $this->fieldTemplate($field);
+        $rules[] = $template;
 
         if (in_array('unique', $definition->getOptions()) && $definition->getOption('unique')) {
             $rules[] = 'unique:' . $this->crud->getTableName() . ',' . $field->name();
@@ -250,6 +258,46 @@ class RequestClass extends Builder {
      */
     public function smallIntegerTemplate(Field $field) {
         return 'integer|min:-32768|max:32767';
+    }
+
+    /**
+     * Get the template for a softDeletes field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function softDeletesTemplate(Field $field) {
+        return false;
+    }
+
+    /**
+     * Get the template for a softDeletesTz field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function softDeletesTzTemplate(Field $field) {
+        return false;
+    }
+
+    /**
+     * Get the template for a timestamps field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function timestampsTemplate(Field $field) {
+        return false;
+    }
+
+    /**
+     * Get the template for a timestampsTz field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function timestampsTzTemplate(Field $field) {
+        return false;
     }
 
     /**

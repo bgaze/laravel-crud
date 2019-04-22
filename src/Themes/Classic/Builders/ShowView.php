@@ -42,27 +42,34 @@ class ShowView extends Builder {
             return '    <!-- TODO -->';
         }
 
+        $stub = $this->stub('partials.show-group');
+
         return $content
-                        ->map(function(Field $field) {
-                            return $this->showGroup($field);
+                        ->map(function(Field $field) use($stub) {
+                            if (in_array($field->name(), ['rememberToken', 'softDeletes', 'softDeletesTz'])) {
+                                return null;
+                            }
+
+                            if (in_array($field->name(), ['timestamps', 'timestampsTz'])) {
+                                return $this->showGroup($stub, 'Created at', 'created_at') . "\n" . $this->showGroup($stub, 'Updated at', 'updated_at');
+                            }
+
+                            return $this->showGroup($stub, $field->label(), $field->name());
                         })
+                        ->filter()
                         ->implode("\n");
     }
 
     /**
      * Compile content to request show view group.
      * 
-     * @param \Bgaze\Crud\Core\Field $field
+     * @param string $stub
+     * @param string $label
+     * @param string $name
      * @return string
      */
-    protected function showGroup(Field $field) {
-        $stub = $this->stub('partials.show-group');
-
-        $this
-                ->replace($stub, 'FieldLabel', $field->label())
-                ->replace($stub, 'FieldName', $field->name())
-        ;
-
+    protected function showGroup($stub, $label, $name) {
+        $this->replace($stub, 'FieldLabel', $label)->replace($stub, 'FieldName', $name);
         return $stub;
     }
 

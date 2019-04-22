@@ -67,7 +67,14 @@ class ModelClass extends Builder {
     protected function fillables() {
         $fillables = $this->crud
                 ->content(false)
-                ->keys()
+                ->map(function(Field $field) {
+                    if (in_array($field->name(), ['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz'])) {
+                        return false;
+                    }
+                    return $field->columns();
+                })
+                ->flatten()
+                ->filter()
                 ->toArray();
         return 'protected $fillable = ' . $this->compileArrayForPhp($fillables) . ';';
     }
@@ -102,15 +109,6 @@ class ModelClass extends Builder {
             return $this->fieldTemplate($field);
         });
 
-        if ($this->crud->timestamps()) {
-            $content->push($this->property('\Carbon\Carbon', 'created_at'));
-            $content->push($this->property('\Carbon\Carbon', 'updated_at'));
-        }
-
-        if ($this->crud->softDeletes()) {
-            $content->push($this->property('\Carbon\Carbon', 'deleted_at'));
-        }
-
         return "/**\n" . $content->implode("\n") . "\n */";
     }
 
@@ -142,7 +140,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function bigIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
     }
 
     /**
@@ -172,7 +170,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function dateTimeTemplate(Field $field) {
-        return $this->property('\Carbon\Carbon', $field->name());
+        return $this->dateTemplate($field);
     }
 
     /**
@@ -182,7 +180,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function dateTimeTzTemplate(Field $field) {
-        return $this->property('\Carbon\Carbon', $field->name());
+        return $this->dateTemplate($field);
     }
 
     /**
@@ -192,7 +190,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function decimalTemplate(Field $field) {
-        return $this->property('float', $field->name());
+        return $this->floatTemplate($field);
     }
 
     /**
@@ -202,7 +200,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function doubleTemplate(Field $field) {
-        return $this->property('float', $field->name());
+        return $this->floatTemplate($field);
     }
 
     /**
@@ -242,7 +240,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function jsonbTemplate(Field $field) {
-        return $this->property('array', $field->name());
+        return $this->jsonTemplate($field);
     }
 
     /**
@@ -252,7 +250,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function mediumIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
     }
 
     /**
@@ -272,7 +270,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function nullableMorphsTemplate(Field $field) {
-        return $this->property('integer', $field->name() . '_id') . "\n" . $this->property('string', $field->name() . '_type');
+        return $this->morphsTemplate($field);
     }
 
     /**
@@ -282,7 +280,27 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function smallIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
+    }
+
+    /**
+     * Get the template for a softDeletes field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function softDeletesTemplate(Field $field) {
+        return $this->property('\Carbon\Carbon', 'deleted_at');
+    }
+
+    /**
+     * Get the template for a softDeletesTz field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function softDeletesTzTemplate(Field $field) {
+        return $this->softDeletesTemplate($field);
     }
 
     /**
@@ -292,7 +310,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function timeTemplate(Field $field) {
-        return $this->property('\Carbon\Carbon', $field->name());
+        return $this->dateTemplate($field);
     }
 
     /**
@@ -302,7 +320,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function timeTzTemplate(Field $field) {
-        return $this->property('\Carbon\Carbon', $field->name());
+        return $this->dateTemplate($field);
     }
 
     /**
@@ -312,7 +330,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function timestampTemplate(Field $field) {
-        return $this->property('\Carbon\Carbon', $field->name());
+        return $this->dateTemplate($field);
     }
 
     /**
@@ -322,7 +340,27 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function timestampTzTemplate(Field $field) {
-        return $this->property('\Carbon\Carbon', $field->name());
+        return $this->dateTemplate($field);
+    }
+
+    /**
+     * Get the template for a timestamps field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function timestampsTemplate(Field $field) {
+        return $this->property('\Carbon\Carbon', 'created_at') . "\n" . $this->property('\Carbon\Carbon', 'updated_at');
+    }
+
+    /**
+     * Get the template for a timestampsTz field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function timestampsTzTemplate(Field $field) {
+        return $this->timestampsTemplate($field);
     }
 
     /**
@@ -332,7 +370,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function tinyIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
     }
 
     /**
@@ -342,7 +380,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function unsignedBigIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
     }
 
     /**
@@ -352,7 +390,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function unsignedDecimalTemplate(Field $field) {
-        return $this->property('float', $field->name());
+        return $this->floatTemplate($field);
     }
 
     /**
@@ -362,7 +400,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function unsignedIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
     }
 
     /**
@@ -372,7 +410,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function unsignedMediumIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
     }
 
     /**
@@ -382,7 +420,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function unsignedSmallIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
     }
 
     /**
@@ -392,7 +430,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function unsignedTinyIntegerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+        return $this->integerTemplate($field);
     }
 
     /**
@@ -402,7 +440,7 @@ class ModelClass extends Builder {
      * @return string The template for the field
      */
     public function yearTemplate(Field $field) {
-        return $this->property('\Carbon\Carbon', $field->name());
+        return $this->dateTemplate($field);
     }
 
 }

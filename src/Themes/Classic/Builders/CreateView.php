@@ -52,17 +52,19 @@ class CreateView extends Builder {
      * @return string
      */
     protected function content($groupStub) {
-        $content = $this->crud->content(false);
+        $content = $this->crud
+                ->content(false)
+                ->map(function(Field $field) use($groupStub) {
+                    return $this->formGroup($field, $groupStub);
+                })
+                ->filter()
+                ->implode("\n");
 
-        if ($content->isEmpty()) {
+        if (empty($content)) {
             return '    <!-- TODO -->';
         }
 
-        return $content
-                        ->map(function(Field $field) use($groupStub) {
-                            return $this->formGroup($field, $groupStub);
-                        })
-                        ->implode("\n");
+        return $content;
     }
 
     /**
@@ -74,6 +76,10 @@ class CreateView extends Builder {
      */
     protected function formGroup(Field $field, $groupStub) {
         $template = $this->fieldTemplate($field);
+
+        if (empty($template)) {
+            return null;
+        }
 
         $stub = $this->stub($groupStub);
 
@@ -134,6 +140,56 @@ class CreateView extends Builder {
      */
     public function textTemplate(Field $field) {
         return "{!! Form::textarea('FieldName') !!}";
+    }
+
+    /**
+     * Get the template for a rememberToken field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function rememberTokenTemplate(Field $field) {
+        return null;
+    }
+
+    /**
+     * Get the template for a softDeletes field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function softDeletesTemplate(Field $field) {
+        return null;
+    }
+
+    /**
+     * Get the template for a softDeletesTz field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function softDeletesTzTemplate(Field $field) {
+        return null;
+    }
+
+    /**
+     * Get the template for a timestamps field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function timestampsTemplate(Field $field) {
+        return null;
+    }
+
+    /**
+     * Get the template for a timestampsTz field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function timestampsTzTemplate(Field $field) {
+        return null;
     }
 
 }

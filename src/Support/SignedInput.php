@@ -92,7 +92,7 @@ class SignedInput {
 
         // Use custom validation rules.
         if (!empty($rules)) {
-            $input = $this->input->getOptions() + $this->input->getArguments();
+            $input = array_merge($this->input->getOptions(), $this->input->getArguments());
             $validator = \Validator::make($input, $rules);
             if ($validator->fails()) {
                 throw new \Exception(implode("\n", $validator->errors()->all()));

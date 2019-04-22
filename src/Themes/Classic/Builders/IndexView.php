@@ -51,11 +51,9 @@ class IndexView extends Builder {
 
         return $content
                         ->map(function(Field $field) use($stub) {
-                            $this
-                            ->replace($stub, 'FieldLabel', $field->label())
-                            ->replace($stub, 'FieldName', $field->name());
-                            return $stub;
+                            return $this->fieldCell($field, $stub);
                         })
+                        ->filter()
                         ->implode("\n");
     }
 
@@ -75,12 +73,42 @@ class IndexView extends Builder {
 
         return $content
                         ->map(function(Field $field) use($stub) {
-                            $this
-                            ->replace($stub, 'FieldLabel', $field->label())
-                            ->replace($stub, 'FieldName', $field->name());
-                            return $stub;
+                            return $this->fieldCell($field, $stub);
                         })
+                        ->filter()
                         ->implode("\n");
+    }
+
+    /**
+     * Generate a table cell for a field
+     * 
+     * @param Field $field
+     * @param string $stub
+     * @return string
+     */
+    protected function fieldCell(Field $field, $stub) {
+        if (in_array($field->name(), ['rememberToken', 'softDeletes', 'softDeletesTz'])) {
+            return null;
+        }
+
+        if (in_array($field->name(), ['timestamps', 'timestampsTz'])) {
+            return $this->tableCell($stub, 'Created at', 'created_at') . "\n" . $this->tableCell($stub, 'Updated at', 'updated_at');
+        }
+
+        return $this->tableCell($stub, $field->label(), $field->name());
+    }
+
+    /**
+     * Generate a table cell 
+     * 
+     * @param string $stub
+     * @param string $label
+     * @param string $name
+     * @return string
+     */
+    protected function tableCell($stub, $label, $name) {
+        $this->replace($stub, 'FieldLabel', $label)->replace($stub, 'FieldName', $name);
+        return $stub;
     }
 
 }

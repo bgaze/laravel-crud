@@ -66,7 +66,13 @@ class Field extends SignedInput {
         if ($this->isIndex()) {
             $columns = $this->input()->getArgument('columns');
             sort($columns);
-            $this->name = 'index:' . implode('_', $columns);
+            $this->name = 'index:' . implode(',', $columns);
+        } elseif (in_array($this->command(), ['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz', 'rememberToken'])) {
+            $this->name = $this->command();
+        } elseif (in_array($this->command(), ['morphs', 'nullableMorphs', 'morphTo'])) {
+            $this->name = $this->command() . ':' . $this->input()->getOption('name');
+        } elseif ($this->isRelation()) {
+            $this->name = $this->command() . ':' . $this->input()->getOption('related');
         } else {
             $this->name = $this->input()->getArgument('column');
         }
@@ -119,8 +125,37 @@ class Field extends SignedInput {
      * 
      * @return string
      */
-    function name() {
+    public function name() {
         return $this->name;
+    }
+
+    /**
+     * Get the columns added to the table.
+     * 
+     * @return array
+     */
+    public function columns() {
+        if ($this->isIndex()) {
+            return [];
+        }
+
+        if ($this->command() === 'timestamp' || $this->command() === 'timestampTz') {
+            return ['created_at', 'updated_at'];
+        }
+
+        if ($this->command() === 'softDeletes' || $this->command() === 'softDeletesTz') {
+            return ['deleted_at'];
+        }
+
+        if ($this->command() === 'morphs' || $this->command() === 'nullableMorphs') {
+            return [$this->name . '_id', $this->name . '_type'];
+        }
+
+        if ($this->command() === 'rememberToken') {
+            return ['remember_token'];
+        }
+
+        return [$this->name];
     }
 
     /**
@@ -128,7 +163,7 @@ class Field extends SignedInput {
      * 
      * @return string
      */
-    function label() {
+    public function label() {
         return $this->label;
     }
 

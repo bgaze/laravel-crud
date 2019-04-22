@@ -105,18 +105,12 @@ class Command extends Base {
                     return call_user_func("{$builder}::slug");
                 })->implode('|');
 
-        // Get timestamps list.
-        $timestamps = Definitions::timestampsChoices(true);
-
-        // Get softDeletes list.
-        $softDeletes = Definitions::softDeletesChoices(true);
-
         // Prepare commands signature.
         $signature = "{$this->theme} 
             {model : The FullName of the Model}
             {--p|plurals= : The Plurals version of the Model's name}
-            {--t|timestamps= : Add timestamps directive: <fg=cyan>{$timestamps}</>}
-            {--s|soft-deletes= : Add soft delete directive: <fg=cyan>{$softDeletes}</>}
+            {--t|timestamps : Add a timestamps directive</>}
+            {--s|soft-deletes : Add a softDelete directive</>}
             {--c|content=* : The list of Model's fields using SignedInput syntax}
             {--o|only=* : Generate only selected files: <fg=cyan>{$builders}</>}";
 
@@ -166,6 +160,9 @@ class Command extends Base {
 
         // Add content.
         $this->getContentInput();
+        
+        // Reorder content.
+        $this->crud->reorderContent();
     }
 
     /**
@@ -259,17 +256,14 @@ class Command extends Base {
      */
     protected function getTimestampsInput() {
         $value = $this->option('timestamps');
-
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
-        if ($ask) {
-            $value = $this->choice('Do you wish to add timestamps?', Definitions::timestampsChoices(), 0);
+        if ($value || ($ask && $this->confirm('Do you wish to add timestamps?', true))) {
+            $this->crud->add('timestamps', '');
         }
 
-        $this->crud->setTimestamps($value);
-
         if (!$ask) {
-            $this->dl('Timestamps', $this->crud->timestamps() ? $this->crud->timestamps() : 'none');
+            $this->dl('Timestamps', $this->crud->timestamps() ? 'yes' : 'no');
         }
     }
 
@@ -285,14 +279,12 @@ class Command extends Base {
         $value = $this->option('soft-deletes');
         $ask = (!$value && !$this->option('no-interaction') && !$this->option('quiet'));
 
-        if ($ask) {
-            $value = $this->choice('Do you wish to add SoftDeletes?', Definitions::softDeletesChoices(), 0);
+        if ($value || ($ask && $this->confirm('Do you wish to add SoftDeletes?', true))) {
+            $this->crud->add('softDeletes', '');
         }
 
-        $this->crud->setSoftDeletes($value);
-
         if (!$ask) {
-            $this->dl('Soft deletes', $this->crud->softDeletes() ? $this->crud->softDeletes() : 'none');
+            $this->dl('Soft deletes', $this->crud->softDeletes() ? 'yes' : 'no');
         }
     }
 
@@ -323,8 +315,8 @@ class Command extends Base {
 
         // Intro.
         $this->info(" You are now going to define model's data.");
-        $this->line(" For available types, enter <fg=cyan>list</>.");
-        $this->line(" For a type detailed syntax, <fg=cyan>omit arguments and options.</>");
+        $this->line(" For available entries, enter <fg=cyan>list</>.");
+        $this->line(" For an entry detailed syntax, <fg=cyan>omit arguments and options.</>");
 
         // Commands list for autocomplete.
         $fields->push('list')->push('no');
@@ -335,7 +327,8 @@ class Command extends Base {
             $continue = $this->askForContentInput($fields);
 
             // Manage wizard exit.
-            if (!$continue && (!$this->crud->content()->isEmpty() || $this->confirm("You haven't added any field. Continue?", true))) {
+            $empty = $this->crud->content()->except(['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz'])->isEmpty();
+            if (!$continue && (!$empty || $this->confirm("You haven't added any field. Continue?", true))) {
                 break;
             }
         }
@@ -415,9 +408,17 @@ class Command extends Base {
      */
     protected function showFieldHelp($name) {
         $field = Definitions::parse($name);
-        $arguments = empty($field['arguments']) ? '' : " <fg=yellow>{$field['arguments']}</>";
-        $options = empty($field['options']) ? '' : " <fg=cyan>{$field['options']}</>";
-        $this->line(sprintf("   <info>Add a %s field to table.</info>\n   Signature:  %s%s\n", $name, $arguments, $options));
+        $help = "   <info>Add a {$name} entry to the CRUD.</info>\n   ";
+
+        if (empty($field['arguments']) && empty($field['options'])) {
+            $help .= "This field has neither argument nor option.\n";
+        } else {
+            $arguments = empty($field['arguments']) ? '' : " <fg=yellow>{$field['arguments']}</>";
+            $options = empty($field['options']) ? '' : " <fg=cyan>{$field['options']}</>";
+            $help .= "Signature:  {$arguments}{$options}\n";
+        }
+
+        $this->line($help);
     }
 
     /**

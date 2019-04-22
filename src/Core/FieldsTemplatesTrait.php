@@ -17,71 +17,74 @@ use Bgaze\Crud\Definitions;
  * 
  * FIELDS
  * 
- * @method string bigInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a bigInteger field
- * @method string binary(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a binary field
- * @method string boolean(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a boolean field
- * @method string char(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a char field
- * @method string date(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a date field
- * @method string dateTime(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a dateTime field
- * @method string dateTimeTz(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a dateTimeTz field
- * @method string decimal(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a decimal field
- * @method string double(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a double field
- * @method string enum(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a enum field
- * @method string float(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a float field
- * @method string geometry(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a geometry field
- * @method string geometryCollection(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a geometryCollection field
- * @method string integer(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a integer field
- * @method string ipAddress(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a ipAddress field
- * @method string json(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a json field
- * @method string jsonb(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a jsonb field
- * @method string lineString(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a lineString field
- * @method string longText(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a longText field
- * @method string macAddress(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a macAddress field
- * @method string mediumInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a mediumInteger field
- * @method string mediumText(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a mediumText field
- * @method string morphs(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphs field
- * @method string multiLineString(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a multiLineString field
- * @method string multiPoint(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a multiPoint field
- * @method string multiPolygon(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a multiPolygon field
- * @method string nullableMorphs(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a nullableMorphs field
- * @method string point(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a point field
- * @method string polygon(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a polygon field
- * @method string smallInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a smallInteger field
- * @method string string(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a string field
- * @method string text(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a text field
- * @method string time(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a time field
- * @method string timeTz(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a timeTz field
- * @method string timestamp(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a timestamp field
- * @method string timestampTz(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a timestampTz field
- * @method string tinyInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a tinyInteger field
- * @method string unsignedBigInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedBigInteger field
- * @method string unsignedDecimal(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedDecimal field
- * @method string unsignedInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedInteger field
- * @method string unsignedMediumInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedMediumInteger field
- * @method string unsignedSmallInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedSmallInteger field
- * @method string unsignedTinyInteger(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedTinyInteger field
- * @method string uuid(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a uuid field
- * @method string year(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a year field
+ * @method string bigIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a bigInteger field
+ * @method string binaryTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a binary field
+ * @method string booleanTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a boolean field
+ * @method string charTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a char field
+ * @method string dateTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a date field
+ * @method string dateTimeTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a dateTime field
+ * @method string dateTimeTzTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a dateTimeTz field
+ * @method string decimalTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a decimal field
+ * @method string doubleTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a double field
+ * @method string enumTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a enum field
+ * @method string floatTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a float field
+ * @method string geometryTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a geometry field
+ * @method string geometryCollectionTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a geometryCollection field
+ * @method string integerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a integer field
+ * @method string ipAddressTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a ipAddress field
+ * @method string jsonTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a json field
+ * @method string jsonbTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a jsonb field
+ * @method string lineStringTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a lineString field
+ * @method string longTextTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a longText field
+ * @method string macAddressTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a macAddress field
+ * @method string mediumIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a mediumInteger field
+ * @method string mediumTextTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a mediumText field
+ * @method string morphsTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphs field
+ * @method string multiLineStringTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a multiLineString field
+ * @method string multiPointTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a multiPoint field
+ * @method string multiPolygonTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a multiPolygon field
+ * @method string nullableMorphsTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a nullableMorphs field
+ * @method string pointTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a point field
+ * @method string polygonTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a polygon field
+ * @method string rememberTokenTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a rememberToken field
+ * @method string smallIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a smallInteger field
+ * @method string softDeletesTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a softDeletes field
+ * @method string softDeletesTzTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a softDeletesTz field
+ * @method string stringTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a string field
+ * @method string textTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a text field
+ * @method string timeTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a time field
+ * @method string timeTzTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a timeTz field
+ * @method string timestampTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a timestamp field
+ * @method string timestampTzTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a timestampTz field
+ * @method string tinyIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a tinyInteger field
+ * @method string unsignedBigIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedBigInteger field
+ * @method string unsignedDecimalTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedDecimal field
+ * @method string unsignedIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedInteger field
+ * @method string unsignedMediumIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedMediumInteger field
+ * @method string unsignedSmallIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedSmallInteger field
+ * @method string unsignedTinyIntegerTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a unsignedTinyInteger field
+ * @method string uuidTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a uuid field
+ * @method string yearTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a year field
  * 
  * RELATIONS
  * 
- * @method string hasOne(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a hasOne field
- * @method string hasMany(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a hasMany field
- * @method string belongsTo(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a belongsTo field
- * @method string belongsToMany(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a belongsToMany field
- * @method string hasManyThrough(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a hasManyThrough field
- * @method string morphTo(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphTo field
- * @method string morphOne(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphOne field
- * @method string morphMany(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphMany field
- * @method string morphToMany(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphToMany field
- * @method string morphedByMany(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphedByMany field
+ * @method string hasOneTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a hasOne field
+ * @method string hasManyTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a hasMany field
+ * @method string belongsToTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a belongsTo field
+ * @method string belongsToManyTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a belongsToMany field
+ * @method string hasManyThroughTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a hasManyThrough field
+ * @method string morphToTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphTo field
+ * @method string morphOneTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphOne field
+ * @method string morphManyTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphMany field
+ * @method string morphToManyTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphToMany field
+ * @method string morphedByManyTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a morphedByMany field
  * 
  * INDEXES
  * 
- * @method string index(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a index field
- * @method string primaryIndex(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a primaryIndex field
- * @method string uniqueIndex(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a uniqueIndex field
- * @method string spatialIndex(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a spatialIndex field
+ * @method string indexTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a index field
+ * @method string primaryIndexTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a primaryIndex field
+ * @method string uniqueIndexTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a uniqueIndex field
+ * @method string spatialIndexTemplate(\Bgaze\Crud\Core\Field $field The field to compile) Get the template for a spatialIndex field
 
  */
 trait FieldsTemplatesTrait {

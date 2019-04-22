@@ -4,7 +4,6 @@ namespace Bgaze\Crud\Core;
 
 use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Field;
-use Bgaze\Crud\Definitions;
 
 /**
  * The core class of the CRUD package
@@ -64,14 +63,14 @@ abstract class Crud {
      *
      * @var boolean|string 
      */
-    protected $timestamps;
+    protected $timestamps = false;
 
     /**
      * The soft deletes to use.
      *
      * @var boolean|string 
      */
-    protected $softDeletes;
+    protected $softDeletes = false;
 
     /**
      * Model's Field objects.
@@ -94,12 +93,6 @@ abstract class Crud {
 
         // Init plurars.
         $this->setPlurals();
-
-        // Init timestamps.
-        $this->setTimestamps();
-
-        // Init soft deletes.
-        $this->setSoftDeletes();
 
         // Init layout.
         $this->setLayout();
@@ -233,52 +226,6 @@ abstract class Crud {
     }
 
     /**
-     * Validate timestamps option, set default value if empty.
-     * 
-     * @param type $value
-     * @throws \Exception
-     * @return void
-     */
-    public function setTimestamps($value = false) {
-        $timestamps = array_keys(Definitions::TIMESTAMPS);
-
-        if ($value === 'none') {
-            $this->timestamps = false;
-        } else if (empty($value)) {
-            $this->timestamps = $timestamps[0];
-        } else {
-            if (!in_array($value, $timestamps)) {
-                throw new \Exception("Allowed values for timestamps are : " . implode(', ', $timestamps));
-            }
-
-            $this->timestamps = $value;
-        }
-    }
-
-    /**
-     * Validate soft deletes option, set default value if empty.
-     * 
-     * @param type $value
-     * @throws \Exception
-     * @return void
-     */
-    public function setSoftDeletes($value = false) {
-        $softDeletes = array_keys(Definitions::SOFT_DELETES);
-
-        if ($value === 'none') {
-            $this->softDeletes = false;
-        } else if (empty($value)) {
-            $this->softDeletes = $softDeletes[0];
-        } else {
-            if (!in_array($value, $softDeletes)) {
-                throw new \Exception("Allowed values for soft deletes are : " . implode(', ', $timestamps));
-            }
-
-            $this->softDeletes = $value;
-        }
-    }
-
-    /**
      * Set default layout for CRUD's views.
      * 
      * @param type $value
@@ -298,26 +245,92 @@ abstract class Crud {
      */
     public function add($type, $data) {
         $field = new Field($type, $data);
+        $columns = $this->columns();
 
-        // Check that it doesn't already exists.
-        if ($field->isIndex() && $this->content()->has($field->name())) {
-            throw new \Exception("'{$field->name()}' index already exists.");
-        }
-        if ($this->columns()->contains($field->name())) {
-            throw new \Exception("'{$field->name()}' column already exists.");
-        }
-
-        // If field is an index, check that all selected columns exists.
+        // If index
         if ($field->isIndex()) {
+            // Check that it doesn't already exists.
+            if ($this->content()->has($field->name())) {
+                throw new \Exception("'{$field->name()}' index already exists.");
+            }
+
+            // Check that all selected columns exists.
             foreach ($field->input()->getArgument('columns') as $column) {
-                if (!$this->columns()->contains($field->name())) {
+                if (!$columns->contains($field->name())) {
                     throw new \Exception("'$column' doesn't exists in fields list.");
                 }
             }
         }
 
+        // Otherwise check that no field alreay exists.
+        $intersect = $columns->intersect($field->columns());
+        if ($intersect->isNotEmpty()) {
+            throw new \Exception("Following columns already exist: " . $intersect->implode(', '));
+        }
+
         // Add to fields list.
         $this->content()->put($field->name(), $field);
+
+        // Manage timestamps & softDeletes status.
+        if ($field->name() === 'timestamps' || $field->name() === 'timestampsTz') {
+            $this->timestamps = $field->name();
+        }
+        if ($field->name() === 'softDeletes' || $field->name() === 'softDeletesTz') {
+            $this->softDeletes = $field->name();
+        }
+    }
+
+    /**
+     * Reorder the CRUD content this way :
+     * - Relations first
+     * - Then columns except timestamps & softDeletes
+     * - Then timestamps
+     * - Then softDeletes
+     * - Then indexes
+     */
+    public function reorderContent() {
+        $content = collect();
+
+        // Relations first.
+        $this->content->filter(function(Field $field, $key) {
+            return $field->isRelation();
+        })->each(function(Field $field, $key) use($content) {
+            $content->put($key, $field);
+        });
+
+        // Then columns except timestamps & softDeletes.
+        $this->content->filter(function(Field $field) {
+            if (in_array($field->name(), ['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz'])) {
+                return false;
+            }
+            return (!$field->isRelation() && !$field->isIndex());
+        })->each(function(Field $field, $key) use($content) {
+            $content->put($key, $field);
+        });
+
+        // Then timestamps.
+        $this->content->filter(function(Field $field) {
+            return in_array($field->name(), ['timestamps', 'timestampsTz']);
+        })->each(function(Field $field, $key) use($content) {
+            $content->put($key, $field);
+        });
+
+        // Then softDeletes.
+        $this->content->filter(function(Field $field) {
+            return in_array($field->name(), ['softDeletes', 'softDeletesTz']);
+        })->each(function(Field $field, $key) use($content) {
+            $content->put($key, $field);
+        });
+
+        // Then indexes.
+        $this->content->filter(function(Field $field) {
+            return $field->isIndex();
+        })->each(function(Field $field, $key) use($content) {
+            $content->put($key, $field);
+        });
+
+        // Update CRUD content.
+        $this->content = $content;
     }
 
     ############################################################################
@@ -431,26 +444,12 @@ abstract class Crud {
      * @var \Illuminate\Support\Collection 
      */
     public function columns() {
-        $columns = $this->content(false)->map(function(Field $field) {
-                    if ($field->command() === 'morphs' || $field->command() === 'nullableMorphs') {
-                        return [$field->name() . '_id', $field->name() . '_type'];
-                    }
-
-                    return $field->name();
-                })->flatten();
-
-        $columns->prepend('id');
-
-        if ($this->timestamps()) {
-            $columns->push('created_at');
-            $columns->push('updated_at');
-        }
-
-        if ($this->softDeletes()) {
-            $columns->push('deleted_at');
-        }
-
-        return $columns;
+        return $this->content(false)
+                        ->map(function(Field $field) {
+                            return $field->columns();
+                        })
+                        ->prepend('id')
+                        ->flatten();
     }
 
     /**

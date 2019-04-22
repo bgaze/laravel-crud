@@ -41,24 +41,34 @@ class FactoryFile extends Builder {
      * @return string
      */
     protected function content() {
-        $content = $this->crud->content(false);
+        $content = $this->crud
+                ->content(false)
+                ->map(function(Field $field) {
+                    return $this->fieldTemplate($field);
+                })
+                ->filter()
+                ->implode("\n");
 
-        if ($content->isEmpty()) {
+        if (empty($content)) {
             return '// TODO';
         }
 
-        return $content
-                        ->map(function(Field $field) {
-                            $faker = $this->fieldTemplate($field);
+        return $content;
+    }
 
-                            if (empty($faker)) {
-                                return "// TODO : '{$field->name()}' => '...',";
-                            }
+    /**
+     * Generate a factory line.
+     * 
+     * @param string $name      The key to populate
+     * @param string $faker     The php statement to generate data
+     * @return string
+     */
+    protected function factoryGroup($name, $faker) {
+        if (empty($faker)) {
+            return "// TODO: '{$name}' => '...',";
+        }
 
-                            return "'{$field->name()}' => {$faker},";
-                        })
-                        ->filter()
-                        ->implode("\n");
+        return "'{$name}' => {$faker},";
     }
 
     /**
@@ -68,7 +78,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function defaultTemplate(Field $field) {
-        return "\$faker->sentence()";
+        return $this->factoryGroup($field->name(), '$faker->sentence()');
     }
 
     /**
@@ -78,7 +88,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function bigIntegerTemplate(Field $field) {
-        return 'mt_rand(-2 ** 63, 2 ** 63 - 1)';
+        return $this->factoryGroup($field->name(), 'mt_rand(-2 ** 63, 2 ** 63 - 1)');
     }
 
     /**
@@ -88,7 +98,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function booleanTemplate(Field $field) {
-        return '(mt_rand(0, 1) === 1)';
+        return $this->factoryGroup($field->name(), '(mt_rand(0, 1) === 1)');
     }
 
     /**
@@ -153,7 +163,7 @@ class FactoryFile extends Builder {
         if ($input->getOption('nullable')) {
             array_unshift($choices, null);
         }
-        return 'array_random(' . $this->compileArrayForPhp($choices) . ')';
+        return $this->factoryGroup($field->name(), 'array_random(' . $this->compileArrayForPhp($choices) . ')');
     }
 
     /**
@@ -165,7 +175,8 @@ class FactoryFile extends Builder {
     public function floatTemplate(Field $field) {
         $input = $field->input();
         $total = str_repeat(9, $input->getArgument('total') - $input->getArgument('places'));
-        return sprintf('round(mt_rand() / mt_getrandmax() * %d, %d)', $total, $input->getArgument('places'));
+        $faker = sprintf('round(mt_rand() / mt_getrandmax() * %d, %d)', $total, $input->getArgument('places'));
+        return $this->factoryGroup($field->name(), $faker);
     }
 
     /**
@@ -175,7 +186,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function geometryTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -185,7 +196,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function geometryCollectionTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -195,7 +206,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function integerTemplate(Field $field) {
-        return 'mt_rand(-2147483648, 2147483647)';
+        return $this->factoryGroup($field->name(), 'mt_rand(-2147483648, 2147483647)');
     }
 
     /**
@@ -205,7 +216,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function ipAddressTemplate(Field $field) {
-        return "\$faker->ipv4";
+        return $this->factoryGroup($field->name(), '$faker->ipv4');
     }
 
     /**
@@ -215,7 +226,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function jsonTemplate(Field $field) {
-        return "\$faker->sentences(5)";
+        return $this->factoryGroup($field->name(), 'json_encode($faker->sentences(5))');
     }
 
     /**
@@ -225,7 +236,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function jsonbTemplate(Field $field) {
-        return "\$faker->sentences(5)";
+        return $this->jsonTemplate($field);
     }
 
     /**
@@ -235,7 +246,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function lineStringTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -255,7 +266,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function macAddressTemplate(Field $field) {
-        return "\$faker->macAddress";
+        return $this->factoryGroup($field->name(), '$faker->macAddress');
     }
 
     /**
@@ -265,7 +276,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function mediumIntegerTemplate(Field $field) {
-        return 'mt_rand(-8388608, 8388607)';
+        return $this->factoryGroup($field->name(), 'mt_rand(-8388608, 8388607)');
     }
 
     /**
@@ -285,7 +296,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function morphsTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -295,7 +306,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function multiLineStringTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -305,7 +316,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function multiPointTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -315,7 +326,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function multiPolygonTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -335,7 +346,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function pointTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -345,7 +356,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function polygonTemplate(Field $field) {
-        return null;
+        return $this->factoryGroup($field->name(), null);
     }
 
     /**
@@ -355,7 +366,37 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function smallIntegerTemplate(Field $field) {
-        return 'mt_rand(-32768, 32767)';
+        return $this->factoryGroup('remember_token', 'str_random(10)');
+    }
+
+    /**
+     * Get the template for a rememberToken field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function rememberTokenTemplate(Field $field) {
+        return $this->factoryGroup($field->name(), null);
+    }
+
+    /**
+     * Get the template for a softDeletes field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function softDeletesTemplate(Field $field) {
+        return false;
+    }
+
+    /**
+     * Get the template for a softDeletesTz field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function softDeletesTzTemplate(Field $field) {
+        return false;
     }
 
     /**
@@ -365,7 +406,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function textTemplate(Field $field) {
-        return "\$faker->text(1000)";
+        return $this->factoryGroup($field->name(), '$faker->text(1000)');
     }
 
     /**
@@ -375,7 +416,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function timeTemplate(Field $field) {
-        return "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())";
+        return $this->factoryGroup($field->name(), "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())");
     }
 
     /**
@@ -409,13 +450,33 @@ class FactoryFile extends Builder {
     }
 
     /**
+     * Get the template for a timestamps field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function timestampsTemplate(Field $field) {
+        return false;
+    }
+
+    /**
+     * Get the template for a timestampsTz field.
+     * 
+     * @param Bgaze\Crud\Core\Field $field The field 
+     * @return string The template for the field
+     */
+    public function timestampsTzTemplate(Field $field) {
+        return false;
+    }
+
+    /**
      * Get the template for a tinyInteger field.
      * 
      * @param Bgaze\Crud\Core\Field $field The field 
      * @return string The template for the field
      */
     public function tinyIntegerTemplate(Field $field) {
-        return 'mt_rand(-128, 127)';
+        return $this->factoryGroup($field->name(), 'mt_rand(-128, 127)');
     }
 
     /**
@@ -425,7 +486,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function unsignedBigIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 2 ** 64 -1)';
+        return $this->factoryGroup($field->name(), 'mt_rand(0, 2 ** 64 -1)');
     }
 
     /**
@@ -445,7 +506,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function unsignedIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 4294967295)';
+        return $this->factoryGroup($field->name(), 'mt_rand(0, 4294967295)');
     }
 
     /**
@@ -455,7 +516,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function unsignedMediumIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 16777215)';
+        return $this->factoryGroup($field->name(), 'mt_rand(0, 16777215)');
     }
 
     /**
@@ -465,7 +526,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function unsignedSmallIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 65535)';
+        return $this->factoryGroup($field->name(), 'mt_rand(0, 65535)');
     }
 
     /**
@@ -475,7 +536,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function unsignedTinyIntegerTemplate(Field $field) {
-        return 'mt_rand(0, 255)';
+        return $this->factoryGroup($field->name(), 'mt_rand(0, 255)');
     }
 
     /**
@@ -485,7 +546,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function uuidTemplate(Field $field) {
-        return "\$faker->uuid";
+        return $this->factoryGroup($field->name(), '$faker->uuid');
     }
 
     /**
@@ -495,7 +556,7 @@ class FactoryFile extends Builder {
      * @return string The template for the field
      */
     public function yearTemplate(Field $field) {
-        return 'mt_rand(1900, 2100)';
+        return $this->factoryGroup($field->name(), 'mt_rand(1900, 2100)');
     }
 
 }

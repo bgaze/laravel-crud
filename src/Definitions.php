@@ -54,23 +54,6 @@ class Definitions {
     const DATES = ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz', 'year'];
 
     /**
-     * The available timestamps entries.
-     */
-    const TIMESTAMPS = [
-        'timestamps' => '$table->timestamps();',
-        'timestampsTz' => '$table->timestampsTz();',
-        'nullableTimestamps' => '$table->nullableTimestamps();',
-    ];
-
-    /**
-     * The availables sofDeletes entries.
-     */
-    const SOFT_DELETES = [
-        'softDeletes' => '$table->softDeletes();',
-        'softDeletesTz' => '$table->softDeletesTz();',
-    ];
-
-    /**
      * The available modifiers availables for column entries.
      */
     const COLUMNS_MODIFIERS = [
@@ -134,20 +117,25 @@ class Definitions {
         'macAddress' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'mediumInteger' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'mediumText' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
-        'morphs' => '{column}',
+        'morphs' => '{name}',
         'multiLineString' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'multiPoint' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'multiPolygon' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'nullableMorphs' => '{column}',
         'point' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'polygon' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
+        'rememberToken' => '',
         'smallInteger' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'softDeletes' => '',
+        'softDeletesTz' => '',
         'string' => '{column} {length?} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'text' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'time' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'timeTz' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'timestamp' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'timestampTz' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'timestamps' => '',
+        'timestampsTz' => '',
         'tinyInteger' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'unsignedBigInteger' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'unsignedDecimal' => '{column} {total=8} {places=2} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
@@ -232,45 +220,6 @@ class Definitions {
      */
     public static function isDate($name) {
         return in_array($name, static::DATES);
-    }
-
-    /**
-     * Get the list of options for dates modifiers (timestamps & softDeletes).
-     * 
-     * @param array $data       The modifier list
-     * @param type $signature   Return it in signature format
-     * @return string
-     */
-    protected static function datesModifiersChoices($data, $signature = false) {
-        $list = array_keys($data);
-        $list[] = 'none';
-
-        if ($signature) {
-            $list[0] = '[' . $list[0] . ']';
-            return implode('|', $list);
-        }
-
-        return $list;
-    }
-
-    /**
-     * Get the list of options for dates modifiers (timestamps & soft deletes).
-     * 
-     * @param type $signature   Return it in signature format
-     * @return string
-     */
-    public static function timestampsChoices($signature = false) {
-        return static::datesModifiersChoices(static::TIMESTAMPS, $signature);
-    }
-
-    /**
-     * Get the list of options for dates modifiers (timestamps & soft deletes).
-     * 
-     * @param type $signature   Return it in signature format
-     * @return string
-     */
-    public static function softDeletesChoices($signature = false) {
-        return static::datesModifiersChoices(static::SOFT_DELETES, $signature);
     }
 
 }
