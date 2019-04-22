@@ -72,7 +72,7 @@ class Entry extends SignedInput {
         } elseif (in_array($this->command(), ['morphs', 'nullableMorphs', 'morphTo'])) {
             $this->name = $this->command() . ':' . $this->input()->getOption('name');
         } elseif ($this->isRelation()) {
-            $this->name = $this->command() . ':' . $this->input()->getOption('related');
+            $this->name = $this->command() . ':' . $this->input()->getArgument('related');
         } else {
             $this->name = $this->input()->getArgument('column');
         }
