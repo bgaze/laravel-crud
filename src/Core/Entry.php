@@ -18,14 +18,14 @@ class Entry extends SignedInput {
      * 
      * @var string 
      */
-    public $name;
+    protected $name;
 
     /**
      * The label to use for the entry.
      * 
      * @var string 
      */
-    public $label;
+    protected $label;
 
     /**
      * The class constructor.
