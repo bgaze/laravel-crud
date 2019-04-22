@@ -3,8 +3,8 @@
 namespace Bgaze\Crud\Themes\Api\Builders;
 
 use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Core\Field;
-use Bgaze\Crud\Core\FieldsTemplatesTrait;
+use Bgaze\Crud\Core\Entry;
+use Bgaze\Crud\Core\EntriesTemplatesTrait;
 
 /**
  * The Factory builder
@@ -13,7 +13,7 @@ use Bgaze\Crud\Core\FieldsTemplatesTrait;
  */
 class FactoryFile extends Builder {
 
-    use FieldsTemplatesTrait;
+    use EntriesTemplatesTrait;
 
     /**
      * The file that the builder generates.
@@ -43,8 +43,8 @@ class FactoryFile extends Builder {
     protected function content() {
         $content = $this->crud
                 ->content(false)
-                ->map(function(Field $field) {
-                    return $this->fieldTemplate($field);
+                ->map(function(Entry $entry) {
+                    return $this->entryTemplate($entry);
                 })
                 ->filter()
                 ->implode("\n");
@@ -72,491 +72,491 @@ class FactoryFile extends Builder {
     }
 
     /**
-     * Get the default template for a field.
+     * Get the default template for a entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function defaultTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), '$faker->sentence()');
+    public function defaultTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), '$faker->sentence()');
     }
 
     /**
-     * Get the template for a bigInteger field.
+     * Get the template for a bigInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function bigIntegerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(-2 ** 63, 2 ** 63 - 1)');
+    public function bigIntegerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(-2 ** 63, 2 ** 63 - 1)');
     }
 
     /**
-     * Get the template for a boolean field.
+     * Get the template for a boolean entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function booleanTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), '(mt_rand(0, 1) === 1)');
+    public function booleanTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), '(mt_rand(0, 1) === 1)');
     }
 
     /**
-     * Get the template for a date field.
+     * Get the template for a date entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function dateTemplate(Field $field) {
-        return $this->timeTemplate($field);
+    public function dateTemplate(Entry $entry) {
+        return $this->timeTemplate($entry);
     }
 
     /**
-     * Get the template for a dateTime field.
+     * Get the template for a dateTime entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function dateTimeTemplate(Field $field) {
-        return $this->timeTemplate($field);
+    public function dateTimeTemplate(Entry $entry) {
+        return $this->timeTemplate($entry);
     }
 
     /**
-     * Get the template for a dateTimeTz field.
+     * Get the template for a dateTimeTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function dateTimeTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+    public function dateTimeTzTemplate(Entry $entry) {
+        return $this->timeTemplate($entry);
     }
 
     /**
-     * Get the template for a decimal field.
+     * Get the template for a decimal entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function decimalTemplate(Field $field) {
-        return $this->floatTemplate($field);
+    public function decimalTemplate(Entry $entry) {
+        return $this->floatTemplate($entry);
     }
 
     /**
-     * Get the template for a double field.
+     * Get the template for a double entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function doubleTemplate(Field $field) {
-        return $this->floatTemplate($field);
+    public function doubleTemplate(Entry $entry) {
+        return $this->floatTemplate($entry);
     }
 
     /**
-     * Get the template for a enum field.
+     * Get the template for a enum entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function enumTemplate(Field $field) {
-        $input = $field->input();
+    public function enumTemplate(Entry $entry) {
+        $input = $entry->input();
         $choices = $input->getArgument('allowed');
         if ($input->getOption('nullable')) {
             array_unshift($choices, null);
         }
-        return $this->factoryGroup($field->name(), 'array_random(' . $this->compileArrayForPhp($choices) . ')');
+        return $this->factoryGroup($entry->name(), 'array_random(' . $this->compileArrayForPhp($choices) . ')');
     }
 
     /**
-     * Get the template for a float field.
+     * Get the template for a float entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function floatTemplate(Field $field) {
-        $input = $field->input();
+    public function floatTemplate(Entry $entry) {
+        $input = $entry->input();
         $total = str_repeat(9, $input->getArgument('total') - $input->getArgument('places'));
         $faker = sprintf('round(mt_rand() / mt_getrandmax() * %d, %d)', $total, $input->getArgument('places'));
-        return $this->factoryGroup($field->name(), $faker);
+        return $this->factoryGroup($entry->name(), $faker);
     }
 
     /**
-     * Get the template for a geometry field.
+     * Get the template for a geometry entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function geometryTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function geometryTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a geometryCollection field.
+     * Get the template for a geometryCollection entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function geometryCollectionTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function geometryCollectionTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a integer field.
+     * Get the template for a integer entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function integerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(-2147483648, 2147483647)');
+    public function integerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(-2147483648, 2147483647)');
     }
 
     /**
-     * Get the template for a ipAddress field.
+     * Get the template for a ipAddress entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function ipAddressTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), '$faker->ipv4');
+    public function ipAddressTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), '$faker->ipv4');
     }
 
     /**
-     * Get the template for a json field.
+     * Get the template for a json entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function jsonTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'json_encode($faker->sentences(5))');
+    public function jsonTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'json_encode($faker->sentences(5))');
     }
 
     /**
-     * Get the template for a jsonb field.
+     * Get the template for a jsonb entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function jsonbTemplate(Field $field) {
-        return $this->jsonTemplate($field);
+    public function jsonbTemplate(Entry $entry) {
+        return $this->jsonTemplate($entry);
     }
 
     /**
-     * Get the template for a lineString field.
+     * Get the template for a lineString entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function lineStringTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function lineStringTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a longText field.
+     * Get the template for a longText entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function longTextTemplate(Field $field) {
-        return $this->textTemplate($field);
+    public function longTextTemplate(Entry $entry) {
+        return $this->textTemplate($entry);
     }
 
     /**
-     * Get the template for a macAddress field.
+     * Get the template for a macAddress entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function macAddressTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), '$faker->macAddress');
+    public function macAddressTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), '$faker->macAddress');
     }
 
     /**
-     * Get the template for a mediumInteger field.
+     * Get the template for a mediumInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function mediumIntegerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(-8388608, 8388607)');
+    public function mediumIntegerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(-8388608, 8388607)');
     }
 
     /**
-     * Get the template for a mediumText field.
+     * Get the template for a mediumText entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function mediumTextTemplate(Field $field) {
-        return $this->textTemplate($field);
+    public function mediumTextTemplate(Entry $entry) {
+        return $this->textTemplate($entry);
     }
 
     /**
-     * Get the template for a morphs field.
+     * Get the template for a morphs entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function morphsTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function morphsTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a multiLineString field.
+     * Get the template for a multiLineString entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function multiLineStringTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function multiLineStringTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a multiPoint field.
+     * Get the template for a multiPoint entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function multiPointTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function multiPointTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a multiPolygon field.
+     * Get the template for a multiPolygon entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function multiPolygonTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function multiPolygonTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a nullableMorphs field.
+     * Get the template for a nullableMorphs entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function nullableMorphsTemplate(Field $field) {
-        return $this->morphsTemplate($field);
+    public function nullableMorphsTemplate(Entry $entry) {
+        return $this->morphsTemplate($entry);
     }
 
     /**
-     * Get the template for a point field.
+     * Get the template for a point entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function pointTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function pointTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a polygon field.
+     * Get the template for a polygon entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function polygonTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function polygonTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a smallInteger field.
+     * Get the template for a smallInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function smallIntegerTemplate(Field $field) {
+    public function smallIntegerTemplate(Entry $entry) {
         return $this->factoryGroup('remember_token', 'str_random(10)');
     }
 
     /**
-     * Get the template for a rememberToken field.
+     * Get the template for a rememberToken entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function rememberTokenTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), null);
+    public function rememberTokenTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), null);
     }
 
     /**
-     * Get the template for a softDeletes field.
+     * Get the template for a softDeletes entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function softDeletesTemplate(Field $field) {
+    public function softDeletesTemplate(Entry $entry) {
         return false;
     }
 
     /**
-     * Get the template for a softDeletesTz field.
+     * Get the template for a softDeletesTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function softDeletesTzTemplate(Field $field) {
+    public function softDeletesTzTemplate(Entry $entry) {
         return false;
     }
 
     /**
-     * Get the template for a text field.
+     * Get the template for a text entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function textTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), '$faker->text(1000)');
+    public function textTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), '$faker->text(1000)');
     }
 
     /**
-     * Get the template for a time field.
+     * Get the template for a time entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timeTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())");
+    public function timeTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), "Carbon::createFromTimeStamp(\$faker->dateTimeBetween('-30 days', '+30 days')->getTimestamp())");
     }
 
     /**
-     * Get the template for a timeTz field.
+     * Get the template for a timeTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timeTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+    public function timeTzTemplate(Entry $entry) {
+        return $this->timeTemplate($entry);
     }
 
     /**
-     * Get the template for a timestamp field.
+     * Get the template for a timestamp entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampTemplate(Field $field) {
-        return $this->timeTemplate($field);
+    public function timestampTemplate(Entry $entry) {
+        return $this->timeTemplate($entry);
     }
 
     /**
-     * Get the template for a timestampTz field.
+     * Get the template for a timestampTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampTzTemplate(Field $field) {
-        return $this->timeTemplate($field);
+    public function timestampTzTemplate(Entry $entry) {
+        return $this->timeTemplate($entry);
     }
 
     /**
-     * Get the template for a timestamps field.
+     * Get the template for a timestamps entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampsTemplate(Field $field) {
+    public function timestampsTemplate(Entry $entry) {
         return false;
     }
 
     /**
-     * Get the template for a timestampsTz field.
+     * Get the template for a timestampsTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampsTzTemplate(Field $field) {
+    public function timestampsTzTemplate(Entry $entry) {
         return false;
     }
 
     /**
-     * Get the template for a tinyInteger field.
+     * Get the template for a tinyInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function tinyIntegerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(-128, 127)');
+    public function tinyIntegerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(-128, 127)');
     }
 
     /**
-     * Get the template for a unsignedBigInteger field.
+     * Get the template for a unsignedBigInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedBigIntegerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(0, 2 ** 64 -1)');
+    public function unsignedBigIntegerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(0, 2 ** 64 -1)');
     }
 
     /**
-     * Get the template for a unsignedDecimal field.
+     * Get the template for a unsignedDecimal entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedDecimalTemplate(Field $field) {
-        return $this->floatTemplate($field);
+    public function unsignedDecimalTemplate(Entry $entry) {
+        return $this->floatTemplate($entry);
     }
 
     /**
-     * Get the template for a unsignedInteger field.
+     * Get the template for a unsignedInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedIntegerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(0, 4294967295)');
+    public function unsignedIntegerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(0, 4294967295)');
     }
 
     /**
-     * Get the template for a unsignedMediumInteger field.
+     * Get the template for a unsignedMediumInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedMediumIntegerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(0, 16777215)');
+    public function unsignedMediumIntegerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(0, 16777215)');
     }
 
     /**
-     * Get the template for a unsignedSmallInteger field.
+     * Get the template for a unsignedSmallInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedSmallIntegerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(0, 65535)');
+    public function unsignedSmallIntegerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(0, 65535)');
     }
 
     /**
-     * Get the template for a unsignedTinyInteger field.
+     * Get the template for a unsignedTinyInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedTinyIntegerTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(0, 255)');
+    public function unsignedTinyIntegerTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(0, 255)');
     }
 
     /**
-     * Get the template for a uuid field.
+     * Get the template for a uuid entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function uuidTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), '$faker->uuid');
+    public function uuidTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), '$faker->uuid');
     }
 
     /**
-     * Get the template for a year field.
+     * Get the template for a year entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function yearTemplate(Field $field) {
-        return $this->factoryGroup($field->name(), 'mt_rand(1900, 2100)');
+    public function yearTemplate(Entry $entry) {
+        return $this->factoryGroup($entry->name(), 'mt_rand(1900, 2100)');
     }
 
 }

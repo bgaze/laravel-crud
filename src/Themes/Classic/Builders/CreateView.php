@@ -3,8 +3,8 @@
 namespace Bgaze\Crud\Themes\Classic\Builders;
 
 use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Core\Field;
-use Bgaze\Crud\Core\FieldsTemplatesTrait;
+use Bgaze\Crud\Core\Entry;
+use Bgaze\Crud\Core\EntriesTemplatesTrait;
 
 /**
  * The Create view builder.
@@ -13,7 +13,7 @@ use Bgaze\Crud\Core\FieldsTemplatesTrait;
  */
 class CreateView extends Builder {
 
-    use FieldsTemplatesTrait;
+    use EntriesTemplatesTrait;
 
     /**
      * The file that the builder generates.
@@ -35,7 +35,7 @@ class CreateView extends Builder {
      * Build the form view file.
      * 
      * @param string $viewStub      The main stub to use to compile form view file
-     * @param string $groupStub     The stub to use to compile a field form group
+     * @param string $groupStub     The stub to use to compile a entry form group
      */
     public function buildForm($viewStub, $groupStub) {
         $stub = $this->stub($viewStub);
@@ -46,16 +46,16 @@ class CreateView extends Builder {
     }
 
     /**
-     * Compile form fields.
+     * Compile form entries.
      * 
-     * @param string $groupStub The stub to use to compile a field form group.
+     * @param string $groupStub The stub to use to compile a entry form group.
      * @return string
      */
     protected function content($groupStub) {
         $content = $this->crud
                 ->content(false)
-                ->map(function(Field $field) use($groupStub) {
-                    return $this->formGroup($field, $groupStub);
+                ->map(function(Entry $entry) use($groupStub) {
+                    return $this->formGroup($entry, $groupStub);
                 })
                 ->filter()
                 ->implode("\n");
@@ -70,12 +70,12 @@ class CreateView extends Builder {
     /**
      * Compile a form group.
      * 
-     * @param \Bgaze\Crud\Core\Field $field     The field to compile
-     * @param string $groupStub                 The stub to use to compile a field form group.
+     * @param \Bgaze\Crud\Core\Entry $entry     The entry to compile
+     * @param string $groupStub                 The stub to use to compile a entry form group.
      * @return string
      */
-    protected function formGroup(Field $field, $groupStub) {
-        $template = $this->fieldTemplate($field);
+    protected function formGroup(Entry $entry, $groupStub) {
+        $template = $this->entryTemplate($entry);
 
         if (empty($template)) {
             return null;
@@ -86,109 +86,109 @@ class CreateView extends Builder {
         $this
                 ->replace($stub, '#FIELD', $template)
                 ->replace($stub, 'ModelCamel')
-                ->replace($stub, 'FieldLabel', $field->label())
-                ->replace($stub, 'FieldName', $field->name())
+                ->replace($stub, 'EntryLabel', $entry->label())
+                ->replace($stub, 'EntryName', $entry->name())
         ;
 
         return $stub;
     }
 
     /**
-     * Get the default template for a field.
+     * Get the default template for a entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function defaultTemplate(Field $field) {
-        return "{!! Form::text('FieldName') !!}";
+    public function defaultTemplate(Entry $entry) {
+        return "{!! Form::text('EntryName') !!}";
     }
 
     /**
-     * Get the template for a boolean field.
+     * Get the template for a boolean entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function booleanTemplate(Field $field) {
-        return "<label for=\"FieldName0\">{!! Form::radio('FieldName', 0, !\$ModelCamel->FieldName, ['id' => 'FieldName0']) !!} No</label>"
-                . "\n        <label for=\"FieldName1\">{!! Form::radio('FieldName', 1, \$ModelCamel->FieldName, ['id' => 'FieldName1']) !!} Yes</label>";
+    public function booleanTemplate(Entry $entry) {
+        return "<label for=\"EntryName0\">{!! Form::radio('EntryName', 0, !\$ModelCamel->EntryName, ['id' => 'EntryName0']) !!} No</label>"
+                . "\n        <label for=\"EntryName1\">{!! Form::radio('EntryName', 1, \$ModelCamel->EntryName, ['id' => 'EntryName1']) !!} Yes</label>";
     }
 
     /**
-     * Get the template for a enum field.
+     * Get the template for a enum entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function enumTemplate(Field $field) {
-        $choices = $field->input()->getArgument('allowed');
+    public function enumTemplate(Entry $entry) {
+        $choices = $entry->input()->getArgument('allowed');
 
-        if ($field->input()->getOption('nullable')) {
+        if ($entry->input()->getOption('nullable')) {
             array_unshift($choices, '');
         }
 
         $value = $this->compileArrayForPhp(array_combine($choices, $choices), true);
 
-        return sprintf("{!! Form::select('FieldName', %s) !!}", $value);
+        return sprintf("{!! Form::select('EntryName', %s) !!}", $value);
     }
 
     /**
-     * Get the template for a text field.
+     * Get the template for a text entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function textTemplate(Field $field) {
-        return "{!! Form::textarea('FieldName') !!}";
+    public function textTemplate(Entry $entry) {
+        return "{!! Form::textarea('EntryName') !!}";
     }
 
     /**
-     * Get the template for a rememberToken field.
+     * Get the template for a rememberToken entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function rememberTokenTemplate(Field $field) {
+    public function rememberTokenTemplate(Entry $entry) {
         return null;
     }
 
     /**
-     * Get the template for a softDeletes field.
+     * Get the template for a softDeletes entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function softDeletesTemplate(Field $field) {
+    public function softDeletesTemplate(Entry $entry) {
         return null;
     }
 
     /**
-     * Get the template for a softDeletesTz field.
+     * Get the template for a softDeletesTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function softDeletesTzTemplate(Field $field) {
+    public function softDeletesTzTemplate(Entry $entry) {
         return null;
     }
 
     /**
-     * Get the template for a timestamps field.
+     * Get the template for a timestamps entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampsTemplate(Field $field) {
+    public function timestampsTemplate(Entry $entry) {
         return null;
     }
 
     /**
-     * Get the template for a timestampsTz field.
+     * Get the template for a timestampsTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampsTzTemplate(Field $field) {
+    public function timestampsTzTemplate(Entry $entry) {
         return null;
     }
 

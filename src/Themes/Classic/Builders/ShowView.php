@@ -3,7 +3,7 @@
 namespace Bgaze\Crud\Themes\Classic\Builders;
 
 use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Core\Field;
+use Bgaze\Crud\Core\Entry;
 
 /**
  * The Show view builder.
@@ -45,16 +45,16 @@ class ShowView extends Builder {
         $stub = $this->stub('partials.show-group');
 
         return $content
-                        ->map(function(Field $field) use($stub) {
-                            if (in_array($field->name(), ['rememberToken', 'softDeletes', 'softDeletesTz'])) {
+                        ->map(function(Entry $entry) use($stub) {
+                            if (in_array($entry->name(), ['rememberToken', 'softDeletes', 'softDeletesTz'])) {
                                 return null;
                             }
 
-                            if (in_array($field->name(), ['timestamps', 'timestampsTz'])) {
+                            if (in_array($entry->name(), ['timestamps', 'timestampsTz'])) {
                                 return $this->showGroup($stub, 'Created at', 'created_at') . "\n" . $this->showGroup($stub, 'Updated at', 'updated_at');
                             }
 
-                            return $this->showGroup($stub, $field->label(), $field->name());
+                            return $this->showGroup($stub, $entry->label(), $entry->name());
                         })
                         ->filter()
                         ->implode("\n");
@@ -69,7 +69,7 @@ class ShowView extends Builder {
      * @return string
      */
     protected function showGroup($stub, $label, $name) {
-        $this->replace($stub, 'FieldLabel', $label)->replace($stub, 'FieldName', $name);
+        $this->replace($stub, 'EntryLabel', $label)->replace($stub, 'EntryName', $name);
         return $stub;
     }
 

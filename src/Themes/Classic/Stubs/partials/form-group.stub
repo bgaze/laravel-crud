@@ -1,7 +1,7 @@
-    <div id="FieldName-group">
-        {!! Form::label('FieldName', 'FieldLabel') !!}
+    <div id="EntryName-group">
+        {!! Form::label('EntryName', 'EntryLabel') !!}
         #FIELD
-        @if($errors->has('FieldName'))
-            <p>{{ $errors->first('FieldName') }}</p>
+        @if($errors->has('EntryName'))
+            <p>{{ $errors->first('EntryName') }}</p>
         @endif
     </div>

@@ -3,8 +3,8 @@
 namespace Bgaze\Crud\Themes\Api\Builders;
 
 use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Core\Field;
-use Bgaze\Crud\Core\FieldsTemplatesTrait;
+use Bgaze\Crud\Core\Entry;
+use Bgaze\Crud\Core\EntriesTemplatesTrait;
 
 /**
  * Description of Model
@@ -13,7 +13,7 @@ use Bgaze\Crud\Core\FieldsTemplatesTrait;
  */
 class ModelClass extends Builder {
 
-    use FieldsTemplatesTrait;
+    use EntriesTemplatesTrait;
 
     /**
      * The file that the builder generates.
@@ -67,11 +67,11 @@ class ModelClass extends Builder {
     protected function fillables() {
         $fillables = $this->crud
                 ->content(false)
-                ->map(function(Field $field) {
-                    if (in_array($field->name(), ['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz'])) {
+                ->map(function(Entry $entry) {
+                    if (in_array($entry->name(), ['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz'])) {
                         return false;
                     }
-                    return $field->columns();
+                    return $entry->columns();
                 })
                 ->flatten()
                 ->filter()
@@ -87,8 +87,8 @@ class ModelClass extends Builder {
     protected function dates() {
         $dates = $this->crud
                 ->content(false)
-                ->filter(function(Field $field) {
-                    return $field->isDate();
+                ->filter(function(Entry $entry) {
+                    return $entry->isDate();
                 })
                 ->keys();
 
@@ -105,8 +105,8 @@ class ModelClass extends Builder {
      * @return string
      */
     protected function properties() {
-        $content = $this->crud->content(false)->map(function(Field $field) {
-            return $this->fieldTemplate($field);
+        $content = $this->crud->content(false)->map(function(Entry $entry) {
+            return $this->entryTemplate($entry);
         });
 
         return "/**\n" . $content->implode("\n") . "\n */";
@@ -124,323 +124,323 @@ class ModelClass extends Builder {
     }
 
     /**
-     * Get the default template for a field.
+     * Get the default template for a entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function defaultTemplate(Field $field) {
-        return $this->property('string', $field->name());
+    public function defaultTemplate(Entry $entry) {
+        return $this->property('string', $entry->name());
     }
 
     /**
-     * Get the template for a bigInteger field.
+     * Get the template for a bigInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function bigIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function bigIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a boolean field.
+     * Get the template for a boolean entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function booleanTemplate(Field $field) {
-        return $this->property('boolean', $field->name());
+    public function booleanTemplate(Entry $entry) {
+        return $this->property('boolean', $entry->name());
     }
 
     /**
-     * Get the template for a date field.
+     * Get the template for a date entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function dateTemplate(Field $field) {
-        return $this->property('\Carbon\Carbon', $field->name());
+    public function dateTemplate(Entry $entry) {
+        return $this->property('\Carbon\Carbon', $entry->name());
     }
 
     /**
-     * Get the template for a dateTime field.
+     * Get the template for a dateTime entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function dateTimeTemplate(Field $field) {
-        return $this->dateTemplate($field);
+    public function dateTimeTemplate(Entry $entry) {
+        return $this->dateTemplate($entry);
     }
 
     /**
-     * Get the template for a dateTimeTz field.
+     * Get the template for a dateTimeTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function dateTimeTzTemplate(Field $field) {
-        return $this->dateTemplate($field);
+    public function dateTimeTzTemplate(Entry $entry) {
+        return $this->dateTemplate($entry);
     }
 
     /**
-     * Get the template for a decimal field.
+     * Get the template for a decimal entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function decimalTemplate(Field $field) {
-        return $this->floatTemplate($field);
+    public function decimalTemplate(Entry $entry) {
+        return $this->floatTemplate($entry);
     }
 
     /**
-     * Get the template for a double field.
+     * Get the template for a double entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function doubleTemplate(Field $field) {
-        return $this->floatTemplate($field);
+    public function doubleTemplate(Entry $entry) {
+        return $this->floatTemplate($entry);
     }
 
     /**
-     * Get the template for a float field.
+     * Get the template for a float entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function floatTemplate(Field $field) {
-        return $this->property('float', $field->name());
+    public function floatTemplate(Entry $entry) {
+        return $this->property('float', $entry->name());
     }
 
     /**
-     * Get the template for a integer field.
+     * Get the template for a integer entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function integerTemplate(Field $field) {
-        return $this->property('integer', $field->name());
+    public function integerTemplate(Entry $entry) {
+        return $this->property('integer', $entry->name());
     }
 
     /**
-     * Get the template for a json field.
+     * Get the template for a json entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function jsonTemplate(Field $field) {
-        return $this->property('array', $field->name());
+    public function jsonTemplate(Entry $entry) {
+        return $this->property('array', $entry->name());
     }
 
     /**
-     * Get the template for a jsonb field.
+     * Get the template for a jsonb entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function jsonbTemplate(Field $field) {
-        return $this->jsonTemplate($field);
+    public function jsonbTemplate(Entry $entry) {
+        return $this->jsonTemplate($entry);
     }
 
     /**
-     * Get the template for a mediumInteger field.
+     * Get the template for a mediumInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function mediumIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function mediumIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a morphs field.
+     * Get the template for a morphs entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function morphsTemplate(Field $field) {
-        return $this->property('integer', $field->name() . '_id') . "\n" . $this->property('string', $field->name() . '_type');
+    public function morphsTemplate(Entry $entry) {
+        return $this->property('integer', $entry->name() . '_id') . "\n" . $this->property('string', $entry->name() . '_type');
     }
 
     /**
-     * Get the template for a nullableMorphs field.
+     * Get the template for a nullableMorphs entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function nullableMorphsTemplate(Field $field) {
-        return $this->morphsTemplate($field);
+    public function nullableMorphsTemplate(Entry $entry) {
+        return $this->morphsTemplate($entry);
     }
 
     /**
-     * Get the template for a smallInteger field.
+     * Get the template for a smallInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function smallIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function smallIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a softDeletes field.
+     * Get the template for a softDeletes entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function softDeletesTemplate(Field $field) {
+    public function softDeletesTemplate(Entry $entry) {
         return $this->property('\Carbon\Carbon', 'deleted_at');
     }
 
     /**
-     * Get the template for a softDeletesTz field.
+     * Get the template for a softDeletesTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function softDeletesTzTemplate(Field $field) {
-        return $this->softDeletesTemplate($field);
+    public function softDeletesTzTemplate(Entry $entry) {
+        return $this->softDeletesTemplate($entry);
     }
 
     /**
-     * Get the template for a time field.
+     * Get the template for a time entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timeTemplate(Field $field) {
-        return $this->dateTemplate($field);
+    public function timeTemplate(Entry $entry) {
+        return $this->dateTemplate($entry);
     }
 
     /**
-     * Get the template for a timeTz field.
+     * Get the template for a timeTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timeTzTemplate(Field $field) {
-        return $this->dateTemplate($field);
+    public function timeTzTemplate(Entry $entry) {
+        return $this->dateTemplate($entry);
     }
 
     /**
-     * Get the template for a timestamp field.
+     * Get the template for a timestamp entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampTemplate(Field $field) {
-        return $this->dateTemplate($field);
+    public function timestampTemplate(Entry $entry) {
+        return $this->dateTemplate($entry);
     }
 
     /**
-     * Get the template for a timestampTz field.
+     * Get the template for a timestampTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampTzTemplate(Field $field) {
-        return $this->dateTemplate($field);
+    public function timestampTzTemplate(Entry $entry) {
+        return $this->dateTemplate($entry);
     }
 
     /**
-     * Get the template for a timestamps field.
+     * Get the template for a timestamps entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampsTemplate(Field $field) {
+    public function timestampsTemplate(Entry $entry) {
         return $this->property('\Carbon\Carbon', 'created_at') . "\n" . $this->property('\Carbon\Carbon', 'updated_at');
     }
 
     /**
-     * Get the template for a timestampsTz field.
+     * Get the template for a timestampsTz entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function timestampsTzTemplate(Field $field) {
-        return $this->timestampsTemplate($field);
+    public function timestampsTzTemplate(Entry $entry) {
+        return $this->timestampsTemplate($entry);
     }
 
     /**
-     * Get the template for a tinyInteger field.
+     * Get the template for a tinyInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function tinyIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function tinyIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a unsignedBigInteger field.
+     * Get the template for a unsignedBigInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedBigIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function unsignedBigIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a unsignedDecimal field.
+     * Get the template for a unsignedDecimal entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedDecimalTemplate(Field $field) {
-        return $this->floatTemplate($field);
+    public function unsignedDecimalTemplate(Entry $entry) {
+        return $this->floatTemplate($entry);
     }
 
     /**
-     * Get the template for a unsignedInteger field.
+     * Get the template for a unsignedInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function unsignedIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a unsignedMediumInteger field.
+     * Get the template for a unsignedMediumInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedMediumIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function unsignedMediumIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a unsignedSmallInteger field.
+     * Get the template for a unsignedSmallInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedSmallIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function unsignedSmallIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a unsignedTinyInteger field.
+     * Get the template for a unsignedTinyInteger entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function unsignedTinyIntegerTemplate(Field $field) {
-        return $this->integerTemplate($field);
+    public function unsignedTinyIntegerTemplate(Entry $entry) {
+        return $this->integerTemplate($entry);
     }
 
     /**
-     * Get the template for a year field.
+     * Get the template for a year entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function yearTemplate(Field $field) {
-        return $this->dateTemplate($field);
+    public function yearTemplate(Entry $entry) {
+        return $this->dateTemplate($entry);
     }
 
 }

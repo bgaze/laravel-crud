@@ -3,7 +3,7 @@
 namespace Bgaze\Crud\Core;
 
 use Illuminate\Support\Str;
-use Bgaze\Crud\Core\Field;
+use Bgaze\Crud\Core\Entry;
 
 /**
  * The core class of the CRUD package
@@ -73,7 +73,7 @@ abstract class Crud {
     protected $softDeletes = false;
 
     /**
-     * Model's Field objects.
+     * Model's Entry objects.
      *
      * @var \Illuminate\Support\Collection 
      */
@@ -244,39 +244,39 @@ abstract class Crud {
      * @return void
      */
     public function add($type, $data) {
-        $field = new Field($type, $data);
+        $entry = new Entry($type, $data);
         $columns = $this->columns();
 
         // If index
-        if ($field->isIndex()) {
+        if ($entry->isIndex()) {
             // Check that it doesn't already exists.
-            if ($this->content()->has($field->name())) {
-                throw new \Exception("'{$field->name()}' index already exists.");
+            if ($this->content()->has($entry->name())) {
+                throw new \Exception("'{$entry->name()}' index already exists.");
             }
 
             // Check that all selected columns exists.
-            foreach ($field->input()->getArgument('columns') as $column) {
-                if (!$columns->contains($field->name())) {
-                    throw new \Exception("'$column' doesn't exists in fields list.");
+            foreach ($entry->input()->getArgument('columns') as $column) {
+                if (!$columns->contains($entry->name())) {
+                    throw new \Exception("'$column' doesn't exists in entries list.");
                 }
             }
         }
 
-        // Otherwise check that no field alreay exists.
-        $intersect = $columns->intersect($field->columns());
+        // Otherwise check that no entry alreay exists.
+        $intersect = $columns->intersect($entry->columns());
         if ($intersect->isNotEmpty()) {
             throw new \Exception("Following columns already exist: " . $intersect->implode(', '));
         }
 
-        // Add to fields list.
-        $this->content()->put($field->name(), $field);
+        // Add to entries list.
+        $this->content()->put($entry->name(), $entry);
 
         // Manage timestamps & softDeletes status.
-        if ($field->name() === 'timestamps' || $field->name() === 'timestampsTz') {
-            $this->timestamps = $field->name();
+        if ($entry->name() === 'timestamps' || $entry->name() === 'timestampsTz') {
+            $this->timestamps = $entry->name();
         }
-        if ($field->name() === 'softDeletes' || $field->name() === 'softDeletesTz') {
-            $this->softDeletes = $field->name();
+        if ($entry->name() === 'softDeletes' || $entry->name() === 'softDeletesTz') {
+            $this->softDeletes = $entry->name();
         }
     }
 
@@ -292,41 +292,41 @@ abstract class Crud {
         $content = collect();
 
         // Relations first.
-        $this->content->filter(function(Field $field, $key) {
-            return $field->isRelation();
-        })->each(function(Field $field, $key) use($content) {
-            $content->put($key, $field);
+        $this->content->filter(function(Entry $entry, $key) {
+            return $entry->isRelation();
+        })->each(function(Entry $entry, $key) use($content) {
+            $content->put($key, $entry);
         });
 
         // Then columns except timestamps & softDeletes.
-        $this->content->filter(function(Field $field) {
-            if (in_array($field->name(), ['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz'])) {
+        $this->content->filter(function(Entry $entry) {
+            if (in_array($entry->name(), ['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz'])) {
                 return false;
             }
-            return (!$field->isRelation() && !$field->isIndex());
-        })->each(function(Field $field, $key) use($content) {
-            $content->put($key, $field);
+            return (!$entry->isRelation() && !$entry->isIndex());
+        })->each(function(Entry $entry, $key) use($content) {
+            $content->put($key, $entry);
         });
 
         // Then timestamps.
-        $this->content->filter(function(Field $field) {
-            return in_array($field->name(), ['timestamps', 'timestampsTz']);
-        })->each(function(Field $field, $key) use($content) {
-            $content->put($key, $field);
+        $this->content->filter(function(Entry $entry) {
+            return in_array($entry->name(), ['timestamps', 'timestampsTz']);
+        })->each(function(Entry $entry, $key) use($content) {
+            $content->put($key, $entry);
         });
 
         // Then softDeletes.
-        $this->content->filter(function(Field $field) {
-            return in_array($field->name(), ['softDeletes', 'softDeletesTz']);
-        })->each(function(Field $field, $key) use($content) {
-            $content->put($key, $field);
+        $this->content->filter(function(Entry $entry) {
+            return in_array($entry->name(), ['softDeletes', 'softDeletesTz']);
+        })->each(function(Entry $entry, $key) use($content) {
+            $content->put($key, $entry);
         });
 
         // Then indexes.
-        $this->content->filter(function(Field $field) {
-            return $field->isIndex();
-        })->each(function(Field $field, $key) use($content) {
-            $content->put($key, $field);
+        $this->content->filter(function(Entry $entry) {
+            return $entry->isIndex();
+        })->each(function(Entry $entry, $key) use($content) {
+            $content->put($key, $entry);
         });
 
         // Update CRUD content.
@@ -424,14 +424,14 @@ abstract class Crud {
     }
 
     /**
-     * Model's content (fields & indexes).
+     * Model's content (entries & indexes).
      *
      * @var \Illuminate\Support\Collection 
      */
     public function content($withIndexes = true) {
         if (!$withIndexes) {
-            return $this->content->filter(function(Field $field) {
-                        return !$field->isIndex();
+            return $this->content->filter(function(Entry $entry) {
+                        return !$entry->isIndex();
                     });
         }
 
@@ -445,8 +445,8 @@ abstract class Crud {
      */
     public function columns() {
         return $this->content(false)
-                        ->map(function(Field $field) {
-                            return $field->columns();
+                        ->map(function(Entry $entry) {
+                            return $entry->columns();
                         })
                         ->prepend('id')
                         ->flatten();

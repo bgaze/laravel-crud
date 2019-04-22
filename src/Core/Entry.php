@@ -7,21 +7,21 @@ use Bgaze\Crud\Support\SignedInput;
 use Bgaze\Crud\Definitions;
 
 /**
- * A content entry of a CRUD (field or index).
+ * A content entry of a CRUD (entry or index).
  *
  * @author bgaze <benjamin@bgaze.fr>
  */
-class Field extends SignedInput {
+class Entry extends SignedInput {
 
     /**
-     * The unique name of the field.
+     * The unique name of the entry.
      * 
      * @var string 
      */
     public $name;
 
     /**
-     * The label to use for the field.
+     * The label to use for the entry.
      * 
      * @var string 
      */
@@ -30,21 +30,21 @@ class Field extends SignedInput {
     /**
      * The class constructor.
      * 
-     * @param string $type      The field type. 
+     * @param string $type      The entry type. 
      * @param string $data      Options and arguments
      */
     public function __construct($type, $data) {
-        // Instanciate field.
+        // Instanciate entry.
         parent::__construct($type . ' ' . Definitions::get($type));
 
         // Set & validate user input.
         $this->ask($data);
         $this->validate(Definitions::VALIDATION);
 
-        // Set field name.
+        // Set entry name.
         $this->setName();
 
-        // Set field label.
+        // Set entry label.
         $this->setLabel();
     }
 
@@ -94,7 +94,7 @@ class Field extends SignedInput {
     }
 
     /**
-     * Check if the field is an index.
+     * Check if the entry is an index.
      * 
      * @return boolean
      */
@@ -103,7 +103,7 @@ class Field extends SignedInput {
     }
 
     /**
-     * Check if the field is a relation.
+     * Check if the entry is a relation.
      * 
      * @return boolean
      */
@@ -112,7 +112,7 @@ class Field extends SignedInput {
     }
 
     /**
-     * Check if the field is an date.
+     * Check if the entry is an date.
      * 
      * @return boolean
      */
@@ -121,7 +121,7 @@ class Field extends SignedInput {
     }
 
     /**
-     * The unique name of the field.
+     * The unique name of the entry.
      * 
      * @return string
      */
@@ -159,7 +159,7 @@ class Field extends SignedInput {
     }
 
     /**
-     * The label to use for the field.
+     * The label to use for the entry.
      * 
      * @return string
      */

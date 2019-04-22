@@ -3,7 +3,7 @@
 namespace Bgaze\Crud\Themes\Classic\Builders;
 
 use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Core\Field;
+use Bgaze\Crud\Core\Entry;
 
 /**
  * The Index view builder.
@@ -50,8 +50,8 @@ class IndexView extends Builder {
         $stub = $this->stub('partials.index-head');
 
         return $content
-                        ->map(function(Field $field) use($stub) {
-                            return $this->fieldCell($field, $stub);
+                        ->map(function(Entry $entry) use($stub) {
+                            return $this->entryCell($entry, $stub);
                         })
                         ->filter()
                         ->implode("\n");
@@ -72,30 +72,30 @@ class IndexView extends Builder {
         $stub = $this->stub('partials.index-body');
 
         return $content
-                        ->map(function(Field $field) use($stub) {
-                            return $this->fieldCell($field, $stub);
+                        ->map(function(Entry $entry) use($stub) {
+                            return $this->entryCell($entry, $stub);
                         })
                         ->filter()
                         ->implode("\n");
     }
 
     /**
-     * Generate a table cell for a field
+     * Generate a table cell for a entry
      * 
-     * @param Field $field
+     * @param Entry $entry
      * @param string $stub
      * @return string
      */
-    protected function fieldCell(Field $field, $stub) {
-        if (in_array($field->name(), ['rememberToken', 'softDeletes', 'softDeletesTz'])) {
+    protected function entryCell(Entry $entry, $stub) {
+        if (in_array($entry->name(), ['rememberToken', 'softDeletes', 'softDeletesTz'])) {
             return null;
         }
 
-        if (in_array($field->name(), ['timestamps', 'timestampsTz'])) {
+        if (in_array($entry->name(), ['timestamps', 'timestampsTz'])) {
             return $this->tableCell($stub, 'Created at', 'created_at') . "\n" . $this->tableCell($stub, 'Updated at', 'updated_at');
         }
 
-        return $this->tableCell($stub, $field->label(), $field->name());
+        return $this->tableCell($stub, $entry->label(), $entry->name());
     }
 
     /**
@@ -107,7 +107,7 @@ class IndexView extends Builder {
      * @return string
      */
     protected function tableCell($stub, $label, $name) {
-        $this->replace($stub, 'FieldLabel', $label)->replace($stub, 'FieldName', $name);
+        $this->replace($stub, 'EntryLabel', $label)->replace($stub, 'EntryName', $name);
         return $stub;
     }
 

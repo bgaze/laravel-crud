@@ -6,8 +6,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Command;
 use Bgaze\Crud\Core\Builder;
-use Bgaze\Crud\Core\Field;
-use Bgaze\Crud\Core\FieldsTemplatesTrait;
+use Bgaze\Crud\Core\Entry;
+use Bgaze\Crud\Core\EntriesTemplatesTrait;
 use Bgaze\Crud\Definitions;
 
 /**
@@ -17,7 +17,7 @@ use Bgaze\Crud\Definitions;
  */
 class MigrationClass extends Builder {
 
-    use FieldsTemplatesTrait;
+    use EntriesTemplatesTrait;
 
     /**
      * The Composer instance.
@@ -100,14 +100,14 @@ class MigrationClass extends Builder {
      * @return string
      */
     protected function content() {
-        return $this->crud->content()->map(function(Field $field) {
-                    $tmp = $this->fieldTemplate($field);
+        return $this->crud->content()->map(function(Entry $entry) {
+                    $tmp = $this->entryTemplate($entry);
 
-                    foreach ($field->input()->getArguments() as $k => $v) {
+                    foreach ($entry->input()->getArguments() as $k => $v) {
                         $tmp = str_replace("%$k", $this->compileValueForPhp($v), $tmp);
                     }
 
-                    foreach ($field->input()->getOptions() as $k => $v) {
+                    foreach ($entry->input()->getOptions() as $k => $v) {
                         if ($v !== null && $v !== false && isset(Definitions::COLUMNS_MODIFIERS[$k])) {
                             $tmp .= str_replace('%value', $this->compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
                         }
@@ -118,19 +118,19 @@ class MigrationClass extends Builder {
     }
 
     /**
-     * Get the default template for a field.
+     * Get the default template for a entry.
      * 
-     * @param Bgaze\Crud\Core\Field $field The field 
-     * @return string The template for the field
+     * @param Bgaze\Crud\Core\Entry $entry The entry 
+     * @return string The template for the entry
      */
-    public function defaultTemplate(Field $field) {
-        $arguments = array_keys($field->definition()->getArguments());
+    public function defaultTemplate(Entry $entry) {
+        $arguments = array_keys($entry->definition()->getArguments());
 
         if (!empty($arguments)) {
-            return '$table->' . $field->command() . '(%' . implode(', %', $arguments) . ')';
+            return '$table->' . $entry->command() . '(%' . implode(', %', $arguments) . ')';
         }
 
-        return '$table->' . $field->command() . '()';
+        return '$table->' . $entry->command() . '()';
     }
 
 }

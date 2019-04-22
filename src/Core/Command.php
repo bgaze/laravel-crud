@@ -111,7 +111,7 @@ class Command extends Base {
             {--p|plurals= : The Plurals version of the Model's name}
             {--t|timestamps : Add a timestamps directive</>}
             {--s|soft-deletes : Add a softDelete directive</>}
-            {--c|content=* : The list of Model's fields using SignedInput syntax}
+            {--c|content=* : The list of Model's entries using SignedInput syntax}
             {--o|only=* : Generate only selected files: <fg=cyan>{$builders}</>}";
 
         // Add layout option if available in theme.
@@ -297,14 +297,14 @@ class Command extends Base {
      * @return void 
      */
     protected function getContentInput() {
-        $fields = Definitions::entries()->keys()->sort();
+        $entries = Definitions::entries()->keys()->sort();
 
-        // If fields where provided through option, add them.
+        // If entries where provided through option, add them.
         if ($this->option('content')) {
             foreach ($this->option('content') as $question) {
-                list($field, $data) = $this->parseContentInput($fields, $question);
-                $this->crud->add($field, $data);
-                $this->dl('Field added', $question);
+                list($entry, $data) = $this->parseContentInput($entries, $question);
+                $this->crud->add($entry, $data);
+                $this->dl('Entry added', $question);
             }
         }
 
@@ -319,16 +319,16 @@ class Command extends Base {
         $this->line(" For an entry detailed syntax, <fg=cyan>omit arguments and options.</>");
 
         // Commands list for autocomplete.
-        $fields->push('list')->push('no');
+        $entries->push('list')->push('no');
 
-        // Loop and ask for fields while no explicit break.
+        // Loop and ask for entries while no explicit break.
         while (true) {
             // Ask user for input.
-            $continue = $this->askForContentInput($fields);
+            $continue = $this->askForContentInput($entries);
 
             // Manage wizard exit.
             $empty = $this->crud->content()->except(['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz'])->isEmpty();
-            if (!$continue && (!$empty || $this->confirm("You haven't added any field. Continue?", true))) {
+            if (!$continue && (!$empty || $this->confirm("You haven't added any entry. Continue?", true))) {
                 break;
             }
         }
@@ -337,12 +337,12 @@ class Command extends Base {
     /**
      * Ask the user for a new Model content.
      * 
-     * @param array $fields The list of available fields.
-     * @return boolean Wether to continue or not to add fields to Model.
+     * @param array $entries The list of available entries.
+     * @return boolean Wether to continue or not to add entries to Model.
      */
-    protected function askForContentInput($fields) {
+    protected function askForContentInput($entries) {
         // User input.
-        $question = trim($this->anticipate('Add a field', $fields->all(), 'no'));
+        $question = trim($this->anticipate('Add a entry', $entries->all(), 'no'));
 
         // Manage wizard exit.
         if ($question === 'no') {
@@ -351,24 +351,24 @@ class Command extends Base {
 
         // Manage 'list' command.
         if ($question === 'list') {
-            $this->showFieldsHelp();
+            $this->showEntriesHelp();
             return true;
         }
 
         // Catch any error to prevent unwanted wizard exit.
         try {
             // Parse user input.
-            list($name, $data) = $this->parseContentInput($fields, $question);
+            list($name, $data) = $this->parseContentInput($entries, $question);
 
             // If empty arguments, show help.
             if (empty($data)) {
-                $this->line($this->showFieldHelp($name));
+                $this->line($this->showEntryHelp($name));
                 return true;
             }
 
             // Add to content.
             $this->crud->add($name, $data);
-            $this->dl('Field added', $question);
+            $this->dl('Entry added', $question);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -379,42 +379,42 @@ class Command extends Base {
 
     /**
      * Parse the user input and return an array conatining two values:
-     * - First:     the name of the field type to add.
-     * - Second:    arguments and options to generate the field.
+     * - First:     the name of the entry type to add.
+     * - Second:    arguments and options to generate the entry.
      * 
-     * @param \Illuminate\Support\Collection $fields    The available contents
+     * @param \Illuminate\Support\Collection $entries    The available contents
      * @param string $question                          The user input
      * 
      * @return array 
-     * @throws \Exception The asked field wasn't recognized
+     * @throws \Exception The asked entry wasn't recognized
      */
-    protected function parseContentInput(Collection $fields, $question) {
-        $reg = '/^(' . $fields->implode('|') . ')(\s.*)?$/';
+    protected function parseContentInput(Collection $entries, $question) {
+        $reg = '/^(' . $entries->implode('|') . ')(\s.*)?$/';
 
         if (!preg_match($reg, $question, $matches)) {
             throw new \Exception("Invalid input '$question'.");
         }
 
         return [
-            $matches[1], // Field type.
+            $matches[1], // Entry type.
             isset($matches[2]) ? trim($matches[2]) : '' // Arguments and options.
         ];
     }
 
     /**
-     * Display help for a field type.
+     * Display help for a entry type.
      * 
-     * @param type $name    The name of the field.
+     * @param type $name    The name of the entry.
      */
-    protected function showFieldHelp($name) {
-        $field = Definitions::parse($name);
+    protected function showEntryHelp($name) {
+        $entry = Definitions::parse($name);
         $help = "   <info>Add a {$name} entry to the CRUD.</info>\n   ";
 
-        if (empty($field['arguments']) && empty($field['options'])) {
-            $help .= "This field has neither argument nor option.\n";
+        if (empty($entry['arguments']) && empty($entry['options'])) {
+            $help .= "This entry has neither argument nor option.\n";
         } else {
-            $arguments = empty($field['arguments']) ? '' : " <fg=yellow>{$field['arguments']}</>";
-            $options = empty($field['options']) ? '' : " <fg=cyan>{$field['options']}</>";
+            $arguments = empty($entry['arguments']) ? '' : " <fg=yellow>{$entry['arguments']}</>";
+            $options = empty($entry['options']) ? '' : " <fg=cyan>{$entry['options']}</>";
             $help .= "Signature:  {$arguments}{$options}\n";
         }
 
@@ -422,9 +422,9 @@ class Command extends Base {
     }
 
     /**
-     * Display a help tablefor all availables fields type.
+     * Display a help tablefor all availables entries type.
      */
-    protected function showFieldsHelp() {
+    protected function showEntriesHelp() {
         $rows = [];
 
         foreach (array_keys(Definitions::COLUMNS) as $name) {

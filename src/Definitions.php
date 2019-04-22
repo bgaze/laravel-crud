@@ -3,7 +3,7 @@
 namespace Bgaze\Crud;
 
 /**
- * Description of FieldsDefinitions
+ * Description of EntriesDefinitions
  *
  * @author bgaze
  */
