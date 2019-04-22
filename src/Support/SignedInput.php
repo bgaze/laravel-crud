@@ -76,6 +76,7 @@ class SignedInput {
      * @param string $question The user signed input string
      */
     public function ask($question) {
+        $this->question = $question;
         $this->input = new StringInput($question);
         $this->input->bind($this->definition);
     }
@@ -89,13 +90,14 @@ class SignedInput {
     public function validate(array $rules = []) {
         // Check that input matches signature format.
         $this->input->validate();
-
+        
         // Use custom validation rules.
         if (!empty($rules)) {
             $input = array_merge($this->input->getOptions(), $this->input->getArguments());
             $validator = \Validator::make($input, $rules);
             if ($validator->fails()) {
-                throw new \Exception(implode("\n", $validator->errors()->all()));
+                $errors = implode("\n  ", $validator->errors()->all());
+                throw new \Exception(sprintf("%s:\n  %s", $this->command(), $errors));
             }
         }
     }
