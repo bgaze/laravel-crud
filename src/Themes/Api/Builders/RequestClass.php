@@ -75,7 +75,7 @@ class RequestClass extends Builder {
 
         if ($definition->hasOption('nullable')) {
             $rules[] = $entry->input()->getOption('nullable') ? 'nullable' : 'required';
-        } elseif (preg_match('/^nullable/', $entry->config('type'))) {
+        } elseif (preg_match('/^nullable/', $entry->command())) {
             $rules[] = 'nullable';
         } else {
             $rules[] = 'required';
