@@ -443,4 +443,36 @@ class ModelClass extends Builder {
         return $this->dateTemplate($entry);
     }
 
+    /**
+     * Get the template for a hasOne relation.
+     * 
+     * @param Bgaze\Crud\Core\Entry $entry The relation 
+     * @return string The template for the relation
+     */
+    public function hasOneTemplate(Entry $entry) {
+        $name = $entry->option('method', $entry->related()->getModelCamel());
+        return $this->property('\\' . $entry->related()->getModelClass(), $name);
+    }
+
+    /**
+     * Get the template for a hasMany relation.
+     * 
+     * @param Bgaze\Crud\Core\Entry $entry The relation 
+     * @return string The template for the relation
+     */
+    public function hasManyTemplate(Entry $entry) {
+        $name = $entry->option('method', $entry->related()->getPluralCamel());
+        return $this->property('\\' . $entry->related()->getModelClass(), $name);
+    }
+
+    /**
+     * Get the template for a belongsTo relation.
+     * 
+     * @param Bgaze\Crud\Core\Entry $entry The relation 
+     * @return string The template for the relation
+     */
+    public function belongsToTemplate(Entry $entry) {
+        return $this->hasOneTemplate($entry);
+    }
+
 }

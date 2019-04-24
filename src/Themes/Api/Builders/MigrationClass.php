@@ -114,7 +114,7 @@ class MigrationClass extends Builder {
      * @param string $template
      */
     protected function addModifiers(Entry $entry, &$template) {
-        foreach ($entry->input()->getOptions() as $k => $v) {
+        foreach ($entry->options() as $k => $v) {
             if ($v !== null && $v !== false && isset(Definitions::COLUMNS_MODIFIERS[$k])) {
                 $template .= str_replace('%value', $this->compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
             }
@@ -136,7 +136,7 @@ class MigrationClass extends Builder {
             $template = '$table->' . $entry->command() . '()';
         }
 
-        foreach ($entry->input()->getArguments() as $k => $v) {
+        foreach ($entry->arguments() as $k => $v) {
             $template = str_replace("%$k", $this->compileValueForPhp($v), $template);
         }
 
@@ -172,12 +172,7 @@ class MigrationClass extends Builder {
      * @return string The template for the entry
      */
     public function belongsToTemplate(Entry $entry) {
-        $column = $entry->input()->getOption('foreignKey');
-
-        if (empty($column)) {
-            $column = $entry->related()->getModelCamel() . '_id';
-        }
-
+        $column = $entry->option('foreignKey', $entry->related()->getModelCamel() . '_id');
         $template = '$table->unsignedInteger(' . $this->compileValueForPhp($column) . ')';
         $this->addModifiers($entry, $template);
         return $template . ';';

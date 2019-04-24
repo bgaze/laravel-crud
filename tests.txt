@@ -3,13 +3,13 @@
 clear \
 && git reset --hard \
 && git clean -fd \
-&& php artisan crud:api Article -t -s -n \
+&& php artisan crud:api Article -vvv -t -s -n \
 -c "string title" \
 -c "enum category foo bar foobar -i" \
 -c "text body -n" \
 -c "unsignedInteger views -d 0" \
 -c "boolean active -d 1" \
-&& php artisan crud:api Article/Comment -t -s -n \
+&& php artisan crud:api Article/Comment -vvv -t -s -n \
 -c "string pseudo" \
 -c "dateTime date -u" \
 -c "text comment" \
@@ -24,13 +24,13 @@ clear \
 clear \
 && git reset --hard \
 && git clean -fd \
-&& php artisan crud:classic Article -t -s -n \
+&& php artisan crud:classic Article -vvv -t -s -n \
 -c "string title" \
 -c "enum category foo bar foobar -i" \
 -c "text body -n" \
 -c "unsignedInteger views -d 0" \
 -c "boolean active -d 1" \
-&& php artisan crud:classic Article/Comment -t -s -n \
+&& php artisan crud:classic Article/Comment -vvv -t -s -n \
 -c "string pseudo" \
 -c "dateTime date -u" \
 -c "text comment" \
@@ -39,3 +39,35 @@ clear \
 && php artisan mi:fr \
 && php artisan db:seed --class=ArticlesTableSeeder \
 && php artisan db:seed --class=ArticleCommentsTableSeeder
+
+# RELATIONS
+
+clear \
+&& git reset --hard \
+&& git clean -fd \
+&& php artisan crud:classic Article -vvv -n -c "hasOne Article/Comment"\
+&& php artisan crud:classic Article/Comment -vvv -n -c "belongsTo Article"
+
+clear \
+&& git reset --hard \
+&& git clean -fd \
+&& php artisan crud:classic Article -vvv -t -s -n -c "hasOne Article/Comment"\
+&& php artisan crud:classic Article/Comment -vvv -t -s -n -c "belongsTo Article"
+
+clear \
+&& git reset --hard \
+&& git clean -fd \
+&& php artisan crud:classic Article -vvv -t -s -n \
+-c "string title" \
+-c "enum category foo bar foobar -i" \
+-c "text body -n" \
+-c "unsignedInteger views -d 0" \
+-c "boolean active -d 1" \
+-c "hasOne Article/Comment"\
+&& php artisan crud:classic Article/Comment -vvv -t -s -n \
+-c "string pseudo" \
+-c "dateTime date -u" \
+-c "text comment" \
+-c "enum humor happy unhappy -n" \
+-c "float note 2 1 -n" \
+-c "belongsTo Article"

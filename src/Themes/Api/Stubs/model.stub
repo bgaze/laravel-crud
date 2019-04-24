@@ -16,4 +16,6 @@ class ModelStudly extends Model
     #FILLABLES
     
     #DATES
+    
+    #RELATIONS
 }
