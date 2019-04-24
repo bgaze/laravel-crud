@@ -251,7 +251,7 @@ abstract class Crud {
             }
 
             // Check that all selected columns exists.
-            foreach ($entry->input()->getArgument('columns') as $column) {
+            foreach ($entry->argument('columns') as $column) {
                 if (!$columns->contains($entry->name())) {
                     throw new \Exception("'$column' doesn't exists in entries list.");
                 }

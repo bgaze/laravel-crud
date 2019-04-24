@@ -121,9 +121,9 @@ class CreateView extends Builder {
      * @return string The template for the entry
      */
     public function enumTemplate(Entry $entry) {
-        $choices = $entry->input()->getArgument('allowed');
+        $choices = $entry->argument('allowed');
 
-        if ($entry->input()->getOption('nullable')) {
+        if ($entry->option('nullable')) {
             array_unshift($choices, '');
         }
 

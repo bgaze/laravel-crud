@@ -51,10 +51,8 @@ class Entry extends SignedInput {
 
         // Init related model for relations.
         if ($this->isRelation()) {
-            $this->related = new $crudClass($this->input()->getArgument('related'));
-            if ($this->definition()->hasOption('plurals') && $this->input()->hasOption('plurals')) {
-                $this->related->setPlurals($this->input()->getOption('plurals'));
-            }
+            $this->related = new $crudClass($this->argument('related'));
+            $this->related->setPlurals($this->option('plurals', false));
         }
 
         // Set entry name.
@@ -80,17 +78,17 @@ class Entry extends SignedInput {
      */
     protected function setName() {
         if ($this->isIndex()) {
-            $columns = $this->input()->getArgument('columns');
+            $columns = $this->argument('columns');
             sort($columns);
             $this->name = 'index:' . implode(',', $columns);
         } elseif (in_array($this->command(), ['timestamps', 'timestampsTz', 'softDeletes', 'softDeletesTz', 'rememberToken'])) {
             $this->name = $this->command();
         } elseif (in_array($this->command(), ['morphs', 'nullableMorphs', 'morphTo'])) {
-            $this->name = $this->command() . ':' . $this->input()->getOption('name');
+            $this->name = $this->command() . ':' . $this->option('name');
         } elseif ($this->isRelation()) {
-            $this->name = $this->command() . ':' . $this->input()->getArgument('related');
+            $this->name = $this->command() . ':' . $this->argument('related');
         } else {
-            $this->name = $this->input()->getArgument('column');
+            $this->name = $this->argument('column');
         }
     }
 
@@ -175,6 +173,62 @@ class Entry extends SignedInput {
         }
 
         return [$this->name];
+    }
+
+    /**
+     * Get entry arguments.
+     * 
+     * @return array
+     */
+    public function arguments() {
+        return $this->input()->getArguments();
+    }
+
+    /**
+     * Get entry argument by key.
+     * 
+     * @param string $key       The key of the entry
+     * @param mixed $default    The default value of the entry
+     * @return mixed
+     */
+    public function argument($key, $default = null) {
+        if ($this->definition()->hasArgument($key) && $this->input()->hasArgument($key)) {
+            $value = $this->input()->getArgument($key);
+        }
+
+        if ($value === null) {
+            return $default;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Get entry options.
+     * 
+     * @return array
+     */
+    public function options() {
+        return $this->input()->getOptions();
+    }
+
+    /**
+     * Get entry option by key.
+     * 
+     * @param string $key       The key of the entry
+     * @param mixed $default    The default value of the entry
+     * @return mixed
+     */
+    public function option($key, $default = null) {
+        if ($this->definition()->hasOption($key) && $this->input()->hasOption($key)) {
+            $value = $this->input()->getOption($key);
+        }
+
+        if ($value === null) {
+            return $default;
+        }
+
+        return $value;
     }
 
 }

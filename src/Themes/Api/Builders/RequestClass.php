@@ -74,7 +74,7 @@ class RequestClass extends Builder {
         $definition = $entry->definition();
 
         if ($definition->hasOption('nullable')) {
-            $rules[] = $entry->input()->getOption('nullable') ? 'nullable' : 'required';
+            $rules[] = $entry->option('nullable') ? 'nullable' : 'required';
         } elseif (preg_match('/^nullable/', $entry->command())) {
             $rules[] = 'nullable';
         } else {
@@ -177,7 +177,7 @@ class RequestClass extends Builder {
      * @return string The rules for the entry
      */
     public function enumTemplate(Entry $entry) {
-        return 'in:' . implode(',', $entry->input()->getArgument('allowed'));
+        return 'in:' . implode(',', $entry->argument('allowed'));
     }
 
     /**
