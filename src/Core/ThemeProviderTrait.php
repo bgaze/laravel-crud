@@ -1,6 +1,6 @@
 <?php
 
-namespace Bgaze\Crud\Support;
+namespace Bgaze\Crud\Core;
 
 use Bgaze\Crud\Core\Command;
 

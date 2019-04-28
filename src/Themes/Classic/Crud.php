@@ -4,6 +4,7 @@ namespace Bgaze\Crud\Themes\Classic;
 
 use Bgaze\Crud\Themes\Api\Crud as Base;
 use Bgaze\Crud\Themes\Classic\Builders;
+use Bgaze\Crud\Themes\Classic\Compilers;
 
 /**
  * The core class of the CRUD theme
@@ -58,6 +59,8 @@ class Crud extends Base {
     static public function builders() {
         $builders = parent::builders();
 
+        // Remove current route registration builder because 
+        // we want it to be the last builder
         unset($builders['routes-registration']);
 
         return array_merge($builders, [
@@ -66,6 +69,18 @@ class Crud extends Base {
             'edit-view' => Builders\EditView::class,
             'show-view' => Builders\ShowView::class,
             'routes-registration' => Builders\RoutesRegistration::class,
+        ]);
+    }
+
+    /**
+     * The compilers availables in the CRUD theme.
+     * 
+     * @return array Name as key, full class name as value.
+     */
+    static public function compilers() {
+        return array_merge(parent::compilers(), [
+            'print-content' => Compilers\PrintContent::class,
+            'form-content' => Compilers\FormContent::class,
         ]);
     }
 

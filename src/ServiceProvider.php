@@ -4,7 +4,7 @@ namespace Bgaze\Crud;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider as Base;
-use Bgaze\Crud\Support\ThemeProviderTrait;
+use Bgaze\Crud\Core\ThemeProviderTrait;
 use Bgaze\Crud\Themes;
 
 /**

@@ -5,6 +5,7 @@ namespace Bgaze\Crud\Themes\Api;
 use Illuminate\Support\Str;
 use Bgaze\Crud\Core\Crud as Base;
 use Bgaze\Crud\Themes\Api\Builders;
+use Bgaze\Crud\Themes\Api\Compilers;
 
 /**
  * The core class of the CRUD theme
@@ -64,6 +65,21 @@ class Crud extends Base {
             'resource-class' => Builders\ResourceClass::class,
             'controller-class' => Builders\ControllerClass::class,
             'routes-registration' => Builders\RoutesRegistration::class,
+        ];
+    }
+
+    /**
+     * The compilers availables in the CRUD theme.
+     * 
+     * @return array Name as key, full class name as value.
+     */
+    static public function compilers() {
+        return [
+            'factory-content' => Compilers\FactoryContent::class,
+            'migration-content' => Compilers\MigrationContent::class,
+            'model-annotations' => Compilers\ModelAnnotations::class,
+            'model-methods' => Compilers\ModelMethods::class,
+            'request-rules' => Compilers\RequestRules::class,
         ];
     }
 

@@ -4,7 +4,7 @@ namespace ModelNamespace;
 
 use Illuminate\Database\Eloquent\Model;
 
-#PROPERTIES
+#ANNOTATIONS
 class ModelStudly extends Model
 {
     #SOFTDELETE
@@ -17,5 +17,5 @@ class ModelStudly extends Model
     
     #DATES
     
-    #RELATIONS
+    #METHODS
 }

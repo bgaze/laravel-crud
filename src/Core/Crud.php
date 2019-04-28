@@ -122,6 +122,13 @@ abstract class Crud {
     abstract static public function stubs();
 
     /**
+     * The compilers availables in the CRUD theme.
+     * 
+     * @return array Name as key, full class name as value.
+     */
+    abstract static public function compilers();
+
+    /**
      * The builders availables in the CRUD theme.
      * 
      * @return array Name as key, full class name as value.

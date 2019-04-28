@@ -15,7 +15,7 @@ use Bgaze\Crud\Definitions;
  * This command signature is dynamically generated based on a CRUD theme class.
  * So multiple instances can exist simultaneously.
  * 
- * Please see \Bgaze\Crud\Support\ThemeProviderTrait for more details.
+ * Please see \Bgaze\Crud\Core\ThemeProviderTrait for more details.
  *
  * @author bgaze <benjamin@bgaze.fr>
  */

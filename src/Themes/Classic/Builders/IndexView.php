@@ -28,87 +28,35 @@ class IndexView extends Builder {
         $stub = $this->stub('views.index');
 
         $this
-                ->replace($stub, '#THEAD', $this->tableHead())
-                ->replace($stub, '#TBODY', $this->tableBody())
+                ->replace($stub, '#THEAD', $this->compileContent('partials.index-head'))
+                ->replace($stub, '#TBODY', $this->compileContent('partials.index-body'))
         ;
 
         $this->generateFile($this->file(), $stub);
     }
 
     /**
-     * Compile content to index view table head cell.
+     * Run the 'index-rows' compiler against all CRUD entries.
      * 
+     * @param string $stub          The stub used to generate rows
      * @return string
      */
-    protected function tableHead() {
-        $content = $this->crud->content(false);
+    protected function compileContent($stub) {
+        $compilers = $this->crud::compilers();
+        $compiler = new $compilers['print-content']($this->files, $this->crud, $stub);
 
-        if ($content->isEmpty()) {
+        $content = $this->crud->content()
+                ->map(function(Entry $entry) use($compiler) {
+                    return $compiler->compile($entry);
+                })
+                ->filter()
+                ->implode("\n");
+
+        if (empty($content)) {
             return '<!-- TODO -->';
         }
 
-        $stub = $this->stub('partials.index-head');
-
-        return $content
-                        ->map(function(Entry $entry) use($stub) {
-                            return $this->entryCell($entry, $stub);
-                        })
-                        ->filter()
-                        ->implode("\n");
-    }
-
-    /**
-     * Compile content to index view table body cell.
-     * 
-     * @return string
-     */
-    protected function tableBody() {
-        $content = $this->crud->content(false);
-
-        if ($content->isEmpty()) {
-            return '<!-- TODO -->';
-        }
-
-        $stub = $this->stub('partials.index-body');
-
-        return $content
-                        ->map(function(Entry $entry) use($stub) {
-                            return $this->entryCell($entry, $stub);
-                        })
-                        ->filter()
-                        ->implode("\n");
-    }
-
-    /**
-     * Generate a table cell for a entry
-     * 
-     * @param Entry $entry
-     * @param string $stub
-     * @return string
-     */
-    protected function entryCell(Entry $entry, $stub) {
-        if (in_array($entry->name(), ['rememberToken', 'softDeletes', 'softDeletesTz'])) {
-            return null;
-        }
-
-        if (in_array($entry->name(), ['timestamps', 'timestampsTz'])) {
-            return $this->tableCell($stub, 'Created at', 'created_at') . "\n" . $this->tableCell($stub, 'Updated at', 'updated_at');
-        }
-
-        return $this->tableCell($stub, $entry->label(), $entry->name());
-    }
-
-    /**
-     * Generate a table cell 
-     * 
-     * @param string $stub
-     * @param string $label
-     * @param string $name
-     * @return string
-     */
-    protected function tableCell($stub, $label, $name) {
-        $this->replace($stub, 'EntryLabel', $label)->replace($stub, 'EntryName', $name);
-        return $stub;
+        return $content;
     }
 
 }
