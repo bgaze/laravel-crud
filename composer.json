@@ -1,0 +1,30 @@
+{
+    "name": "bgaze/laravel-crud",
+    "description": "A CRUD generator for Laravel 5.5+",
+    "require": {
+        "laravel/framework": ">=6.0",
+        "laravelcollective/html": ">=6.0",
+        "bgaze/laravel-php-cs-fixer": "~1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bgaze",
+            "email": "benjamin@bgaze.fr"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bgaze\\Crud\\ServiceProvider",
+                "Bgaze\\Crud\\Themes\\Api\\ServiceProvider",
+                "Bgaze\\Crud\\Themes\\Classic\\ServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Bgaze\\Crud\\": "src"
+        }
+    }
+}
