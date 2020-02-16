@@ -5,6 +5,9 @@ namespace Bgaze\Crud\Themes\Api\Tasks;
 
 
 use Bgaze\Crud\Support\Tasks\Task;
+use Bgaze\Crud\Support\Utils\Helpers;
+use Bgaze\Crud\Themes\Api\Compilers\RequestRules;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class BuildRequestClass extends Task
 {
@@ -18,22 +21,33 @@ class BuildRequestClass extends Task
         return app_path('Http/Requests/' . $this->crud->getModel()->implode('/') . 'FormRequest.php');
     }
 
+    /**
+     * Compile CRUD content to migration statements.
+     *
+     * @return string
+     */
+    protected function getContent()
+    {
+        $compiler = new RequestRules($this->crud);
+        return $compiler->compile('// TODO');
+    }
+
 
     /**
      * Execute task.
      *
      * @return void
+     * @throws FileNotFoundException
      */
     public function execute()
     {
-        // Generate migration content.
-        //$content = $this->compileAll('request-rules', '// TODO');
+        // Populate migration stub.
+        $stub = $this->populateStub('request', [
+            '#CONTENT' => $this->getContent()
+        ]);
 
-        // Write migration file.
-        //$stub = $this->stub('request');
-        //$this->replace($stub, '#CONTENT', $content);
-        //$this->generatePhpFile($this->file(), $stub);
-
+        // Generate migration file.
+        Helpers::generatePhpFile($this->file(), $stub);
     }
 
 }
