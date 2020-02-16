@@ -5,10 +5,13 @@ namespace Bgaze\Crud\Support\Tasks;
 
 
 use Bgaze\Crud\Support\Crud\Crud;
+use Exception;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Bgaze\Crud\Support\Utils\Files;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use ReflectionException;
 
 abstract class Task
 {
@@ -50,6 +53,10 @@ abstract class Task
     }
 
 
+    /**
+     * @return string
+     * @throws ReflectionException
+     */
     public static function title()
     {
         return ucfirst(Str::snake((new ReflectionClass(static::class))->getShortName(), ' '));
@@ -71,7 +78,7 @@ abstract class Task
      */
     public function cantBeDone()
     {
-        if ($this->file_exists && !$this->crud->getCommand()->option('force')) {
+        if ($this->file_exists) {
             return $this->relativePath($this->file()) . ' already exists';
         }
 
@@ -89,7 +96,7 @@ abstract class Task
         $path = $this->relativePath($this->file());
 
         if ($this->file_exists) {
-            return "<warn>Overwrite:</warn> {$path}";
+            return "<fg=red>Overwrite:</> {$path}";
         }
 
         return "<info>Create:</info> {$path}";
@@ -114,11 +121,35 @@ abstract class Task
         $path = $this->relativePath($this->file());
 
         if ($this->file_exists) {
-           return " <warn>Overwrited:</warn> {$path}";
+           return " <fg=red>Overwrited:</> {$path}";
         }
 
         return " <info>Created:</info> {$path}";
     }
 
+
+    /**
+     * Get the content of a stub file and populate it with CRUD variables.
+     *
+     * @param  string  $name  The name of the stub
+     * @param  array  $variables  A set of variables to extend CRUD variables
+     * @return string       The content of stub file
+     * @throws FileNotFoundException
+     * @throws Exception
+     */
+    public function populateStub($name, array  $variables =  []) {
+        // Check that stub exists.
+        $stubs = $this->crud->getCommand()->stubs();
+        if (!isset($stubs[$name])) {
+            throw new Exception("Undefined stub '{$name}'.");
+        }
+
+        // Get stub content & prepare variables list.
+        $stub = $this->fs->get($stubs[$name]);
+        $variables = array_merge($this->crud->getVariables(), $variables);
+
+        // Return populated stub.
+        return str_replace(array_keys($variables), array_values($variables), $stub);
+    }
 
 }

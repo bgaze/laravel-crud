@@ -241,12 +241,32 @@ class Composer
             })
             ->filter();
 
-        if ($errors->count() === 1) {
-            throw new Exception("Cannot generate this CRUD: " . $errors->first());
+        if ($errors->count() === 0) {
+            return;
         }
 
-        if ($errors->count() > 1) {
-            throw new Exception("Cannot generate this CRUD:\n - " . $errors->implode("\n - "));
+        $message = ($errors->count() === 1) ? $errors->first() : "\n - " . $errors->implode("\n - ");
+
+        if ($this->noInteractions) {
+            if(!$this->force){
+                throw new Exception("Cannot generate this CRUD: " . $message);
+            }
+
+            return;
+        }
+
+        if($this->noInteractions){
+            if (!$this->force ) {
+                throw new Exception("Cannot generate this CRUD: " . $errors->first());
+            }
+            return;
+        }
+
+        $this->command->line(" <fg=red>Warning:</> {$message}\n");
+        if (!$this->force  && !$this->command->confirm('Continue?', false)) {
+            $this->command->error('CRUD generation aborted.');
+            $this->command->nl();
+            exit(1);
         }
     }
 

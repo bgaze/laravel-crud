@@ -26,7 +26,7 @@ class Command extends BaseCommand
             {--t|timestamps : Add a timestamps directive}
             {--s|soft-deletes : Add a softDelete directive}
             {--c|content=* : The list of Model's entries using SignedInput syntax}
-            {--f|force= : Overwrite any existing file}";
+            {--f|force : Overwrite any existing file}";
 
     /**
      * The console command description.
@@ -44,15 +44,15 @@ class Command extends BaseCommand
     public function stubs()
     {
         return [
-            'relation' => __DIR__ . '/Stubs/relation.stub',
-            'migration' => __DIR__ . '/Stubs/migration.stub',
-            'model' => __DIR__ . '/Stubs/model.stub',
-            'factory' => __DIR__ . '/Stubs/factory.stub',
-            'seeds' => __DIR__ . '/Stubs/seeds.stub',
-            'request' => __DIR__ . '/Stubs/request.stub',
-            'resource' => __DIR__ . '/Stubs/resource.stub',
-            'controller' => __DIR__ . '/Stubs/controller.stub',
-            'routes' => __DIR__ . '/Stubs/routes.stub',
+            'relation' => __DIR__ . '/Stubs/relation.php.stub',
+            'migration' => __DIR__ . '/Stubs/migration.php.stub',
+            'model' => __DIR__ . '/Stubs/model.php.stub',
+            'factory' => __DIR__ . '/Stubs/factory.php.stub',
+            'seeds' => __DIR__ . '/Stubs/seeds.php.stub',
+            'request' => __DIR__ . '/Stubs/request.php.stub',
+            'resource' => __DIR__ . '/Stubs/resource.php.stub',
+            'controller' => __DIR__ . '/Stubs/controller.php.stub',
+            'routes' => __DIR__ . '/Stubs/routes.php.stub',
         ];
     }
 
