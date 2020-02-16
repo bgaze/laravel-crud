@@ -32,14 +32,10 @@ class BuildMigrationClass extends Task
     {
         parent::__construct($crud);
 
-        $this->crud->addVariables([
-            'MigrationClass' => 'Create' . $this->crud->getPlurals()->implode('') . 'Table',
-            'TableName' => Str::snake($this->crud->getPlurals()->implode(''))
-        ]);
-
         $file = Str::snake($this->crud->MigrationClass);
         $files = $this->fs->glob(database_path("migrations/*_{$file}.php"));
-        if(count($files) > 0){
+
+        if (count($files) > 0) {
             $this->file = $files[0];
             $this->file_exists = true;
         } else {

@@ -2,9 +2,11 @@
 
 namespace Bgaze\Crud\Themes\Api;
 
+use Bgaze\Crud\Support\Definitions;
 use Bgaze\Crud\Support\Theme\Command as BaseCommand;
 use Bgaze\Crud\Support\Theme\Composer;
 use Exception;
+use Illuminate\Support\Str;
 
 /**
  * Class Theme
@@ -89,6 +91,7 @@ class Command extends BaseCommand
         $composer->setModel();
         $composer->setPlurals();
         $composer->setPlural();
+        $this->setVariables();
         $composer->setTasks();
 
         // Check that nothing prevents CRUD generation.
@@ -117,7 +120,7 @@ class Command extends BaseCommand
     /**
      * Show exit message based on build success.
      *
-     * @param bool $built
+     * @param  bool  $built
      */
     protected function end($built)
     {
@@ -128,5 +131,32 @@ class Command extends BaseCommand
         } else {
             parent::end($built);
         }
+    }
+
+
+    /**
+     * Register required variables.
+     */
+    protected function setVariables()
+    {
+        $namespace = $this->crud->getModel()->toBase();
+        $namespace->pop();
+        $namespace = app()->getNamespace() . 'Http\\%s\\' . $namespace->implode('\\');
+
+        $plurals = $this->crud->getPlurals()->implode('');
+        $model = $this->crud->getModel()->last();
+
+        $this->crud->addVariables([
+            'ModelNamespace' => Definitions::modelsNamespace(),
+            'MigrationClass' => 'Create' . $plurals . 'Table',
+            'TableName' => Str::snake($plurals),
+            'RequestClass' => $model . 'FormRequest',
+            'RequestNamespace' => trim(sprintf($namespace, 'Requests'), '\\'),
+            'ResourceClass' => $model . 'Resource',
+            'ResourceNamespace' => trim(sprintf($namespace, 'Resources'), '\\'),
+            'ControllerClass' => $model . 'Controller',
+            'ControllerFullName' => $this->crud->ModelFullName . 'Controller',
+            'ControllerNamespace' => trim(sprintf($namespace, 'Controllers'), '\\'),
+        ]);
     }
 }
