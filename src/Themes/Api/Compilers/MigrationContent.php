@@ -7,6 +7,7 @@ namespace Bgaze\Crud\Themes\Api\Compilers;
 use Bgaze\Crud\Support\Crud\Entry;
 use Bgaze\Crud\Support\Definitions;
 use Bgaze\Crud\Support\Tasks\Compiler;
+use Bgaze\Crud\Support\Utils\Helpers;
 use Exception;
 
 class MigrationContent extends Compiler
@@ -22,7 +23,7 @@ class MigrationContent extends Compiler
     {
         foreach ($entry->options() as $k => $v) {
             if ($v !== null && $v !== false && isset(Definitions::COLUMNS_MODIFIERS[$k])) {
-                $template .= str_replace('%value', $this->compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
+                $template .= str_replace('%value', Helpers::compileValueForPhp($v), Definitions::COLUMNS_MODIFIERS[$k]);
             }
         }
     }
@@ -46,7 +47,7 @@ class MigrationContent extends Compiler
         }
 
         foreach ($entry->arguments() as $k => $v) {
-            $template = str_replace("%$k", $this->compileValueForPhp($v), $template);
+            $template = str_replace("%$k", Helpers::compileValueForPhp($v), $template);
         }
 
         $this->addModifiers($entry, $template);

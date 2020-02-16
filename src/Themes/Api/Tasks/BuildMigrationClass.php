@@ -6,14 +6,13 @@ namespace Bgaze\Crud\Themes\Api\Tasks;
 
 use Bgaze\Crud\Support\Crud\Crud;
 use Bgaze\Crud\Support\Tasks\Task;
-use Bgaze\Crud\Support\Utils\Files;
+use Bgaze\Crud\Support\Utils\Helpers;
 use Bgaze\Crud\Themes\Api\Compilers\MigrationContent;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
 
 class BuildMigrationClass extends Task
 {
-    use Files;
 
     /**
      * As it contains a timestamp, we store the file name when generated.
@@ -61,26 +60,10 @@ class BuildMigrationClass extends Task
 
 
     /**
-     * Check if something prevents the task to be executed.
+     * Compile CRUD content to migration statements.
      *
-     * @return false|string
-    public function cantBeDone()
-    {
-        if (class_exists($this->crud->MigrationClass)) {
-            return "A '{$this->crud->MigrationClass}' class already exists.";
-        }
-
-        $file = Str::snake($this->crud->MigrationClass);
-        $files = $this->fs->glob(database_path("migrations/*_{$file}.php"));
-        if (count($files) > 0) {
-            return "a 'migrations/[...]_{$file}.php' already exists";
-        }
-
-        return false;
-    }
-*/
-
-
+     * @return string
+     */
     protected function getContent()
     {
         $compiler = new MigrationContent($this->crud);
@@ -102,7 +85,7 @@ class BuildMigrationClass extends Task
         ]);
 
         // Generate migration file.
-        $this->generatePhpFile($this->file(), $stub);
+        Helpers::generatePhpFile($this->file(), $stub);
 
         // Update autoload.
         resolve('Illuminate\Support\Composer')->dumpAutoloads();
