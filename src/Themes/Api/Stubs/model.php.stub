@@ -1,0 +1,16 @@
+<?php
+
+namespace ModelNamespace;
+
+#USES
+
+class ModelStudly extends Model
+{
+    #TRAITS
+
+    #TIMESTAMPS
+    
+    #FILLABLES
+    
+    #DATES
+}
