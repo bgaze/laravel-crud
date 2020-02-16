@@ -5,6 +5,9 @@ namespace Bgaze\Crud\Themes\Api\Tasks;
 
 
 use Bgaze\Crud\Support\Tasks\Task;
+use Bgaze\Crud\Support\Utils\Helpers;
+use Bgaze\Crud\Themes\Api\Compilers\FactoryContent;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class BuildFactoryFile extends Task
 {
@@ -18,21 +21,33 @@ class BuildFactoryFile extends Task
         return database_path('factories/' . $this->crud->getPlural()->implode('/') . 'Factory.php');
     }
 
+    /**
+     * Compile CRUD content to factory statements.
+     *
+     * @return string
+     */
+    protected function getContent()
+    {
+        $compiler = new FactoryContent($this->crud);
+        return $compiler->compile('// TODO');
+    }
+
 
     /**
      * Execute task.
      *
      * @return void
+     * @throws FileNotFoundException
      */
     public function execute()
     {
-        // Generate migration content.
-        //$content = $this->compileAll('factory-content', '// TODO');
+        // Populate migration stub.
+        $stub = $this->populateStub('factory', [
+            '#CONTENT' => $this->getContent()
+        ]);
 
-        // Write factory file.
-        //$stub = $this->stub('factory');
-        //$this->replace($stub, '#CONTENT', $content);
-        //$this->generatePhpFile($this->file(), $stub);
+        // Generate migration file.
+        Helpers::generatePhpFile($this->file(), $stub);
     }
 
 }

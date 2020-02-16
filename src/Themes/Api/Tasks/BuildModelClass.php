@@ -33,6 +33,7 @@ class BuildModelClass extends Task
     {
         // Populate migration stub.
         $stub = $this->populateStub('model', [
+            'ModelNamespace' => Definitions::modelsNamespace(),
             '#USES' => $this->uses(),
             '#TRAITS' => $this->traits(),
             '#TIMESTAMPS' => $this->timestamps(),
