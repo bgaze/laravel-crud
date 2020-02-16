@@ -9,6 +9,7 @@ use Bgaze\Crud\Support\Tasks\Task;
 use Bgaze\Crud\Support\Utils\Helpers;
 use Bgaze\Crud\Themes\Api\Compilers\MigrationContent;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Composer;
 use Illuminate\Support\Str;
 
 class BuildMigrationClass extends Task
@@ -88,7 +89,7 @@ class BuildMigrationClass extends Task
         Helpers::generatePhpFile($this->file(), $stub);
 
         // Update autoload.
-        resolve('Illuminate\Support\Composer')->dumpAutoloads();
+        resolve(Composer::class)->dumpAutoloads();
     }
 
 }

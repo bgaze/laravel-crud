@@ -15,7 +15,7 @@ return [
         'migration' => true,
         'model' => true,
         'factory' => true,
-        'seeds' => true,
+        'seeder' => true,
         'request' => true,
         'resource' => true,
         'controller' => true,

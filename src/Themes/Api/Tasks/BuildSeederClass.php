@@ -5,8 +5,11 @@ namespace Bgaze\Crud\Themes\Api\Tasks;
 
 
 use Bgaze\Crud\Support\Tasks\Task;
+use Bgaze\Crud\Support\Utils\Helpers;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Composer;
 
-class BuildSeedsClass extends Task
+class BuildSeederClass extends Task
 {
 
     /**
@@ -24,14 +27,18 @@ class BuildSeedsClass extends Task
      * Execute task.
      *
      * @return void
+     * @throws FileNotFoundException
      */
     public function execute()
     {
-        // Write migration file.
-        //$this->generatePhpFile($this->file(), $this->stub('seeds'));
+        // Populate migration stub.
+        $stub = $this->populateStub('seeder');
+
+        // Generate migration file.
+        Helpers::generatePhpFile($this->file(), $stub);
 
         // Update autoload.
-        //resolve('Illuminate\Support\Composer')->dumpAutoloads();
+        resolve(Composer::class)->dumpAutoloads();
     }
 
 }
