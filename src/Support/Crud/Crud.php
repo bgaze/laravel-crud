@@ -370,24 +370,31 @@ class Crud
      */
     public function reorderContent()
     {
-        $index = function (Entry $entry) {
+        $order = function (Entry $entry) {
             if ($entry->isIndex()) {
-                return 1;
+                return 4;
             }
 
             if (in_array($entry->name(), ['softDeletes', 'softDeletesTz'])) {
-                return 2;
-            }
-
-            if (in_array($entry->name(), ['timestamps', 'timestampsTz'])) {
                 return 3;
             }
 
-            return 4;
+            if (in_array($entry->name(), ['timestamps', 'timestampsTz'])) {
+                return 2;
+            }
+
+            return 1;
         };
 
-        $this->content->sort(function (Entry $a, Entry $b) use ($index) {
-            return ($index($a) - $index($b));
+        $this->content = $this->content->sort(function (Entry $a, Entry $b) use ($order) {
+            $oa = $order($a);
+            $ob = $order($b);
+
+            if ($oa == $ob) {
+                return 0;
+            }
+
+            return ($oa < $ob) ? -1 : 1;
         });
     }
 
