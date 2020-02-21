@@ -64,6 +64,7 @@ abstract class Command extends BaseCommand
      * Execute the console command.
      *
      * @return void
+     * @throws Exception
      */
     public function handle()
     {
@@ -85,11 +86,8 @@ abstract class Command extends BaseCommand
             $built = $this->build();
 
             $this->end($built);
-        } catch (Exception $e) {
-            $this->nl();
-            $this->line($this->getHelperSet()->get('formatter')->formatBlock($e->getMessage(), 'error', true));
-            $this->nl();
-            exit(1);
+        } catch (Exception $exception) {
+            $this->fail($exception);
         }
     }
 
@@ -185,12 +183,6 @@ abstract class Command extends BaseCommand
     {
         $this->output->getFormatter()->setStyle('h1', new OutputFormatterStyle('white', 'blue'));
         $this->output->getFormatter()->setStyle('h2', new OutputFormatterStyle('blue', null, ['bold']));
-    }
-
-
-    protected function fail(Exception $e)
-    {
-
     }
 
 
@@ -297,5 +289,24 @@ abstract class Command extends BaseCommand
         }
 
         $this->table(['Command', 'Arguments', 'Options'], $rows);
+    }
+
+
+    /**
+     * Display a formatted error message and exit if not in verbose mode.
+     *
+     * @param  Exception  $exception
+     * @throws Exception
+     */
+    public function fail(Exception $exception)
+    {
+        if ($this->option('verbose')) {
+            throw $exception;
+        }
+
+        $this->nl();
+        $this->line($this->getHelperSet()->get('formatter')->formatBlock($exception->getMessage(), 'error', true));
+        $this->nl();
+        exit(1);
     }
 }
