@@ -4,6 +4,7 @@ namespace ModelNamespace;
 
 #USES
 
+#ANNOTATIONS
 class ModelStudly extends Model
 {
     #TRAITS

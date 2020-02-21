@@ -1,5 +1,8 @@
 <?php
-
+/*
+ * TODO
+ * register annotations with https://github.com/barryvdh/laravel-ide-helper#automatic-phpdocs-for-models
+ */
 
 namespace Bgaze\Crud\Themes\Api\Tasks;
 
@@ -8,6 +11,7 @@ use Bgaze\Crud\Support\Crud\Entry;
 use Bgaze\Crud\Support\Definitions;
 use Bgaze\Crud\Support\Tasks\Task;
 use Bgaze\Crud\Support\Utils\Helpers;
+use Bgaze\Crud\Themes\Api\Compilers\ModelAnnotations;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class BuildModelClass extends Task
@@ -34,6 +38,7 @@ class BuildModelClass extends Task
         // Populate migration stub.
         $stub = $this->populateStub('model', [
             '#USES' => $this->uses(),
+            '#ANNOTATIONS' => $this->annotations(),
             '#TRAITS' => $this->traits(),
             '#TIMESTAMPS' => $this->timestamps(),
             '#FILLABLES' => $this->fillables(),
@@ -65,6 +70,16 @@ class BuildModelClass extends Task
         return $uses->filter()->unique()->sort()->implode("\n");
     }
 
+    /**
+     * Compile CRUD content to migration statements.
+     *
+     * @return string
+     */
+    protected function annotations()
+    {
+        $compiler = new ModelAnnotations($this->crud);
+        return $compiler->compile('* TODO');
+    }
 
     /**
      * Compile CRUD timestamps.
