@@ -1,0 +1,83 @@
+<?php
+
+namespace ControllerNamespace;
+
+use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
+use ModelClass;
+use RequestNamespace\RequestClass;
+use ResourceNamespace\ResourceClass;
+
+class ControllerClass extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return AnonymousResourceCollection
+     */
+    public function index()
+    {
+        $PluralCamel = ModelStudly::paginate(20);
+
+        return ResourceClass::collection($PluralCamel);
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  RequestClass  $request
+     * @return JsonResponse
+     */
+    public function store(RequestClass $request)
+    {
+        $ModelCamel = ModelStudly::create($request->all());
+
+        return (new ResourceClass($ModelCamel))->response()->setStatusCode(202);
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  ModelStudly  $ModelCamel
+     * @return ResourceClass
+     */
+    public function show(ModelStudly $ModelCamel)
+    {
+        return new ResourceClass($ModelCamel);
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  RequestClass  $request
+     * @param  ModelStudly  $ModelCamel
+     * @return ResourceClass
+     */
+    public function update(RequestClass $request, ModelStudly $ModelCamel)
+    {
+        $ModelCamel->fill($request->all());
+
+        $ModelCamel->save();
+
+        return new ResourceClass($ModelCamel);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  ModelStudly  $ModelCamel
+     * @return Response
+     * @throws Exception
+     */
+    public function destroy(ModelStudly $ModelCamel)
+    {
+        $ModelCamel->delete();
+        return response('', 204);
+    }
+}

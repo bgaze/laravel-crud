@@ -5,6 +5,8 @@ namespace Bgaze\Crud\Themes\Api\Tasks;
 
 
 use Bgaze\Crud\Support\Tasks\Task;
+use Bgaze\Crud\Support\Utils\Helpers;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class BuildControllerClass extends Task
 {
@@ -23,9 +25,14 @@ class BuildControllerClass extends Task
      * Execute task.
      *
      * @return void
+     * @throws FileNotFoundException
      */
     public function execute()
     {
-        //$this->generatePhpFile($this->file(), $this->stub('controller'));
+        // Populate stub.
+        $stub = $this->populateStub('controller');
+
+        // Generate file.
+        Helpers::generatePhpFile($this->file(), $stub);
     }
 }
