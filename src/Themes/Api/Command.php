@@ -147,8 +147,12 @@ class Command extends BaseCommand
         $plurals = $this->crud->getPlurals()->implode('');
         $model = $this->crud->getModel()->last();
 
+        $modelNamespace = $this->crud->getModel()->toBase();
+        $modelNamespace->pop();
+        $modelNamespace = trim(Definitions::modelsNamespace() . '\\' . $modelNamespace->implode('\\'), '\\');
+
         $this->crud->addVariables([
-            'ModelNamespace' => Definitions::modelsNamespace(),
+            'ModelNamespace' => $modelNamespace,
             'MigrationClass' => 'Create' . $plurals . 'Table',
             'TableName' => Str::snake($plurals),
             'RequestClass' => $model . 'FormRequest',
