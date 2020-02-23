@@ -88,14 +88,6 @@ class Composer
         $model = collect(explode('\\', $model));
 
         $this->crud->setModel($model);
-
-        $this->crud->addVariables([
-            'ModelClass' => $model->toBase()->prepend(Definitions::modelsNamespace())->implode('\\'),
-            'ModelFullName' => $model->implode('\\'),
-            'ModelFullStudly' => $model->implode(''),
-            'ModelStudly' => $model->last(),
-            'ModelCamel' => Str::camel($model->last()),
-        ]);
     }
 
 
@@ -137,43 +129,9 @@ class Composer
 
         $this->crud->setPlurals($plurals);
 
-        $pluralsKebab = $plurals->map(function ($v) {
-            return Str::kebab($v);
-        });
-
-        $this->crud->addVariables([
-            'PluralsFullName' => $plurals->implode('\\'),
-            'PluralsFullStudly' => $plurals->implode(''),
-            'PluralsKebabDot' => $pluralsKebab->implode('.'),
-            'PluralsKebabSlash' => $pluralsKebab->implode('/'),
-        ]);
-
         if (!$ask) {
             $this->command->dl('Plurals', $this->crud->getPlurals()->implode('\\'));
         }
-    }
-
-
-    /**
-     * Ask and validate plurals versions of Model's name and parents.
-     * Compute and set default value if empty.
-     *
-     * @return void
-     */
-    public function setPlural()
-    {
-        $plural = $this->crud->getModel()->toBase();
-        $plural->pop();
-        $plural->push($this->crud->getPlurals()->last());
-
-        $this->crud->setPlural($plural);
-
-        $this->crud->addVariables([
-            'PluralFullName' => $plural->implode('\\'),
-            'PluralFullStudly' => $plural->implode(''),
-            'PluralStudly' => Str::studly($plural->last()),
-            'PluralCamel' => Str::camel($plural->last()),
-        ]);
     }
 
 
@@ -208,7 +166,7 @@ class Composer
             }
 
             $choices = $tasks
-                ->map(function ($task) {
+                ->map(function (Task $task) {
                     return $task::title();
                 })
                 ->prepend('All available tasks', '*');

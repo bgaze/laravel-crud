@@ -69,13 +69,13 @@ abstract class Command extends BaseCommand
     public function handle()
     {
         try {
-            $this->crud = new Crud($this);
-
             $this->setCustomStyles();
 
             $this->h1("Welcome to CRUD generator");
 
             $this->h2('Configuration');
+
+            $this->setCrud();
 
             $this->compose();
 
@@ -171,6 +171,18 @@ abstract class Command extends BaseCommand
     public function getCrud()
     {
         return $this->crud;
+    }
+
+
+    /**
+     * Set the CRUD instance.
+     *
+     * @return self
+     */
+    public function setCrud()
+    {
+        $this->crud = new Crud($this);
+        return $this;
     }
 
 

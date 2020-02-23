@@ -15,7 +15,6 @@ class Crud
      */
     private $command;
 
-
     /**
      * The Model parents and name.
      * Example : ['MyGrandParent', 'MyParent', 'MyModel']
@@ -148,21 +147,6 @@ class Crud
 
 
     /**
-     * Set the Model's parents and the plural version of its name.
-     *
-     * @param  Collection  $plural
-     *
-     * @return  self
-     */
-    public function setPlural(Collection $plural)
-    {
-        $this->plural = $plural;
-
-        return $this;
-    }
-
-
-    /**
      * Get the plural version of Model's parents and name.
      *
      * @return  Collection
@@ -184,7 +168,27 @@ class Crud
     {
         $this->plurals = $plurals;
 
+        $this->plural = $this->getParents();
+        $this->plural->push($this->plurals->last());
+
         return $this;
+    }
+
+
+    /**
+     * Get the plural version of Model's parents.
+     *
+     * @param  bool  $plurals  Get the plural version of parents
+     *
+     * @return  Collection
+     */
+    public function getParents($plurals = false)
+    {
+        $parents = $plurals ? $this->plurals->toBase() : $this->model->toBase();
+
+        $parents->pop();
+
+        return $parents;
     }
 
 
@@ -400,6 +404,31 @@ class Crud
 
 
     /**
+     * @return Collection
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+
+    /**
+     * Instantiate CRUD tasks
+     *
+     * @param  Collection  $tasks
+     * @return self
+     */
+    public function setTasks(Collection $tasks)
+    {
+        $this->tasks = $tasks->map(function ($class) {
+            return new $class($this);
+        });
+
+        return $this;
+    }
+
+
+    /**
      * Get the list of available variables
      *
      * @return  array
@@ -439,18 +468,6 @@ class Crud
 
 
     /**
-     * Get a CRUD variable.
-     *
-     * @param $name
-     * @return  string
-     */
-    public function __get($name)
-    {
-        return $this->getVariable($name);
-    }
-
-
-    /**
      * Add a CRUD variable.
      *
      * @param $key
@@ -468,28 +485,14 @@ class Crud
 
 
     /**
-     * @return Collection
-     */
-    public function getTasks()
-    {
-        return $this->tasks;
-    }
-
-
-    /**
-     * Instantiate CRUD tasks
+     * Get a CRUD variable.
      *
-     * @param  Collection  $tasks
-     * @return self
+     * @param $name
+     * @return  string
      */
-    public function setTasks(Collection $tasks)
+    public function __get($name)
     {
-        $this->tasks = $tasks->map(function ($class) {
-            return new $class($this);
-        });
-
-        return $this;
+        return $this->getVariable($name);
     }
-
 
 }
