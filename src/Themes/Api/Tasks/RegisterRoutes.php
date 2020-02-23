@@ -4,10 +4,44 @@
 namespace Bgaze\Crud\Themes\Api\Tasks;
 
 
+use Bgaze\Crud\Support\Crud\Crud;
 use Bgaze\Crud\Support\Tasks\Task;
+use Bgaze\Crud\Support\Utils\Helpers;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class RegisterRoutes extends Task
 {
+
+    /**
+     * Whether the routes are already registered.
+     *
+     * @var bool
+     */
+    protected $registered;
+
+
+    /**
+     * Task constructor.
+     *
+     * @param  Crud  $crud
+     * @throws FileNotFoundException
+     */
+    public function __construct(Crud $crud)
+    {
+        parent::__construct($crud);
+        $this->registered = $this->alreadyRegistered();
+    }
+
+
+    /**
+     * Check if routes are already registered.
+     * @return bool
+     * @throws FileNotFoundException
+     */
+    protected function alreadyRegistered()
+    {
+        return (strpos($this->fs->get($this->file()), $this->crud->ControllerFullName) !== false);
+    }
 
 
     /**
@@ -28,8 +62,12 @@ class RegisterRoutes extends Task
      */
     public function cantBeDone()
     {
-        if (!$this->fs->exists($this->file())) {
-            return sprintf('route file \'%s\' doesnt exists.', $this->relativePath($this->file()));
+        if (!$this->file_exists) {
+            return sprintf('route file \'%s\' doesnt exists.', Helpers::relativePath($this->file()));
+        }
+
+        if ($this->registered) {
+            return sprintf('some routes are alreay registered for \'%s\' controller.', $this->crud->ControllerFullName);
         }
 
         return false;
@@ -43,7 +81,16 @@ class RegisterRoutes extends Task
      */
     public function summarize()
     {
-        $path = $this->relativePath($this->file());
+        $path = Helpers::relativePath($this->file());
+
+        if (!$this->file_exists) {
+            return "<fg=red>Create:</> {$path}";
+        }
+
+        if ($this->registered) {
+            return "<fg=red>Register routes into:</> {$path}";
+        }
+
         return "<info>Register routes into:</info> {$path}";
     }
 
@@ -52,10 +99,21 @@ class RegisterRoutes extends Task
      * Execute task.
      *
      * @return void
+     * @throws FileNotFoundException
      */
     public function execute()
     {
-        // TODO: Implement execute() method.
+        // Populate stub.
+        $expand = config('crud-api.expand-routes', false);
+        $stub = $this->populateStub($expand ? 'routes-expanded' : 'routes-compact');
+
+        // Create file if needed.
+        if (!$this->file_exists) {
+            $this->fs->put($this->file(), "<?php");
+        }
+
+        // Register routes.
+        $this->fs->append($this->file(), "\n\n" . $stub);
     }
 
 
@@ -66,7 +124,16 @@ class RegisterRoutes extends Task
      */
     public function done()
     {
-        $path = $this->relativePath($this->file());
+        $path = Helpers::relativePath($this->file());
+
+        if (!$this->file_exists) {
+            return " <fg=red>Created:</> {$path}";
+        }
+
+        if ($this->registered) {
+            return " <fg=red>Registered routes into:</> {$path}";
+        }
+
         return " <info>Registered routes into:</info> {$path}";
     }
 

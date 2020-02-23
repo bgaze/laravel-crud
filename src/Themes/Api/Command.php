@@ -54,7 +54,8 @@ class Command extends BaseCommand
             'request' => __DIR__ . '/Stubs/request.php.stub',
             'resource' => __DIR__ . '/Stubs/resource.php.stub',
             'controller' => __DIR__ . '/Stubs/controller.php.stub',
-            'routes' => __DIR__ . '/Stubs/routes.php.stub',
+            'routes-compact' => __DIR__ . '/Stubs/routes-compact.php.stub',
+            'routes-expanded' => __DIR__ . '/Stubs/routes-expanded.php.stub',
         ];
     }
 

@@ -22,4 +22,28 @@ return [
         'routes' => true,
     ],
 
+    /*
+    |---------------------------------------------------------------------------
+    | Expand routes
+    |---------------------------------------------------------------------------
+    |
+    | Use expanded syntax instead of resource syntax when registering routes.
+    |
+    | Resource syntax example:
+    |
+    |   Route::apiResource('articles', 'ArticleController', ['as' => 'api']);
+    |
+    | Expanded syntax example:
+    |
+    |   Route::prefix('/articles')->group(function () {
+    |       Route::get('/', 'ArticleController@index')->name('api.articles.index');
+    |       Route::post('/', 'ArticleController@store')->name('api.articles.store');
+    |       Route::get('/{article}', 'ArticleController@show')->name('api.articles.show');
+    |       Route::put('/{article}', 'ArticleController@update')->name('api.articles.update');
+    |       Route::delete('/{article}', 'ArticleController@destroy')->name('api.articles.destroy');
+    |   });
+    |
+    */
+    'expand-routes' => false,
+
 ];
