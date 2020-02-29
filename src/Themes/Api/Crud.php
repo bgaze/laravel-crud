@@ -34,6 +34,7 @@ use Illuminate\Support\Str;
  * @property string $MigrationClass  Example: Create["MyGrandParents","MyParents","MyModels"]Table
  * @property string $ControllerNamespace  Example: App\Http\Controllers\MyGrandParent\MyParent
  * @property string $ControllerClass  Example: MyModelController
+ * @property string $RoutesAlias  Example: api.my-grand-parents.my-parents
  */
 class Crud extends BaseCrud
 {
@@ -43,7 +44,7 @@ class Crud extends BaseCrud
      *
      * @param  Collection  $model
      *
-     * @return  Crud
+     * @return  $this
      */
     public function setModel(Collection $model)
     {
@@ -76,7 +77,7 @@ class Crud extends BaseCrud
      *
      * @param  Collection  $plurals
      *
-     * @return  Crud
+     * @return  $this
      */
     public function setPlurals(Collection $plurals)
     {
@@ -102,6 +103,7 @@ class Crud extends BaseCrud
             'PluralsParentsKebabDot' => $parentsKebab->implode('.'),
             'TableName' => Str::snake($this->plural->implode('')),
             'MigrationClass' => 'Create' . $this->plural->implode('') . 'Table',
+            'RoutesAlias' => trim('api.' . $parentsKebab->implode('.'), '.'),
         ]);
 
         return $this;

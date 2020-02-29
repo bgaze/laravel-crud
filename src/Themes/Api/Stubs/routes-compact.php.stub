@@ -1,2 +1,2 @@
 // Routes for ModelFullNameController
-Route::apiResource('PluralsKebabSlash', 'ModelFullNameController', ['as' => '#ALIAS']);
+Route::apiResource('PluralsKebabSlash', 'ModelFullNameController'#OPTIONS);

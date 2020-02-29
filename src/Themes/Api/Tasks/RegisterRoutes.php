@@ -105,11 +105,11 @@ class RegisterRoutes extends Task
     public function execute()
     {
         // Populate stub.
-        if (config('crud-api.expand-routes', false)) {
+        if ($this->crud->getCommand()->config('expand-routes', false)) {
             $stub = $this->populateStub('routes-expanded');
         } else {
             $stub = $this->populateStub('routes-compact', [
-                '#ALIAS' => trim('api.' . $this->crud->PluralsParentsKebabDot, '.')
+                '#OPTIONS' => $this->crud->RoutesAlias ? ", ['as' => '{$this->crud->RoutesAlias}']" : ''
             ]);
         }
 
