@@ -19,4 +19,4 @@
         @yield('javascripts')
     </body>
 </html>
-@endsection
+@show
