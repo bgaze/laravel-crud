@@ -4,9 +4,9 @@
 namespace Bgaze\Crud\Themes\Api\Tasks;
 
 
-use Bgaze\Crud\Support\Crud\Crud;
 use Bgaze\Crud\Support\Tasks\Task;
 use Bgaze\Crud\Support\Utils\Helpers;
+use Bgaze\Crud\Themes\Api\Crud;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class RegisterRoutes extends Task
@@ -40,7 +40,7 @@ class RegisterRoutes extends Task
      */
     protected function alreadyRegistered()
     {
-        return (strpos($this->fs->get($this->file()), $this->crud->ControllerFullName) !== false);
+        return (strpos($this->fs->get($this->file()), $this->crud->ModelFullName . 'Controller') !== false);
     }
 
 
@@ -67,7 +67,7 @@ class RegisterRoutes extends Task
         }
 
         if ($this->registered) {
-            return sprintf('some routes are alreay registered for \'%s\' controller.', $this->crud->ControllerFullName);
+            return sprintf('some routes are already registered for \'%sController\'.', $this->crud->ModelFullName);
         }
 
         return false;
@@ -104,8 +104,13 @@ class RegisterRoutes extends Task
     public function execute()
     {
         // Populate stub.
-        $expand = config('crud-api.expand-routes', false);
-        $stub = $this->populateStub($expand ? 'routes-expanded' : 'routes-compact');
+        if (config('crud-api.expand-routes', false)) {
+            $stub = $this->populateStub('routes-expanded');
+        } else {
+            $stub = $this->populateStub('routes-compact', [
+                '#ALIAS' => trim('api.' . $this->crud->PluralsParentsKebabDot, '.')
+            ]);
+        }
 
         // Create file if needed.
         if (!$this->file_exists) {

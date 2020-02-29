@@ -35,12 +35,12 @@ return [
     |
     | Expanded syntax example:
     |
-    |   Route::prefix('/articles')->group(function () {
-    |       Route::get('/', 'ArticleController@index')->name('api.articles.index');
-    |       Route::post('/', 'ArticleController@store')->name('api.articles.store');
-    |       Route::get('/{article}', 'ArticleController@show')->name('api.articles.show');
-    |       Route::put('/{article}', 'ArticleController@update')->name('api.articles.update');
-    |       Route::delete('/{article}', 'ArticleController@destroy')->name('api.articles.destroy');
+    |   Route::prefix('/articles')->name('api.')->group(function () {
+    |       Route::get('/', 'ArticleController@index')->name('index');
+    |       Route::post('/', 'ArticleController@store')->name('store');
+    |       Route::get('/{article}', 'ArticleController@show')->name('show');
+    |       Route::put('/{article}', 'ArticleController@update')->name('update');
+    |       Route::delete('/{article}', 'ArticleController@destroy')->name('destroy');
     |   });
     |
     */

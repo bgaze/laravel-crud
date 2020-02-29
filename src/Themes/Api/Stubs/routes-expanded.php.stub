@@ -1,8 +1,8 @@
-// Routes for ControllerFullName
-Route::prefix('/PluralsKebabSlash')->group(function () {
-    Route::get('/', 'ControllerFullName@index')->name('api.PluralsKebabDot.index');
-    Route::post('/', 'ControllerFullName@store')->name('api.PluralsKebabDot.store');
-    Route::get('/{ModelCamel}', 'ControllerFullName@show')->name('api.PluralsKebabDot.show');
-    Route::put('/{ModelCamel}', 'ControllerFullName@update')->name('api.PluralsKebabDot.update');
-    Route::delete('/{ModelCamel}', 'ControllerFullName@destroy')->name('api.PluralsKebabDot.destroy');
+// Routes for ModelFullNameController
+Route::prefix('/PluralsKebabSlash')->name('api.PluralsKebabDot.')->group(function () {
+    Route::get('/', 'ModelFullNameController@index')->name('index');
+    Route::post('/', 'ModelFullNameController@store')->name('store');
+    Route::get('/{ModelSnake}', 'ModelFullNameController@show')->name('show');
+    Route::put('/{ModelSnake}', 'ModelFullNameController@update')->name('update');
+    Route::delete('/{ModelSnake}', 'ModelFullNameController@destroy')->name('destroy');
 });

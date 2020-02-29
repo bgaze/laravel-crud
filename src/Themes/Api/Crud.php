@@ -58,6 +58,7 @@ class Crud extends BaseCrud
             'ModelFullStudly' => $this->model->implode(''),
             'ModelStudly' => $this->model->last(),
             'ModelCamel' => Str::camel($this->model->last()),
+            'ModelSnake' => Str::snake($this->model->last()),
             'RequestClass' => $this->model->last() . 'FormRequest',
             'RequestNamespace' => sprintf($httpNamespace, 'Requests'),
             'ResourceClass' => $this->model->last() . 'Resource',
