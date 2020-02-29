@@ -26,6 +26,25 @@ class Helpers
      * Get the content of a stub file and populate it with CRUD variables.
      *
      * @param  Crud  $crud
+     * @param  string  $string  The string to populate
+     * @param  array  $variables  A set of variables to extend CRUD variables
+     * @return string       The content of stub file
+     * @throws Exception
+     */
+    public static function populateString(Crud $crud, $string, array $variables = [])
+    {
+        // Prepare variables list.
+        $variables = array_merge($crud->getVariables(), $variables);
+
+        // Return populated stub.
+        return str_replace(array_keys($variables), array_values($variables), $string);
+    }
+
+
+    /**
+     * Get the content of a stub file and populate it with CRUD variables.
+     *
+     * @param  Crud  $crud
      * @param  string  $name  The name of the stub
      * @param  array  $variables  A set of variables to extend CRUD variables
      * @return string       The content of stub file
@@ -39,12 +58,11 @@ class Helpers
             throw new Exception("Undefined stub '{$name}'.");
         }
 
-        // Get stub content & prepare variables list.
+        // Get stub content.
         $stub = file_get_contents($stubs[$name]);
-        $variables = array_merge($crud->getVariables(), $variables);
 
         // Return populated stub.
-        return str_replace(array_keys($variables), array_values($variables), $stub);
+        return self::populateString($crud, $stub, $variables);
     }
 
 
