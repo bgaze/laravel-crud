@@ -159,7 +159,8 @@ abstract class Command extends BaseCommand
     public function config($key, $default)
     {
         $namespace = str_replace(':', '-', $this->name);
-        return config("{$namespace}.{$key}", $default);
+        $value = config("{$namespace}.{$key}");
+        return ($value === null) ? $default : $value;
     }
 
 

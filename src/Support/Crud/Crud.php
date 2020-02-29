@@ -125,7 +125,7 @@ class Crud
      *
      * @param  Collection  $model
      *
-     * @return  self
+     * @return  $this
      */
     public function setModel(Collection $model)
     {
@@ -162,7 +162,7 @@ class Crud
      *
      * @param  Collection  $plurals
      *
-     * @return  self
+     * @return  $this
      */
     public function setPlurals(Collection $plurals)
     {
@@ -208,7 +208,7 @@ class Crud
      *
      * @param  boolean|string  $layout  The layout to extend in generated views.
      *
-     * @return  self
+     * @return  $this
      */
     public function setLayout($layout)
     {
@@ -234,7 +234,7 @@ class Crud
      *
      * @param  boolean|string  $timestamps  The timestamps to use.
      *
-     * @return  self
+     * @return  $this
      */
     public function setTimestamps($timestamps)
     {
@@ -260,7 +260,7 @@ class Crud
      *
      * @param  boolean|string  $softDeletes  The soft deletes to use.
      *
-     * @return  self
+     * @return  $this
      */
     public function setSoftDeletes($softDeletes)
     {
@@ -292,7 +292,7 @@ class Crud
      * Add an Entry to CRUD content.
      *
      * @param  Entry  $entry
-     * @return  self
+     * @return  $this
      * @throws Exception
      */
     public function addContent(Entry $entry)
@@ -443,7 +443,7 @@ class Crud
      * Set the CRUD variables.
      *
      * @param  array  $variables
-     * @return  self
+     * @return  $this
      */
     public function addVariables(array $variables)
     {
@@ -472,7 +472,7 @@ class Crud
      *
      * @param $key
      * @param $value
-     * @return  self
+     * @return  $this
      */
     public function addVariable($key, $value)
     {
