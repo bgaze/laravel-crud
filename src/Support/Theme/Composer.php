@@ -166,8 +166,8 @@ class Composer
             }
 
             $choices = $tasks
-                ->map(function (Task $task) {
-                    return $task::title();
+                ->map(function ($task) {
+                    return call_user_func("{$task}::title");
                 })
                 ->prepend('All available tasks', '*');
 
@@ -206,22 +206,22 @@ class Composer
         $message = ($errors->count() === 1) ? $errors->first() : "\n - " . $errors->implode("\n - ");
 
         if ($this->noInteractions) {
-            if(!$this->force){
+            if (!$this->force) {
                 throw new Exception("Cannot generate this CRUD: " . $message);
             }
 
             return;
         }
 
-        if($this->noInteractions){
-            if (!$this->force ) {
+        if ($this->noInteractions) {
+            if (!$this->force) {
                 throw new Exception("Cannot generate this CRUD: " . $errors->first());
             }
             return;
         }
 
         $this->command->line(" <fg=red>Warning:</> {$message}\n");
-        if (!$this->force  && !$this->command->confirm('Continue?', false)) {
+        if (!$this->force && !$this->command->confirm('Continue?', false)) {
             $this->command->error('CRUD generation aborted.');
             $this->command->nl();
             exit(1);
