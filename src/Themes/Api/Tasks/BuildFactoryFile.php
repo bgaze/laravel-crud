@@ -7,7 +7,7 @@ namespace Bgaze\Crud\Themes\Api\Tasks;
 use Bgaze\Crud\Support\Tasks\Task;
 use Bgaze\Crud\Support\Utils\Helpers;
 use Bgaze\Crud\Themes\Api\Compilers\FactoryContent;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Exception;
 
 class BuildFactoryFile extends Task
 {
@@ -37,7 +37,7 @@ class BuildFactoryFile extends Task
      * Execute task.
      *
      * @return void
-     * @throws FileNotFoundException
+     * @throws Exception
      */
     public function execute()
     {

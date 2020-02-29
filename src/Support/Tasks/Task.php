@@ -5,10 +5,9 @@ namespace Bgaze\Crud\Support\Tasks;
 
 
 use Bgaze\Crud\Support\Crud\Crud;
-use Exception;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
 use Bgaze\Crud\Support\Utils\Helpers;
+use Exception;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionException;
@@ -133,23 +132,11 @@ abstract class Task
      * @param  string  $name  The name of the stub
      * @param  array  $variables  A set of variables to extend CRUD variables
      * @return string       The content of stub file
-     * @throws FileNotFoundException
      * @throws Exception
      */
     public function populateStub($name, array $variables = [])
     {
-        // Check that stub exists.
-        $stubs = $this->crud->getCommand()->stubs();
-        if (!isset($stubs[$name])) {
-            throw new Exception("Undefined stub '{$name}'.");
-        }
-
-        // Get stub content & prepare variables list.
-        $stub = $this->fs->get($stubs[$name]);
-        $variables = array_merge($this->crud->getVariables(), $variables);
-
-        // Return populated stub.
-        return str_replace(array_keys($variables), array_values($variables), $stub);
+        return Helpers::populateStub($this->crud, $name, $variables);
     }
 
 }

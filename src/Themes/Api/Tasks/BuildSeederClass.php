@@ -6,7 +6,7 @@ namespace Bgaze\Crud\Themes\Api\Tasks;
 
 use Bgaze\Crud\Support\Tasks\Task;
 use Bgaze\Crud\Support\Utils\Helpers;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Exception;
 use Illuminate\Support\Composer;
 
 class BuildSeederClass extends Task
@@ -27,7 +27,7 @@ class BuildSeederClass extends Task
      * Execute task.
      *
      * @return void
-     * @throws FileNotFoundException
+     * @throws Exception
      */
     public function execute()
     {

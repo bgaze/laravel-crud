@@ -4,6 +4,8 @@
 namespace Bgaze\Crud\Support\Utils;
 
 
+use Bgaze\Crud\Support\Crud\Crud;
+use Exception;
 use Illuminate\Filesystem\Filesystem;
 
 class Helpers
@@ -17,6 +19,32 @@ class Helpers
     public static function relativePath($path)
     {
         return str_replace(base_path() . '/', '', $path);
+    }
+
+
+    /**
+     * Get the content of a stub file and populate it with CRUD variables.
+     *
+     * @param  Crud  $crud
+     * @param  string  $name  The name of the stub
+     * @param  array  $variables  A set of variables to extend CRUD variables
+     * @return string       The content of stub file
+     * @throws Exception
+     */
+    public static function populateStub(Crud $crud, $name, array $variables = [])
+    {
+        // Check that stub exists.
+        $stubs = $crud->getCommand()->stubs();
+        if (!isset($stubs[$name])) {
+            throw new Exception("Undefined stub '{$name}'.");
+        }
+
+        // Get stub content & prepare variables list.
+        $stub = file_get_contents($stubs[$name]);
+        $variables = array_merge($crud->getVariables(), $variables);
+
+        // Return populated stub.
+        return str_replace(array_keys($variables), array_values($variables), $stub);
     }
 
 

@@ -1,8 +1,4 @@
 <?php
-/*
- * TODO
- * register annotations with https://github.com/barryvdh/laravel-ide-helper#automatic-phpdocs-for-models
- */
 
 namespace Bgaze\Crud\Themes\Api\Tasks;
 
@@ -12,7 +8,7 @@ use Bgaze\Crud\Support\Definitions;
 use Bgaze\Crud\Support\Tasks\Task;
 use Bgaze\Crud\Support\Utils\Helpers;
 use Bgaze\Crud\Themes\Api\Compilers\ModelAnnotations;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Exception;
 
 class BuildModelClass extends Task
 {
@@ -31,7 +27,7 @@ class BuildModelClass extends Task
      * Execute task.
      *
      * @return void
-     * @throws FileNotFoundException
+     * @throws Exception
      */
     public function execute()
     {
@@ -70,6 +66,7 @@ class BuildModelClass extends Task
         return $uses->filter()->unique()->sort()->implode("\n");
     }
 
+
     /**
      * Compile CRUD content to migration statements.
      *
@@ -80,6 +77,7 @@ class BuildModelClass extends Task
         $compiler = new ModelAnnotations($this->crud);
         return $compiler->compile('* TODO');
     }
+
 
     /**
      * Compile CRUD timestamps.

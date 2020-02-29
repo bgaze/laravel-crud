@@ -8,7 +8,7 @@ use Bgaze\Crud\Support\Crud\Crud;
 use Bgaze\Crud\Support\Tasks\Task;
 use Bgaze\Crud\Support\Utils\Helpers;
 use Bgaze\Crud\Themes\Api\Compilers\MigrationContent;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Exception;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Str;
 
@@ -72,7 +72,7 @@ class BuildMigrationClass extends Task
      * Execute task.
      *
      * @return void
-     * @throws FileNotFoundException
+     * @throws Exception
      */
     public function execute()
     {
