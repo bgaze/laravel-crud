@@ -1,0 +1,40 @@
+@extends('ViewsLayout')
+
+@section('title', 'PluralFullName')
+
+@section('content')
+    @if(session('success'))
+        <p>{{ session('success') }}</p>
+    @endif
+
+    <h1>PluralFullName</h1>
+
+    <p><a href="{{ route('PluralsKebabDot.create') }}">Create a new ModelFullName</a></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                #THEAD
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($PluralCamel as $ModelCamel)
+                <tr>
+                    <td>{{ $ModelCamel->id }}</td>
+                    #TBODY
+                    <td>
+                        <a href="{{ route('PluralsKebabDot.show', ['ModelCamel' => $ModelCamel->id]) }}">Show</a>
+                        <a href="{{ route('PluralsKebabDot.edit', ['ModelCamel' => $ModelCamel->id]) }}">Edit</a>
+                        {!! Form::model($ModelCamel, ['route' => ['PluralsKebabDot.destroy', $ModelCamel->id], 'method' => 'delete', 'onsubmit' => 'return confirm(\'Do you really want to delete ModelFullName #' . $ModelCamel->id . '?\');']) !!}
+                        {!! Form::submit('Delete') !!}
+                        {!! Form::close() !!}
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{ $PluralCamel->links() }}
+@endsection
