@@ -1,0 +1,2 @@
+// Routes for ModelFullNameController
+Route::resource('PluralsKebabSlash', 'ModelFullNameController'#OPTIONS);
