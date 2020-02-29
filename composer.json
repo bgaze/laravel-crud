@@ -1,9 +1,9 @@
 {
     "name": "bgaze/laravel-crud",
-    "description": "A CRUD generator for Laravel 5.5+",
+    "description": "A CRUD generator for Laravel 5.8+",
     "require": {
-        "laravel/framework": ">=6.0",
-        "laravelcollective/html": ">=6.0",
+        "laravel/framework": ">=5.8",
+        "laravelcollective/html": ">=5.8",
         "bgaze/laravel-php-cs-fixer": "~2"
     },
     "license": "MIT",
