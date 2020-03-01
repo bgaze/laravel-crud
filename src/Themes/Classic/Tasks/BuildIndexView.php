@@ -37,7 +37,7 @@ class BuildIndexView extends Task
         ]);
 
         // Generate migration file.
-        Helpers::generatePhpFile($this->file(), $stub);
+        Helpers::generateBladeFile($this->file(), $stub);
     }
 
 

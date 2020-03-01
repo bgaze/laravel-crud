@@ -118,6 +118,23 @@ class Helpers
 
 
     /**
+     * Generate a formatted Blade template file using a stub.
+     *
+     * @param  string  $path  The path of the file relative to base_path()
+     * @param  string  $content  The content of the file
+     * @return string           The relative path of the file
+     */
+    public static function generateBladeFile($path, $content)
+    {
+        // Format Blade markup.
+        $content = resolve(BladeFormatter::class)->indent($content);
+
+        // Generate file.
+        return self::generateFile($path, $content);
+    }
+
+
+    /**
      * Prepare value for PHP generation depending on it's type.
      *
      * @param  mixed  $value

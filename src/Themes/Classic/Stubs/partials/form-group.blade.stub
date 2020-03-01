@@ -1,7 +1,7 @@
-    <div id="EntryName-group">
-        {!! Form::label('EntryName', 'EntryLabel') !!}
-        #FIELD
-        @error('EntryName')
-            <p>{{ $message }}</p>
-        @enderror
-    </div>
+<div id="EntryName-group">
+    {!! Form::label('EntryName', 'EntryLabel') !!}
+    #FIELD
+    @error('EntryName')
+    <p>{{ $message }}</p>
+    @enderror
+</div>
