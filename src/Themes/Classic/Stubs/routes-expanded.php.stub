@@ -3,8 +3,8 @@ Route::prefix('/PluralsKebabSlash')->name('PluralsKebabDot.')->group(function ()
     Route::get('/', 'ModelFullNameController@index')->name('index');
     Route::get('/create', 'ModelFullNameController@create')->name('create');
     Route::post('/', 'ModelFullNameController@store')->name('store');
-    Route::get('/{ModelSnake}', 'ModelFullNameController@show')->name('show');
-    Route::get('/{ModelSnake}/edit', 'ModelFullNameController@edit')->name('edit');
-    Route::put('/{ModelSnake}', 'ModelFullNameController@update')->name('update');
-    Route::delete('/{ModelSnake}', 'ModelFullNameController@destroy')->name('destroy');
+    Route::get('/{ModelSnake}', 'ModelFullNameController@show')->where(['ModelSnake' => '\d+'])->name('show');
+    Route::get('/{ModelSnake}/edit', 'ModelFullNameController@edit')->where(['ModelSnake' => '\d+'])->name('edit');
+    Route::put('/{ModelSnake}', 'ModelFullNameController@update')->where(['ModelSnake' => '\d+'])->name('update');
+    Route::delete('/{ModelSnake}', 'ModelFullNameController@destroy')->where(['ModelSnake' => '\d+'])->name('destroy');
 });

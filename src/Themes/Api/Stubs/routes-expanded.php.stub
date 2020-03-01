@@ -2,7 +2,7 @@
 Route::prefix('/PluralsKebabSlash')->name('api.PluralsKebabDot.')->group(function () {
     Route::get('/', 'ModelFullNameController@index')->name('index');
     Route::post('/', 'ModelFullNameController@store')->name('store');
-    Route::get('/{ModelSnake}', 'ModelFullNameController@show')->name('show');
-    Route::put('/{ModelSnake}', 'ModelFullNameController@update')->name('update');
-    Route::delete('/{ModelSnake}', 'ModelFullNameController@destroy')->name('destroy');
+    Route::get('/{ModelSnake}', 'ModelFullNameController@show')->where(['ModelSnake' => '\d+'])->name('show');
+    Route::put('/{ModelSnake}', 'ModelFullNameController@update')->where(['ModelSnake' => '\d+'])->name('update');
+    Route::delete('/{ModelSnake}', 'ModelFullNameController@destroy')->where(['ModelSnake' => '\d+'])->name('destroy');
 });
