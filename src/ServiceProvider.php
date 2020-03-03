@@ -54,10 +54,5 @@ class ServiceProvider extends Base
         if ($dir !== null && $dir !== false && $dir !== true && !preg_match('/^([A-Z][a-z0-9]+)+$/', $dir)) {
             throw new Exception("Your configuration for 'crud.models-directory' is invalid.\nSpecified value must be 'true', 'false', 'null' or match /^([A-Z][a-z0-9]+)+$/.");
         }
-
-        // Register Blade formatter service.
-        $this->app->singleton(BladeFormatter::class, function ($app) {
-            return new BladeFormatter();
-        });
     }
 }

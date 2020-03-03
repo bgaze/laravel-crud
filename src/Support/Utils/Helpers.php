@@ -127,7 +127,7 @@ class Helpers
     public static function generateBladeFile($path, $content)
     {
         // Format Blade markup.
-        $content = resolve(BladeFormatter::class)->indent($content);
+        $content = indent_blade_string($content);
 
         // Generate file.
         return self::generateFile($path, $content);
