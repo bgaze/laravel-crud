@@ -15,63 +15,66 @@ use Bgaze\Crud\Support\Definitions;
  *
  * FIELDS
  *
- * @method string bigInteger(Entry $entry) Compile a bigInteger column
- * @method string binary(Entry $entry) Compile a binary column
- * @method string boolean(Entry $entry) Compile a boolean column
- * @method string char(Entry $entry) Compile a char column
- * @method string date(Entry $entry) Compile a date column
- * @method string dateTime(Entry $entry) Compile a dateTime column
- * @method string dateTimeTz(Entry $entry) Compile a dateTimeTz column
- * @method string decimal(Entry $entry) Compile a decimal column
- * @method string double(Entry $entry) Compile a double column
- * @method string enum(Entry $entry) Compile an enum column
- * @method string float(Entry $entry) Compile a float column
- * @method string geometry(Entry $entry) Compile a geometry column
- * @method string geometryCollection(Entry $entry) Compile a geometryCollection column
- * @method string integer(Entry $entry) Compile an integer column
- * @method string ipAddress(Entry $entry) Compile an ipAddress column
- * @method string json(Entry $entry) Compile a json column
- * @method string jsonb(Entry $entry) Compile a jsonb column
- * @method string lineString(Entry $entry) Compile a lineString column
- * @method string longText(Entry $entry) Compile a longText column
- * @method string macAddress(Entry $entry) Compile a macAddress column
- * @method string mediumInteger(Entry $entry) Compile a mediumInteger column
- * @method string mediumText(Entry $entry) Compile a mediumText column
- * @method string morphs(Entry $entry) Compile a morphs column
- * @method string multiLineString(Entry $entry) Compile a multiLineString column
- * @method string multiPoint(Entry $entry) Compile a multiPoint column
- * @method string multiPolygon(Entry $entry) Compile a multiPolygon column
- * @method string nullableMorphs(Entry $entry) Compile a nullableMorphs column
- * @method string point(Entry $entry) Compile a point column
- * @method string polygon(Entry $entry) Compile a polygon column
- * @method string rememberToken(Entry $entry) Compile a rememberToken column
- * @method string smallInteger(Entry $entry) Compile a smallInteger column
- * @method string softDeletes(Entry $entry) Compile a softDeletes column
- * @method string softDeletesTz(Entry $entry) Compile a softDeletesTz column
- * @method string string(Entry $entry) Compile a string column
- * @method string text(Entry $entry) Compile a text column
- * @method string time(Entry $entry) Compile a time column
- * @method string timeTz(Entry $entry) Compile a timeTz column
- * @method string timestamp(Entry $entry) Compile a timestamp column
- * @method string timestampTz(Entry $entry) Compile a timestampTz column
- * @method string timestamps(Entry $entry) Compile a timestamps column
- * @method string timestampsTz(Entry $entry) Compile a timestampsTz column
- * @method string tinyInteger(Entry $entry) Compile a tinyInteger column
- * @method string unsignedBigInteger(Entry $entry) Compile an unsignedBigInteger column
- * @method string unsignedDecimal(Entry $entry) Compile an unsignedDecimal column
- * @method string unsignedInteger(Entry $entry) Compile an unsignedInteger column
- * @method string unsignedMediumInteger(Entry $entry) Compile an unsignedMediumInteger column
- * @method string unsignedSmallInteger(Entry $entry) Compile an unsignedSmallInteger column
- * @method string unsignedTinyInteger(Entry $entry) Compile an unsignedTinyInteger column
- * @method string uuid(Entry $entry) Compile an uuid column
- * @method string year(Entry $entry) Compile a year column
+ * @method string|array bigInteger(Entry $entry) Compile a bigInteger column
+ * @method string|array binary(Entry $entry) Compile a binary column
+ * @method string|array boolean(Entry $entry) Compile a boolean column
+ * @method string|array char(Entry $entry) Compile a char column
+ * @method string|array date(Entry $entry) Compile a date column
+ * @method string|array dateTime(Entry $entry) Compile a dateTime column
+ * @method string|array dateTimeTz(Entry $entry) Compile a dateTimeTz column
+ * @method string|array decimal(Entry $entry) Compile a decimal column
+ * @method string|array double(Entry $entry) Compile a double column
+ * @method string|array enum(Entry $entry) Compile an enum column
+ * @method string|array float(Entry $entry) Compile a float column
+ * @method string|array geometry(Entry $entry) Compile a geometry column
+ * @method string|array geometryCollection(Entry $entry) Compile a geometryCollection column
+ * @method string|array integer(Entry $entry) Compile an integer column
+ * @method string|array ipAddress(Entry $entry) Compile an ipAddress column
+ * @method string|array json(Entry $entry) Compile a json column
+ * @method string|array jsonb(Entry $entry) Compile a jsonb column
+ * @method string|array lineString(Entry $entry) Compile a lineString column
+ * @method string|array longText(Entry $entry) Compile a longText column
+ * @method string|array macAddress(Entry $entry) Compile a macAddress column
+ * @method string|array mediumInteger(Entry $entry) Compile a mediumInteger column
+ * @method string|array mediumText(Entry $entry) Compile a mediumText column
+ * @method string|array morphs(Entry $entry) Compile morphs columns
+ * @method string|array multiLineString(Entry $entry) Compile a multiLineString column
+ * @method string|array multiPoint(Entry $entry) Compile a multiPoint column
+ * @method string|array multiPolygon(Entry $entry) Compile a multiPolygon column
+ * @method string|array nullableMorphs(Entry $entry) Compile nullableMorphs columns
+ * @method string|array nullableUuidMorphs(Entry $entry) Compile nullableUuidMorphs columns
+ * @method string|array point(Entry $entry) Compile a point column
+ * @method string|array polygon(Entry $entry) Compile a polygon column
+ * @method string|array rememberToken(Entry $entry) Compile a rememberToken column
+ * @method string|array set(Entry $entry) Compile a set column
+ * @method string|array smallInteger(Entry $entry) Compile a smallInteger column
+ * @method string|array softDeletes(Entry $entry) Compile a softDeletes column
+ * @method string|array softDeletesTz(Entry $entry) Compile a softDeletesTz column
+ * @method string|array string(Entry $entry) Compile a string column
+ * @method string|array text(Entry $entry) Compile a text column
+ * @method string|array time(Entry $entry) Compile a time column
+ * @method string|array timeTz(Entry $entry) Compile a timeTz column
+ * @method string|array timestamp(Entry $entry) Compile a timestamp column
+ * @method string|array timestampTz(Entry $entry) Compile a timestampTz column
+ * @method string|array timestamps(Entry $entry) Compile timestamps columns
+ * @method string|array timestampsTz(Entry $entry) Compile timestampsTz columns
+ * @method string|array tinyInteger(Entry $entry) Compile a tinyInteger column
+ * @method string|array unsignedBigInteger(Entry $entry) Compile an unsignedBigInteger column
+ * @method string|array unsignedDecimal(Entry $entry) Compile an unsignedDecimal column
+ * @method string|array unsignedInteger(Entry $entry) Compile an unsignedInteger column
+ * @method string|array unsignedMediumInteger(Entry $entry) Compile an unsignedMediumInteger column
+ * @method string|array unsignedSmallInteger(Entry $entry) Compile an unsignedSmallInteger column
+ * @method string|array unsignedTinyInteger(Entry $entry) Compile an unsignedTinyInteger column
+ * @method string|array uuid(Entry $entry) Compile an uuid column
+ * @method string|array uuidMorphs(Entry $entry) Compile uuidMorphs columns
+ * @method string|array year(Entry $entry) Compile a year column
  *
  * INDEXES
  *
- * @method string index(Entry $entry) Compile an index
- * @method string primaryIndex(Entry $entry) Compile a primaryIndex index
- * @method string uniqueIndex(Entry $entry) Compile an uniqueIndex index
- * @method string spatialIndex(Entry $entry) Compile a spatialIndex index
+ * @method string|array index(Entry $entry) Compile an index
+ * @method string|array primaryIndex(Entry $entry) Compile a primaryIndex index
+ * @method string|array uniqueIndex(Entry $entry) Compile an uniqueIndex index
+ * @method string|array spatialIndex(Entry $entry) Compile a spatialIndex index
  */
 abstract class Compiler
 {
