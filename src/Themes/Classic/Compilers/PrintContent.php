@@ -42,12 +42,19 @@ class PrintContent extends Compiler
      *
      * @param  string  $label
      * @param  string  $name
+     * @param  string  $template
      * @return string
      * @throws Exception
      */
-    protected function printGroup($label, $name)
+    protected function printGroup($label, $name, $template = '$ModelCamel->EntryName')
     {
+        $template = Helpers::populateString($this->crud, $template, [
+            'EntryLabel' => $label,
+            'EntryName' => $name,
+        ]);
+
         return Helpers::populateStub($this->crud, $this->stub, [
+            '$VALUE' => $template,
             'EntryLabel' => $label,
             'EntryName' => $name,
         ]);
@@ -72,6 +79,81 @@ class PrintContent extends Compiler
 
 
     /**
+     * Compile a date entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     * @throws Exception
+     */
+    public function date(Entry $entry)
+    {
+        return $this->printGroup($entry->label(), $entry->name(), "\$ModelCamel->EntryName->format('Y-m-d')");
+    }
+
+
+    /**
+     * Compile a dateTime entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     * @throws Exception
+     */
+    public function dateTime(Entry $entry)
+    {
+        return $this->printGroup($entry->label(), $entry->name(), "\$ModelCamel->EntryName->format('Y-m-d H:i:s')");
+    }
+
+
+    /**
+     * Compile a dateTimeTz entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     * @throws Exception
+     */
+    public function dateTimeTz(Entry $entry)
+    {
+        return $this->dateTime($entry);
+    }
+
+
+    /**
+     * Compile a morphs entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     */
+    public function morphs(Entry $entry)
+    {
+        return null;
+    }
+
+
+    /**
+     * Compile a nullableMorphs entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     */
+    public function nullableMorphs(Entry $entry)
+    {
+        return null;
+    }
+
+
+    /**
+     * Compile a nullableUuidMorphs entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     */
+    public function nullableUuidMorphs(Entry $entry)
+    {
+        return null;
+    }
+
+
+    /**
      * Compile a rememberToken entry.
      *
      * @param  Entry  $entry  The entry
@@ -80,6 +162,19 @@ class PrintContent extends Compiler
     public function rememberToken(Entry $entry)
     {
         return null;
+    }
+
+
+    /**
+     * Compile a set entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     * @throws Exception
+     */
+    public function set(Entry $entry)
+    {
+        return $this->printGroup($entry->label(), $entry->name(), "implode(', ', \$ModelCamel->EntryName)");
     }
 
 
@@ -108,6 +203,32 @@ class PrintContent extends Compiler
 
 
     /**
+     * Compile a timestamp entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     * @throws Exception
+     */
+    public function timestamp(Entry $entry)
+    {
+        return $this->dateTime($entry);
+    }
+
+
+    /**
+     * Compile a timestampTz entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     * @throws Exception
+     */
+    public function timestampTz(Entry $entry)
+    {
+        return $this->dateTime($entry);
+    }
+
+
+    /**
      * Compile a timestamps entry.
      *
      * @param  Entry  $entry  The entry
@@ -130,6 +251,18 @@ class PrintContent extends Compiler
     public function timestampsTz(Entry $entry)
     {
         return $this->timestamps($entry);
+    }
+
+
+    /**
+     * Compile a uuidMorphs entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string The template for the entry
+     */
+    public function uuidMorphs(Entry $entry)
+    {
+        return null;
     }
 
 }

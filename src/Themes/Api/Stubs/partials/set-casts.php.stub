@@ -1,0 +1,21 @@
+/**
+* Get the ModelStudly's FieldSnake.
+*
+* @param  string  $value
+* @return array
+*/
+public function getFieldStudlyAttribute($value)
+{
+    return explode(',', $value ?? '');
+}
+
+/**
+* Set the ModelStudly's FieldSnake.
+*
+* @param  array  $value
+* @return void
+*/
+public function setFieldStudlyAttribute(array $value)
+{
+    $this->attributes['FieldSnake'] = empty($value) ? null : implode(',', $value);
+}

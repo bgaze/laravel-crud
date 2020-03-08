@@ -173,7 +173,7 @@ class Helpers
      * @param  bool|null  $assoc
      * @return string
      */
-    public static function compileArrayForPhp($array, $assoc = null)
+    public static function compileArrayForPhp($array, $assoc = null, $expand = false)
     {
         if ($assoc === null) {
             $assoc = (count(array_filter(array_keys($array), 'is_string')) > 0);
@@ -186,6 +186,10 @@ class Helpers
 
             return self::compileValueForPhp($value);
         });
+
+        if ($expand) {
+            return "[\n" . $entries->implode(",\n") . "\n]";
+        }
 
         return '[' . $entries->implode(', ') . ']';
     }

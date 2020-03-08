@@ -3,11 +3,11 @@
 @section('title', 'PluralFullName')
 
 @section('content')
+    <h1>PluralFullName</h1>
+
     @if(session('success'))
         <p>{{ session('success') }}</p>
     @endif
-
-    <h1>PluralFullName</h1>
 
     <p><a href="{{ route('PluralsKebabDot.create') }}">Create a new ModelFullName</a></p>
 

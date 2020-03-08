@@ -44,6 +44,7 @@ class Command extends BaseCommand
     public function stubs()
     {
         return [
+            'partials.set-casts' => __DIR__ . '/Stubs/partials/set-casts.php.stub',
             'relation' => __DIR__ . '/Stubs/relation.php.stub',
             'migration' => __DIR__ . '/Stubs/migration.php.stub',
             'model' => __DIR__ . '/Stubs/model.php.stub',

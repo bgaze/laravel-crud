@@ -2,7 +2,9 @@
 
 namespace ModelNamespace;
 
-#USES
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #ANNOTATIONS
 class ModelStudly extends Model
@@ -21,4 +23,8 @@ class ModelStudly extends Model
     #FILLABLES
     
     #DATES
+
+    #CASTS
+
+    #METHODS
 }

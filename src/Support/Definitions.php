@@ -66,7 +66,7 @@ class Definitions
     /**
      * The list of date type columns.
      */
-    const DATES = ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz', 'year'];
+    const DATES = ['date', 'dateTime', 'dateTimeTz', 'time', 'timeTz', 'timestamp', 'timestampTz'];
 
     /**
      * The available modifiers available for column entries.
@@ -99,8 +99,8 @@ class Definitions
         'boolean' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'char' => '{column} {length?} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'date' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
-        'dateTime' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
-        'dateTimeTz' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'dateTime' => '{column} {precision?} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'dateTimeTz' => '{column} {precision?} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'decimal' => '{column} {total=8} {places=2} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'double' => '{column} {total=8} {places=2} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'enum' => '{column} {allowed*} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
@@ -116,23 +116,25 @@ class Definitions
         'macAddress' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'mediumInteger' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'mediumText' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
-        'morphs' => '{name}',
+        'morphs' => '{name} {indexName?}',
         'multiLineString' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'multiPoint' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'multiPolygon' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
-        'nullableMorphs' => '{column}',
-        'point' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
+        'nullableMorphs' => '{name} {indexName?}',
+        'nullableUuidMorphs' => '{name} {indexName?}',
+        'point' => '{column} {srid?} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'polygon' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
         'rememberToken' => '',
+        'set' => '{column} {allowed*} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'smallInteger' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'softDeletes' => '',
         'softDeletesTz' => '',
         'string' => '{column} {length?} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'text' => '{column} {--n|nullable} {--i|index} {--q|unique} {--c|comment=}',
-        'time' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
-        'timeTz' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
-        'timestamp' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
-        'timestampTz' => '{column} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'time' => '{column} {precision?} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'timeTz' => '{column} {precision?} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'timestamp' => '{column} {precision?} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'timestampTz' => '{column} {precision?} {--u|useCurrent} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'timestamps' => '',
         'timestampsTz' => '',
         'tinyInteger' => '{column} {--n|nullable} {--u|unsigned} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
@@ -143,6 +145,7 @@ class Definitions
         'unsignedSmallInteger' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'unsignedTinyInteger' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
         'uuid' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
+        'uuidMorphs' => '{name} {indexName?}',
         'year' => '{column} {--n|nullable} {--i|index} {--q|unique} {--d|default=} {--c|comment=}',
     ];
 

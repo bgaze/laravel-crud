@@ -9,6 +9,7 @@ use Bgaze\Crud\Support\Tasks\Task;
 use Bgaze\Crud\Support\Utils\Helpers;
 use Bgaze\Crud\Themes\Api\Compilers\ModelAnnotations;
 use Exception;
+use Illuminate\Support\Str;
 
 class BuildModelClass extends Task
 {
@@ -33,37 +34,17 @@ class BuildModelClass extends Task
     {
         // Populate migration stub.
         $stub = $this->populateStub('model', [
-            '#USES' => $this->uses(),
             '#ANNOTATIONS' => $this->annotations(),
             '#TRAITS' => $this->traits(),
             '#TIMESTAMPS' => $this->timestamps(),
             '#FILLABLES' => $this->fillables(),
             '#DATES' => $this->dates(),
+            '#CASTS' => $this->casts(),
+            '#METHODS' => $this->methods(),
         ]);
 
         // Generate migration file.
         Helpers::generatePhpFile($this->file(), $stub);
-    }
-
-
-    /**
-     * Compile CRUD "use" statements.
-     *
-     * @return string
-     */
-    protected function uses()
-    {
-        $uses = $this->crud->getContent()->map(function (Entry $entry) {
-            if (in_array($entry->command(), ['softDeletes', 'softDeletesTz'])) {
-                return 'use Illuminate\Database\Eloquent\SoftDeletes;';
-            }
-
-            return null;
-        });
-
-        $uses->push('use Illuminate\Database\Eloquent\Model;');
-
-        return $uses->filter()->unique()->sort()->implode("\n");
     }
 
 
@@ -80,17 +61,6 @@ class BuildModelClass extends Task
 
 
     /**
-     * Compile CRUD timestamps.
-     *
-     * @return string
-     */
-    protected function timestamps()
-    {
-        return $this->crud->getTimestamps() ? '' : 'public $timestamps = false;';
-    }
-
-
-    /**
      * Compile CRUD traits.
      *
      * @return string
@@ -98,6 +68,26 @@ class BuildModelClass extends Task
     protected function traits()
     {
         return $this->crud->getSoftDeletes() ? 'use SoftDeletes;' : '';
+    }
+
+
+    /**
+     * Compile CRUD timestamps.
+     *
+     * @return string
+     */
+    protected function timestamps()
+    {
+        if ($this->crud->getTimestamps()) {
+            return '';
+        }
+
+        return " /**
+                  * Indicates if the model should be timestamped.
+                  *
+                  * @var bool
+                  */
+                  public \$timestamps = false;";
     }
 
 
@@ -115,10 +105,16 @@ class BuildModelClass extends Task
                 return in_array($entry->name(), $exclude) ? false : $entry->columns();
             })
             ->flatten()
-            ->filter()
-            ->toArray();
+            ->filter();
 
-        return 'protected $fillable = ' . Helpers::compileArrayForPhp($fillables) . ';';
+        $fillables = Helpers::compileArrayForPhp($fillables->all(), false, true);
+
+        return "/**
+                 * The attributes that are mass assignable.
+                 *
+                 * @var array
+                 */
+                 protected \$fillable = {$fillables};";
     }
 
 
@@ -131,16 +127,85 @@ class BuildModelClass extends Task
     {
         $dates = $this->crud
             ->getContent(false)
-            ->filter(function (Entry $entry) {
-                return $entry->isDate();
+            ->map(function (Entry $entry) {
+                return $entry->isDate() ? $entry->columns() : null;
             })
-            ->keys();
+            ->filter()
+            ->flatten();
 
         if ($this->crud->getSoftDeletes()) {
             $dates->prepend('deleted_at');
         }
 
-        return 'protected $dates = ' . Helpers::compileArrayForPhp($dates->unique()->toArray()) . ';';
+        if ($dates->isEmpty()) {
+            return '';
+        }
+
+        $dates = Helpers::compileArrayForPhp($dates->unique()->all(), false, true);
+
+        return "/**
+                 * The attributes that should be mutated to dates.
+                 *
+                 * @var array
+                 */
+                protected \$dates = {$dates};";
+    }
+
+
+    /**
+     * Compile CRUD content to Model casts array.
+     *
+     * @return string
+     */
+    protected function casts()
+    {
+        $casts = $this->crud
+            ->getContent(false)
+            ->map(function (Entry $entry) {
+                if (in_array($entry->command(), ['json', 'jsonb'])) {
+                    return 'json';
+                }
+
+                return false;
+            })
+            ->filter();
+
+        if ($casts->isEmpty()) {
+            return '';
+        }
+
+        $casts = Helpers::compileArrayForPhp($casts->all(), true, true);
+
+        return "/**
+                 * The attributes that should be cast to native types.
+                 *
+                 * @var array
+                 */
+                protected \$casts = $casts;";
+    }
+
+
+    /**
+     * Compile CRUD content to Model methods.
+     *
+     * @return string
+     */
+    protected function methods()
+    {
+        return $this->crud
+            ->getContent()
+            ->map(function (Entry $entry) {
+                if ($entry->command() !== 'set') {
+                    return false;
+                }
+
+                return $this->populateStub('partials.set-casts', [
+                    'FieldSnake' => $entry->name(),
+                    'FieldStudly' => Str::studly($entry->name()),
+                ]);
+            })
+            ->filter()
+            ->implode("\n");
     }
 
 }

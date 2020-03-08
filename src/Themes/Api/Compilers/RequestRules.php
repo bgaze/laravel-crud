@@ -7,6 +7,7 @@ namespace Bgaze\Crud\Themes\Api\Compilers;
 use Bgaze\Crud\Support\Crud\Entry;
 use Bgaze\Crud\Support\Tasks\Compiler;
 use Exception;
+use Illuminate\Database\Schema\Builder;
 
 class RequestRules extends Compiler
 {
@@ -15,12 +16,12 @@ class RequestRules extends Compiler
      *
      * @param  Entry  $entry  The entry
      * @param  string  $rule  The entry rules
+     * @param  string|null  $name
      * @return string
      * @throws Exception
      */
-    protected function requestGroup(Entry $entry, $rule = null)
+    protected function requestGroup(Entry $entry, $rule = null, $name = null)
     {
-        $rules = [];
         $definition = $entry->definition();
 
         if ($definition->hasOption('nullable')) {
@@ -39,7 +40,7 @@ class RequestRules extends Compiler
             $rules[] = 'unique:' . $this->crud->TableName . ',' . $entry->name();
         }
 
-        return sprintf("'%s' => '%s',", $entry->name(), implode('|', $rules));
+        return sprintf("'%s' => '%s',", $name ?: $entry->name(), implode('|', $rules));
     }
 
 
@@ -47,7 +48,7 @@ class RequestRules extends Compiler
      * Get the default compilation function for an entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The compiled entry
+     * @return string|array The compiled entry
      * @throws Exception
      */
     public function default(Entry $entry)
@@ -64,7 +65,7 @@ class RequestRules extends Compiler
      * Get the rules for a bigInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function bigInteger(Entry $entry)
@@ -77,7 +78,7 @@ class RequestRules extends Compiler
      * Get the rules for a boolean entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function boolean(Entry $entry)
@@ -87,10 +88,23 @@ class RequestRules extends Compiler
 
 
     /**
+     * Get the rules for a char entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string|array The rules for the entry
+     * @throws Exception
+     */
+    public function char(Entry $entry)
+    {
+        return $this->requestGroup($entry, 'string|max:' . $entry->option('length', Builder::$defaultStringLength));
+    }
+
+
+    /**
      * Get the rules for a date entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function date(Entry $entry)
@@ -103,7 +117,7 @@ class RequestRules extends Compiler
      * Get the rules for a dateTime entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function dateTime(Entry $entry)
@@ -116,7 +130,7 @@ class RequestRules extends Compiler
      * Get the rules for a dateTimeTz entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function dateTimeTz(Entry $entry)
@@ -129,7 +143,7 @@ class RequestRules extends Compiler
      * Get the rules for a decimal entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function decimal(Entry $entry)
@@ -142,7 +156,7 @@ class RequestRules extends Compiler
      * Get the rules for a double entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function double(Entry $entry)
@@ -155,7 +169,7 @@ class RequestRules extends Compiler
      * Get the rules for a enum entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function enum(Entry $entry)
@@ -168,7 +182,7 @@ class RequestRules extends Compiler
      * Get the rules for a float entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function float(Entry $entry)
@@ -181,7 +195,7 @@ class RequestRules extends Compiler
      * Get the rules for a integer entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function integer(Entry $entry)
@@ -194,7 +208,7 @@ class RequestRules extends Compiler
      * Get the rules for a ipAddress entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function ipAddress(Entry $entry)
@@ -207,12 +221,12 @@ class RequestRules extends Compiler
      * Get the rules for a json entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function json(Entry $entry)
     {
-        return $this->requestGroup($entry, 'array');
+        return $this->requestGroup($entry, 'json');
     }
 
 
@@ -220,12 +234,12 @@ class RequestRules extends Compiler
      * Get the rules for a jsonb entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function jsonb(Entry $entry)
     {
-        return $this->requestGroup($entry, 'array');
+        return $this->requestGroup($entry, 'json');
     }
 
 
@@ -233,7 +247,7 @@ class RequestRules extends Compiler
      * Get the rules for a macAddress entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function macAddress(Entry $entry)
@@ -246,7 +260,7 @@ class RequestRules extends Compiler
      * Get the rules for a mediumInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function mediumInteger(Entry $entry)
@@ -256,10 +270,52 @@ class RequestRules extends Compiler
 
 
     /**
+     * Get the rules for a morphs entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return array The rules for the entry
+     * @throws Exception
+     */
+    public function morphs(Entry $entry)
+    {
+        return [
+            $this->requestGroup($entry, 'integer|min:0', $entry->argument('name') . '_id'),
+            $this->requestGroup($entry, null, $entry->argument('name') . '_type'),
+        ];
+    }
+
+
+    /**
+     * Get the rules for a nullableMorphs entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return array The rules for the entry
+     * @throws Exception
+     */
+    public function nullableMorphs(Entry $entry)
+    {
+        return $this->morphs($entry);
+    }
+
+
+    /**
+     * Get the rules for a nullableUuidMorphs entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return array The rules for the entry
+     * @throws Exception
+     */
+    public function nullableUuidMorphs(Entry $entry)
+    {
+        return $this->uuidMorphs($entry);
+    }
+
+
+    /**
      * Get the rules for a smallInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function smallInteger(Entry $entry)
@@ -269,10 +325,39 @@ class RequestRules extends Compiler
 
 
     /**
+     * Get the rules for a rememberToken entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string|array The rules for the entry
+     * @throws Exception
+     */
+    public function rememberToken(Entry $entry)
+    {
+        return "'remember_token' => 'nullable|string|max:100',";
+    }
+
+
+    /**
+     * Get the rules for a set entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string|array The rules for the entry
+     * @throws Exception
+     */
+    public function set(Entry $entry)
+    {
+        return [
+            $this->requestGroup($entry, 'array'),
+            sprintf("'%s.*' => 'distinct|in:%s',", $entry->name(), implode(',', $entry->argument('allowed')))
+        ];
+    }
+
+
+    /**
      * Get the rules for a softDeletes entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The template for the entry
+     * @return string|array The template for the entry
      */
     public function softDeletes(Entry $entry)
     {
@@ -284,7 +369,7 @@ class RequestRules extends Compiler
      * Get the rules for a softDeletesTz entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The template for the entry
+     * @return string|array The template for the entry
      */
     public function softDeletesTz(Entry $entry)
     {
@@ -293,10 +378,75 @@ class RequestRules extends Compiler
 
 
     /**
+     * Get the rules for a string entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string|array The rules for the entry
+     * @throws Exception
+     */
+    public function string(Entry $entry)
+    {
+        return $this->requestGroup($entry, 'string|max:' . $entry->option('length', Builder::$defaultStringLength));
+    }
+
+
+    /**
+     * Get the rules for a time entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string|array The rules for the entry
+     * @throws Exception
+     */
+    public function time(Entry $entry)
+    {
+        return $this->requestGroup($entry, 'date_format:H:i:s');
+    }
+
+
+    /**
+     * Get the rules for a timeTz entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string|array The rules for the entry
+     * @throws Exception
+     */
+    public function timeTz(Entry $entry)
+    {
+        return $this->time($entry);
+    }
+
+
+    /**
+     * Get the rules for a timestamp entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string|array The template for the entry
+     * @throws Exception
+     */
+    public function timestamp(Entry $entry)
+    {
+        return $this->dateTime($entry);
+    }
+
+
+    /**
+     * Get the rules for a timestampTz entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return string|array The template for the entry
+     * @throws Exception
+     */
+    public function timestampTz(Entry $entry)
+    {
+        return $this->dateTimeTz($entry);
+    }
+
+
+    /**
      * Get the rules for a timestamps entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The template for the entry
+     * @return string|array The template for the entry
      */
     public function timestamps(Entry $entry)
     {
@@ -308,7 +458,7 @@ class RequestRules extends Compiler
      * Get the rules for a timestampsTz entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The template for the entry
+     * @return string|array The template for the entry
      */
     public function timestampsTz(Entry $entry)
     {
@@ -320,7 +470,7 @@ class RequestRules extends Compiler
      * Get the rules for a tinyInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function tinyInteger(Entry $entry)
@@ -333,7 +483,7 @@ class RequestRules extends Compiler
      * Get the rules for a unsignedBigInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function unsignedBigInteger(Entry $entry)
@@ -346,12 +496,12 @@ class RequestRules extends Compiler
      * Get the rules for a unsignedDecimal entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function unsignedDecimal(Entry $entry)
     {
-        return $this->requestGroup($entry, 'numeric');
+        return $this->requestGroup($entry, 'numeric|min:0');
     }
 
 
@@ -359,7 +509,7 @@ class RequestRules extends Compiler
      * Get the rules for a unsignedInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function unsignedInteger(Entry $entry)
@@ -372,7 +522,7 @@ class RequestRules extends Compiler
      * Get the rules for a unsignedMediumInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function unsignedMediumInteger(Entry $entry)
@@ -385,7 +535,7 @@ class RequestRules extends Compiler
      * Get the rules for a unsignedSmallInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function unsignedSmallInteger(Entry $entry)
@@ -398,7 +548,7 @@ class RequestRules extends Compiler
      * Get the rules for a unsignedTinyInteger entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function unsignedTinyInteger(Entry $entry)
@@ -411,12 +561,28 @@ class RequestRules extends Compiler
      * Get the rules for a uuid entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function uuid(Entry $entry)
     {
-        return $this->requestGroup($entry, 'regex:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$');
+        return $this->requestGroup($entry, 'uuid');
+    }
+
+
+    /**
+     * Get the rules for a uuidMorphs entry.
+     *
+     * @param  Entry  $entry  The entry
+     * @return array The rules for the entry
+     * @throws Exception
+     */
+    public function uuidMorphs(Entry $entry)
+    {
+        return [
+            $this->requestGroup($entry, 'uuid', $entry->argument('name') . '_id'),
+            $this->requestGroup($entry, null, $entry->argument('name') . '_type'),
+        ];
     }
 
 
@@ -424,11 +590,11 @@ class RequestRules extends Compiler
      * Get the rules for a year entry.
      *
      * @param  Entry  $entry  The entry
-     * @return string The rules for the entry
+     * @return string|array The rules for the entry
      * @throws Exception
      */
     public function year(Entry $entry)
     {
-        return $this->requestGroup($entry, 'regex:^\d{4}$');
+        return $this->requestGroup($entry, 'date_format:Y');
     }
 }

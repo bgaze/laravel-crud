@@ -146,6 +146,4 @@ abstract class Compiler
         return $content;
     }
 
-
-
 }
