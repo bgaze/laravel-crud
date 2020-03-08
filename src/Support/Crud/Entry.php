@@ -86,6 +86,11 @@ class Entry extends SignedInput
             return $this;
         }
 
+        if (in_array($this->command(), ['morphs', 'nullableMorphs', 'nullableUuidMorphs', 'uuidMorphs'])) {
+            $this->name = $this->command() . ':' . $this->argument('name');
+            return $this;
+        }
+
         $this->name = $this->argument('column');
         return $this;
     }
@@ -148,6 +153,14 @@ class Entry extends SignedInput
         }
 
         switch ($this->command()) {
+            case 'morphs':
+            case 'nullableMorphs':
+            case 'nullableUuidMorphs':
+            case 'uuidMorphs':
+                return [
+                    $this->argument('name') . '_id',
+                    $this->argument('name') . '_type',
+                ];
             case 'timestamps':
             case 'timestampsTz':
                 return ['created_at', 'updated_at'];
