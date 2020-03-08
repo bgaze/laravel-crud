@@ -38,18 +38,19 @@ class MigrationContent extends Compiler
      */
     public function default(Entry $entry)
     {
-        $arguments = $entry->definition()->getArguments();
-
-        if (!empty($arguments)) {
-            $template = '$table->' . $entry->command() . '(%' . implode(', %', array_keys($arguments)) . ')';
-        } else {
-            $template = '$table->' . $entry->command() . '()';
+        // Remove trailing empty arguments.
+        $arguments = collect($entry->arguments());
+        while ($arguments->isNotEmpty() && $arguments->last() === null) {
+            $arguments->pop();
         }
 
-        foreach ($entry->arguments() as $k => $v) {
-            $template = str_replace("%$k", Helpers::compileValueForPhp($v), $template);
-        }
+        // Compile values for PHP.
+        $arguments = $arguments->map(function ($argument) {
+            return Helpers::compileValueForPhp($argument);
+        });
 
+        // Generate migration line and add modifiers.
+        $template = '$table->' . $entry->command() . '(' . $arguments->implode(', ') . ')';
         $this->addModifiers($entry, $template);
 
         return $template . ';';
